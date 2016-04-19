@@ -33,7 +33,7 @@ public class KeyFrame {
 	}
 	
 	/**
-	 * Method for changning the value of timestamp. The new value must be greater than zero.
+	 * Method for setting the value of timestamp. The new value must be greater than zero.
 	 * @param timestamp must be greater than zero.
 	 * @throws IllegalArgumentException if timestamp is less than zero.
 	 */
@@ -45,4 +45,21 @@ public class KeyFrame {
 		}
 	}
 	
+	/**
+	 * Method for getting the rgb value of a keyframe.
+	 * @return the color of the keyframe as a rgb value
+	 */
+	public Color getRGBColor() {
+		int rgb = this.rgbColor.getRGB();
+		return new Color(rgb);
+	}
+	
+	/**
+	 * Method for setting the value of rgb value of a keyframe.
+	 * @param color the new rgb value for the keyframe.
+	 */
+	public void setRGBColor(Color color) {
+		Color temp = new Color(color.getRGB());
+		this.rgbColor = temp;
+	}
 }
