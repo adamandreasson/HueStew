@@ -25,7 +25,7 @@ public class KeyFrame {
 	private short saturation;
 	
 	/**
-	 * Method for returning the timestamp of the keyframe, will be zero or greater
+	 * Method for getting the timestamp of the keyframe, will be zero or greater
 	 * @return the timestamp of the keyframe
 	 */
 	public int getTimestamp() {
@@ -64,7 +64,7 @@ public class KeyFrame {
 	}
 	
 	/**
-	 * Method for returning the hue of the keyframe.
+	 * Method for getting the hue of the keyframe.
 	 * @return the hue of the keyframe
 	 */
 	public int getHue() {
@@ -73,13 +73,36 @@ public class KeyFrame {
 	
 	/**
 	 * Method for setting the hue of the keyframe
-	 * @param hue must be greater than -1 and less than 256
+	 * @param hue must be greater than or equal to;
 	 */
 	public void setHue(int hue) {
-		if ((hue > -1 && hue < 256)) {
+		if ( hue >= 0) {
 			this.hue = hue;
 		} else {
-			throw new IllegalArgumentException("Hue must be greater than -1 and less than 256");
+			throw new IllegalArgumentException("Hue must be greater than or equal to 0");
 		}
 	}
+	
+	/**
+	 * Method for getting the brightness of a keyframe.
+	 * @return the brightness of the keyframe
+	 */
+	public short getBrightness() {
+		return this.brightness;
+	}
+	
+	/**
+	 * Method for setting the brightness of a keyframe.
+	 * @param brightness must be greater than -1 and less than 256.
+	 */
+	public void setBrightness(short brightness) {
+		if (brightness > -1 && brightness < 256) {
+			this.brightness = brightness;
+		} else {
+			throw new IllegalArgumentException(
+					"Brightness must be greater than -1 and less than 256");
+		}
+	}
+	
+	
 }
