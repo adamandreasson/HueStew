@@ -18,6 +18,18 @@ import java.util.List;
 
 public class Toolbox {
 	
+	private static Toolbox instance = null;
+	
+	private Toolbox(){};
+	
+	public static Toolbox getInstance(){
+		
+		if(instance == null){
+			instance = new Toolbox();
+		}
+		
+		return instance;
+	}
 	
 	private List<Tool> tools;
 	
