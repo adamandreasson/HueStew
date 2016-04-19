@@ -1,7 +1,5 @@
 package com.huestew.studio;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.layout.AnchorPane;
@@ -24,19 +22,15 @@ public class MainViewController extends ViewController{
 	protected void init(){
 		HueStew.getInstance().setVirtualRoom(new VirtualRoom(previewCanvas));
 		HueStew.getInstance().getVirtualRoom().redraw();
-
-		previewCanvasPane.widthProperty().addListener(new ChangeListener<Number>() {
-			@Override public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneWidth, Number newSceneWidth) {
-				previewCanvas.setWidth((double) newSceneWidth);
-				HueStew.getInstance().getVirtualRoom().redraw();
-			}
+		
+		previewCanvasPane.widthProperty().addListener((val, newVal, oldVal) -> {
+			previewCanvas.setWidth((double) newVal);
+			HueStew.getInstance().getVirtualRoom().redraw();
 		});
-
-		previewCanvasPane.heightProperty().addListener(new ChangeListener<Number>() {
-			@Override public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneHeight, Number newSceneHeight) {
-				previewCanvas.setHeight((double) newSceneHeight);
-				HueStew.getInstance().getVirtualRoom().redraw();
-			}
+		
+		previewCanvasPane.heightProperty().addListener((val, newVal, oldVal) -> {
+			previewCanvas.setHeight((double) newVal);
+			HueStew.getInstance().getVirtualRoom().redraw();
 		});
 	
 	}
