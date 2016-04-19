@@ -104,5 +104,24 @@ public class KeyFrame {
 		}
 	}
 	
+	/**
+	 * Method for getting the saturation of a keyframe.
+	 * @return the saturation of the keyframe.
+	 */
+	public short getSaturation() {
+		return this.saturation;
+	}
 	
+	/**
+	 * Method for setting the saturation of a keyframe.
+	 * @param saturation must be greater than -1 and less than 256.
+	 */
+	public void setSaturation(short saturation) {
+		if (saturation > -1 && saturation < 256) {
+			this.saturation = saturation;
+		} else {
+			throw new IllegalArgumentException(
+					"Saturation must be greater than -1 and less than 256");
+		}
+	}
 }
