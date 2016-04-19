@@ -17,10 +17,10 @@ public class VirtualRoom {
 		bulbs = new ArrayList<VirtualBulb>();
 	}
 
-	public void addBulb(VirtualBulb bulb){
+	public void addBulb(VirtualBulb bulb) {
 		bulbs.add(bulb);
 	}
-	
+
 	public void setCanvas(Canvas canvas) {
 		this.canvas = canvas;
 	}

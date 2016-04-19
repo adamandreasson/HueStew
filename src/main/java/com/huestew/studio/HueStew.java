@@ -21,11 +21,11 @@ public class HueStew {
 		this.lightBank = new LightBank();
 
 		// TEST CODE PLS REMOVE LATER
-		for(int i=0;i<3;i++){
+		for (int i = 0; i < 3; i++) {
 			VirtualBulb bulb = new VirtualBulb();
-			
+
 			Light light = new Light();
-			LightState state = new LightState(Color.WHITE, (short)255, (short)255);
+			LightState state = new LightState(Color.WHITE, (short) 255, (short) 255);
 			light.setState(state);
 			light.setController(new VirtualLightController(bulb));
 			lightBank.getLights().add(light);
