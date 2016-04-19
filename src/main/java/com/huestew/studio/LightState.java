@@ -22,9 +22,7 @@ public class LightState {
 	/**
 	 * Creates a new KeyFrame object with the specified values.
 	 * 
-	 * @param timestamp
 	 * @param color
-	 * @param hue
 	 * @param brightness
 	 * @param saturation
 	 */
@@ -40,8 +38,7 @@ public class LightState {
 	 * @return the color of the keyframe as a rgb value
 	 */
 	public Color getcolor() {
-		int rgb = this.color.getRGB();
-		return new Color(rgb);
+		return color;
 	}
 
 	/**
