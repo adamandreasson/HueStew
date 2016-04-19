@@ -6,19 +6,25 @@ package com.huestew.studio;
  * 
  * @author Patrik Olson
  */
-public interface Light {
+public class Light {
+	
+	private LightController controller;
+	private String id;
+
 	/**
 	 * Get the identifier of this light.
 	 * 
 	 * @return An identifier that is unique to this light.
 	 */
-	String getId();
+	String getId() {
+		return id;
+	}
 
-	/**
-	 * Send a key frame to this light.
-	 * 
-	 * @param keyFrame
-	 *            The key frame that should be sent to this light.
-	 */
-	void send(KeyFrame keyFrame);
+	public LightController getController() {
+		return controller;
+	}
+
+	public void setController(LightController controller) {
+		this.controller = controller;
+	}
 }
