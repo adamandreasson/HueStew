@@ -7,7 +7,7 @@ import java.awt.Color;
  * @author Marcus Randevik
  *
  */
-public class KeyFrame {
+public class KeyFrame implements Comparable<KeyFrame> {
 
 	/** the timestamp at which the keyframe occurs **/
 	private int timestamp;
@@ -124,4 +124,13 @@ public class KeyFrame {
 					"Saturation must be greater than -1 and less than 256");
 		}
 	}
+
+	@Override
+	/**
+	 * Compares two keyframes based on their timestamp.
+	 */
+	public int compareTo(KeyFrame o) {		
+		return this.timestamp - o.getTimestamp();
+	}
+	
 }
