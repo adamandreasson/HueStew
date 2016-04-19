@@ -8,6 +8,7 @@ import java.awt.Color;
  *
  */
 public class KeyFrame implements Comparable<KeyFrame> {
+	
 
 	/** the timestamp at which the keyframe occurs **/
 	private int timestamp;
@@ -24,6 +25,21 @@ public class KeyFrame implements Comparable<KeyFrame> {
 	/** the saturation of the keyframe **/
 	private short saturation;
 	
+	/**
+	 * Creates a new KeyFrame object with the specified values.
+	 * @param timestamp 
+	 * @param rgbColor
+	 * @param hue
+	 * @param brightness
+	 * @param saturation
+	 */
+	public KeyFrame(int timestamp, Color rgbColor, int hue, short brightness, short saturation) {
+		this.setTimestamp(timestamp);
+		this.setRGBColor(rgbColor);
+		this.setHue(hue);
+		this.setBrightness(brightness);
+		this.setSaturation(saturation);
+	}
 	/**
 	 * Method for getting the timestamp of the keyframe, will be zero or greater
 	 * @return the timestamp of the keyframe
