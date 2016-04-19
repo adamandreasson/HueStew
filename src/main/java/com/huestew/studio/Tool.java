@@ -29,7 +29,7 @@ public interface Tool {
 	 * @param timestamp At which time the event should occur on the lighttrack.
 	 *
 	 */
-	void doAction(Event event, LightTrack lighttrack, timestamp timestamp);
+	void doAction(Event event, LightTrack lighttrack, int timestamp);
 		
 
 }
