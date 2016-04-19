@@ -8,6 +8,7 @@ package com.huestew.studio;
  */
 public class Light {
 	
+	private LightState state;
 	private LightController controller;
 	private String id;
 
@@ -18,6 +19,14 @@ public class Light {
 	 */
 	String getId() {
 		return id;
+	}
+
+	public LightState getState() {
+		return state;
+	}
+
+	public void setState(LightState state) {
+		this.state = state;
 	}
 
 	public LightController getController() {
