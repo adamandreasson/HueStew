@@ -62,4 +62,24 @@ public class KeyFrame {
 		Color temp = new Color(color.getRGB());
 		this.rgbColor = temp;
 	}
+	
+	/**
+	 * Method for returning the hue of the keyframe.
+	 * @return the hue of the keyframe
+	 */
+	public int getHue() {
+		return this.hue;
+	}
+	
+	/**
+	 * Method for setting the hue of the keyframe
+	 * @param hue must be greater than -1 and less than 256
+	 */
+	public void setHue(int hue) {
+		if ((hue > -1 && hue < 256)) {
+			this.hue = hue;
+		} else {
+			throw new IllegalArgumentException("Hue must be greater than -1 and less than 256");
+		}
+	}
 }
