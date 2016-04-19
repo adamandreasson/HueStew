@@ -17,6 +17,7 @@ public class Util {
 	 * @return The controller of the view.
 	 */
 	public static ViewController loadFxml(String path) {
+		System.out.println(Util.class.getResource(path));
 		FXMLLoader loader = new FXMLLoader(Util.class.getResource(path));
 		Parent view;
 
