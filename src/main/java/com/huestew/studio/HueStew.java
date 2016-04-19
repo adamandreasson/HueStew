@@ -13,13 +13,14 @@ public class HueStew {
 	private static HueStew instance = null;
 
 	private VirtualRoom virtualRoom;
-	
+	private LightBank lightBank;
+
 	protected HueStew() {
-		// Exists only to defeat instantiation.
+		this.lightBank = new LightBank();
 	}
-	
+
 	public static HueStew getInstance() {
-		if(instance == null) {
+		if (instance == null) {
 			instance = new HueStew();
 		}
 		return instance;
@@ -32,5 +33,8 @@ public class HueStew {
 	public void setVirtualRoom(VirtualRoom virtualRoom) {
 		this.virtualRoom = virtualRoom;
 	}
-	
+
+	public LightBank getLightBank() {
+		return lightBank;
+	}
 }
