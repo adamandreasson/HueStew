@@ -23,13 +23,13 @@ public class MainViewController extends ViewController{
 		HueStew.getInstance().setVirtualRoom(new VirtualRoom(previewCanvas));
 		HueStew.getInstance().getVirtualRoom().redraw();
 		
-		previewCanvasPane.widthProperty().addListener((val, newVal, oldVal) -> {
-			previewCanvas.setWidth((double) newVal);
+		previewCanvasPane.widthProperty().addListener((observableValue, oldSceneWidth, newSceneWidth) -> {
+			previewCanvas.setWidth((double) newSceneWidth);
 			HueStew.getInstance().getVirtualRoom().redraw();
 		});
 		
-		previewCanvasPane.heightProperty().addListener((val, newVal, oldVal) -> {
-			previewCanvas.setHeight((double) newVal);
+		previewCanvasPane.heightProperty().addListener((observableValue, oldSceneHeight, newSceneHeight) -> {
+			previewCanvas.setHeight((double) newSceneHeight);
 			HueStew.getInstance().getVirtualRoom().redraw();
 		});
 	
