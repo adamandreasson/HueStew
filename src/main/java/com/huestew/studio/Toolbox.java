@@ -30,6 +30,8 @@ public class Toolbox {
 	
 	private Tool tool;
 	
+	private Toolbox() {}
+	
 	public Tool getTool(){
 		return tool;
 	}
