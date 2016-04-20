@@ -5,6 +5,7 @@ package com.huestew.studio;
 
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 
 /**
@@ -17,24 +18,29 @@ public class TrackView {
 
 	/**
 	 * Create a new track view with an associated canvas
+	 * 
 	 * @param canvas
 	 * 				the canvas in which the track view will be drawn.
 	 */
 	public TrackView(Canvas canvas) {
 		this.canvas = canvas;
+		canvas.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+			System.out.println("TrackView: MouseClicked, x=" + event.getX() + ", y=" + event.getY());
+			// Pass to selected tool
+			// TODO get light track from y coordinate
+			// TODO get time from x coordinate
+			//Toolbox.getTool().doAction(event, getTrackFromY(event.getY(), getTimeFromX(event.getX()));
+		});
 	}
 
-	public void redraw(){
+	public void redraw() {
 		GraphicsContext gc = canvas.getGraphicsContext2D();
 		gc.setFill(Color.LIGHTGRAY);
 		gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
 		drawTimeline(gc);
 		drawLightTracks(gc);
-
 	}
-
-
 
 	private void drawTimeline(GraphicsContext gc) {
 
