@@ -1,53 +1,47 @@
 package com.huestew.studio;
 
-import java.util.List;
-
-
+import com.huestew.studio.tools.*;
 
 /**
- * 
  * A toolbox containing a list of tools.
- * 
  * 
  * @author Daniel Illipe
  * @author Patrik Olson
  * @author Marcus Randevik
  * @author Adam Andreasson
- * 
  */
 
 public class Toolbox {
-	
-	private static Toolbox instance = null;
-	
-	private Toolbox(){};
-	
-	public static Toolbox getInstance(){
+	public enum Tools {
+		POPULATE(new PopulateTool());
 		
-		if(instance == null){
-			instance = new Toolbox();
+		private Tool tool;
+		
+		Tools(Tool tool) {
+			this.tool = tool;
 		}
 		
-		return instance;
+		public void select() {
+			getInstance().setTool(tool);
+		}
 	}
 	
-	private List<Tool> tools;
+	private static Toolbox instance;
 	
 	private Tool tool;
 	
-	
-	/**
-	 * 
-	 * @return returns current tool
-	 * 
-	 */
 	public Tool getTool(){
-		
 		return tool;
-		
 	}
 	
+	private void setTool(Tool tool) {
+		this.tool = tool;
+	}
 	
-	
-
+	public static Toolbox getInstance() {
+		if (instance == null) {
+			instance = new Toolbox();
+		}
+		return instance;
+	}
 }
