@@ -8,7 +8,7 @@ import javafx.event.Event;
 public class MoveTool implements Tool {
 
 	@Override
-	public void doAction(Event event, LightTrack lightTrack, int timestamp) {
+	public void doAction(Event event, LightTrack lightTrack, int timestamp, double normalizedY) {
 		// TODO Auto-generated method stub
 
 	}

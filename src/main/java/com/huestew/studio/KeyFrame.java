@@ -11,7 +11,7 @@ public class KeyFrame implements Comparable<KeyFrame> {
 	/** the timestamp at which the keyframe occurs **/
 	private int timestamp;
 
-	LightState state;
+	private LightState state;
 
 	/**
 	 * Creates a new KeyFrame object with the specified values.
@@ -21,7 +21,7 @@ public class KeyFrame implements Comparable<KeyFrame> {
 	 */
 	public KeyFrame(int timestamp, LightState state) {
 		this.timestamp = timestamp;
-		this.state = state;
+		this.setState(state);
 	}
 
 	/**
@@ -48,6 +48,21 @@ public class KeyFrame implements Comparable<KeyFrame> {
 		} else {
 			throw new IllegalArgumentException("Timestamp cannot be less than zero");
 		}
+	}
+
+	/**
+	 * @return the state
+	 */
+	public LightState getState() {
+		return state;
+	}
+
+	/**
+	 * @param state
+	 *            the state to set
+	 */
+	public void setState(LightState state) {
+		this.state = state;
 	}
 
 	@Override

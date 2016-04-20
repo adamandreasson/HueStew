@@ -22,8 +22,9 @@ public interface Tool {
 	 *            The lighttrack that is being manipulated.
 	 * @param timestamp
 	 *            At which time the event should occur on the lighttrack.
+	 * @param normalizedY 
 	 *
 	 */
-	void doAction(Event event, LightTrack lightTrack, int timestamp);
+	void doAction(Event event, LightTrack lightTrack, int timestamp, double normalizedY);
 
 }
