@@ -23,12 +23,15 @@ public class TrackView {
 		this.canvas = canvas;
 		canvas.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
 			System.out.println("TrackView: MouseClicked, x=" + event.getX() + ", y=" + event.getY());
-			// Pass to selected tool
-			// TODO get light track from y coordinate
-			// TODO get time from x coordinate
-			System.out.println(HueStew.getInstance().getShow().getLightTracks().indexOf(getTrackFromY(event.getY())));
+			// Get light track and timestamp from mouse coordinates
+			LightTrack track = getTrackFromY(event.getY());
+			System.out.println(HueStew.getInstance().getShow().getLightTracks().indexOf(track));
 			System.out.println(getTimeFromX(event.getX()));
-			Toolbox.getTool().doAction(event, getTrackFromY(event.getY()), getTimeFromX(event.getX()));
+			
+			if (track != null) {
+				// Pass event to current tool
+				Toolbox.getTool().doAction(event, track, getTimeFromX(event.getX()));
+			}
 		});
 	}
 
@@ -53,19 +56,20 @@ public class TrackView {
 			
 			int time = i*1000;
 			// If the timestamp is divisible by 10, we will draw a longer tick and display the time.
-			if(i%10 == 0){
+			if (i%10 == 0) {
 				gc.fillText(""+i, getXFromTime(time), 14);
-				GraphicsUtil.sharpLine(gc, getXFromTime(time), 12, getXFromTime(time), 20);
-			}else{
-				GraphicsUtil.sharpLine(gc, getXFromTime(time), 16, getXFromTime(time), 20);
 			}
+			GraphicsUtil.sharpLine(gc, getXFromTime(time), i % 5 == 0 ? 12 : 16, getXFromTime(time), 20);
 		}
 	}
 
 	private LightTrack getTrackFromY(double y){
 		double adjustedY = y-getTotalTrackPositionY();
 		int trackNumber = (int) Math.floor(adjustedY/getTrackHeight());
-		return HueStew.getInstance().getShow().getLightTracks().get(trackNumber);
+		if (trackNumber >= 0 && trackNumber < HueStew.getInstance().getShow().getLightTracks().size()) {
+			return HueStew.getInstance().getShow().getLightTracks().get(trackNumber);
+		}
+		return null;
 	}
 	
 	private double getXFromTime(int i) {
