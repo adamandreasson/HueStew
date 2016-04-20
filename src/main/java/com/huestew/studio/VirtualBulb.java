@@ -8,6 +8,7 @@ import java.awt.geom.Point2D;
 
 /**
  * @author Adam
+ * @author Marcus
  *
  */
 public class VirtualBulb {
@@ -24,11 +25,11 @@ public class VirtualBulb {
 	}
 
 	public Color getColor() {
-		return color;
+		return new Color(color.getRGB());
 	}
 
 	public void setColor(Color color) {
-		this.color = color;
+		this.color = new Color(color.getRGB());
 	}
 
 }
