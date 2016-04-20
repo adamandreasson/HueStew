@@ -26,7 +26,7 @@ public class TrackView {
 	
 	public void redraw(){
 		GraphicsContext gc = canvas.getGraphicsContext2D();
-		gc.setFill(Color.BLACK);
+		gc.setFill(Color.GRAY);
 		gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
 		gc.setFill(Color.YELLOW);
