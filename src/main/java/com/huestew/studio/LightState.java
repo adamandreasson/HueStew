@@ -27,9 +27,9 @@ public class LightState {
 	 * @param saturation
 	 */
 	public LightState(Color color, short brightness, short saturation) {
-		this.color = color;
-		this.brightness = brightness;
-		this.saturation = saturation;
+		this.setColor(color);
+		this.setBrightness(brightness);
+		this.setSaturation(saturation);
 	}
 
 	/**
