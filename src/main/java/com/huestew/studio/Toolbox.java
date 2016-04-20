@@ -3,7 +3,7 @@ package com.huestew.studio;
 import com.huestew.studio.tools.*;
 
 /**
- * A toolbox containing a list of tools.
+ * A toolbox containing a set of tools.
  * 
  * @author Daniel Illipe
  * @author Patrik Olson
@@ -11,39 +11,25 @@ import com.huestew.studio.tools.*;
  * @author Adam Andreasson
  */
 
-public class Toolbox {
-	public enum Tools {
-		POPULATE(new PopulateTool());
-		
-		private Tool tool;
-		
-		Tools(Tool tool) {
-			this.tool = tool;
-		}
-		
-		public void select() {
-			getInstance().setTool(tool);
-		}
-	}
-	
-	private static Toolbox instance;
+public enum Toolbox {
+	POPULATE(new PopulateTool());
 	
 	private Tool tool;
 	
-	private Toolbox() {}
-	
-	public Tool getTool(){
-		return tool;
-	}
-	
-	private void setTool(Tool tool) {
+	Toolbox(Tool tool) {
 		this.tool = tool;
 	}
 	
-	public static Toolbox getInstance() {
-		if (instance == null) {
-			instance = new Toolbox();
-		}
-		return instance;
+	/**
+	 * Select this tool.
+	 */
+	public void select() {
+		selected = tool;
+	}
+
+	private static Tool selected;
+
+	public static Tool getTool() {
+		return selected;
 	}
 }
