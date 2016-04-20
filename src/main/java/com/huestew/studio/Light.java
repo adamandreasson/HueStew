@@ -21,12 +21,20 @@ public class Light {
 		return id;
 	}
 
+	/**
+	 * Get the current state of this light
+	 * @return The state which the light is currently representing
+	 */
 	public LightState getState() {
 		return state;
 	}
 
+	/**
+	 * Change the state of this light
+	 * @param state
+	 */
 	public void setState(LightState state) {
-		this.state = state;
+		this.state = new LightState(state);
 	}
 
 	public LightController getController() {

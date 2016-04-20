@@ -6,7 +6,7 @@ import java.awt.Color;
  * A light state. Self-explanatory.
  * 
  * @author Adam
- *
+ * @author Marcus
  */
 public class LightState {
 
@@ -18,6 +18,14 @@ public class LightState {
 
 	/** the saturation of the keyframe **/
 	private short saturation;
+	
+	/**
+	 * Copies the values of a LightState
+	 * @param state values which is to be copied.
+	 */
+	public LightState(LightState state) {
+		this(state.getColor(),state.getBrightness(), state.getSaturation());
+	}
 
 	/**
 	 * Creates a new KeyFrame object with the specified values.
