@@ -29,7 +29,9 @@ public class TrackView {
 			// Pass to selected tool
 			// TODO get light track from y coordinate
 			// TODO get time from x coordinate
-			//Toolbox.getTool().doAction(event, getTrackFromY(event.getY(), getTimeFromX(event.getX()));
+			System.out.println(getTrackFromY(event.getY()));
+			System.out.println(getTimeFromX(event.getX()));
+			//Toolbox.getTool().doAction(event, getTrackFromY(event.getY()), getTimeFromX(event.getX()));
 		});
 	}
 
@@ -52,18 +54,30 @@ public class TrackView {
 		// Draw out 60 ticks on the timeline
 		for(int i=0;i<60;i++){
 			
+			int time = i*1000;
 			// If the timestamp is divisible by 10, we will draw a longer tick and display the time.
 			if(i%10 == 0){
-				gc.fillText(""+i, getXFromTime(i), 14);
-				GraphicsUtil.sharpLine(gc, getXFromTime(i), 12, getXFromTime(i), 20);
+				gc.fillText(""+i, getXFromTime(time), 14);
+				GraphicsUtil.sharpLine(gc, getXFromTime(time), 12, getXFromTime(time), 20);
 			}else{
-				GraphicsUtil.sharpLine(gc, getXFromTime(i), 16, getXFromTime(i), 20);
+				GraphicsUtil.sharpLine(gc, getXFromTime(time), 16, getXFromTime(time), 20);
 			}
 		}
 	}
 
+	private LightTrack getTrackFromY(double y){
+		double adjustedY = y-getTotalTrackPositionY();
+		int trackNumber = (int) Math.floor(adjustedY/getTrackHeight());
+		return HueStew.getInstance().getShow().getLightTracks().get(trackNumber);
+	}
+	
 	private double getXFromTime(int i) {
-		return Math.round(i* canvas.getWidth()/60)+0.5;
+		return (i* canvas.getWidth())/60000;
+	}
+	
+	private int getTimeFromX(double x){
+		double relativeX = x/canvas.getWidth();
+		return (int)(relativeX*60000.0);
 	}
 
 	private void drawLightTracks(GraphicsContext gc) {
