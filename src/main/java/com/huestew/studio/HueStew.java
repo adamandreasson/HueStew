@@ -16,9 +16,11 @@ public class HueStew {
 
 	private VirtualRoom virtualRoom;
 	private LightBank lightBank;
+	private Show show;
 
 	protected HueStew() {
 		this.lightBank = new LightBank();
+		this.show = new Show();
 
 		// TEST CODE PLS REMOVE LATER
 		for (int i = 0; i < 3; i++) {
@@ -49,5 +51,9 @@ public class HueStew {
 
 	public LightBank getLightBank() {
 		return lightBank;
+	}
+	
+	public Show getShow() {
+		return show;
 	}
 }
