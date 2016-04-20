@@ -27,7 +27,7 @@ public enum Toolbox {
 		selected = tool;
 	}
 
-	private static Tool selected;
+	private static Tool selected = POPULATE.tool;
 
 	public static Tool getTool() {
 		return selected;

@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.huestew.studio;
 
 import javafx.scene.canvas.Canvas;
@@ -29,9 +26,9 @@ public class TrackView {
 			// Pass to selected tool
 			// TODO get light track from y coordinate
 			// TODO get time from x coordinate
-			System.out.println(getTrackFromY(event.getY()));
+			System.out.println(HueStew.getInstance().getShow().getLightTracks().indexOf(getTrackFromY(event.getY())));
 			System.out.println(getTimeFromX(event.getX()));
-			//Toolbox.getTool().doAction(event, getTrackFromY(event.getY()), getTimeFromX(event.getX()));
+			Toolbox.getTool().doAction(event, getTrackFromY(event.getY()), getTimeFromX(event.getX()));
 		});
 	}
 
