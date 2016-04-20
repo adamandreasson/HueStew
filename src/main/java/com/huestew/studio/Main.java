@@ -11,11 +11,10 @@ public class Main extends Application {
 	public void start(Stage primaryStage) throws Exception {
 		MainViewController controller = (MainViewController) Util.loadFxml("main.fxml");
 		primaryStage.setTitle("HueStew Studio");
-		Scene scene = new Scene(controller.getView());
+		Scene scene = new Scene(controller.getView(),1280,720);
 		primaryStage.setScene(scene);
 
 		primaryStage.getIcons().add(new Image("icon_256x256.png"));
-		primaryStage.sizeToScene();
 		primaryStage.show();
 	}
 
