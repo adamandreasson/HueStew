@@ -2,6 +2,10 @@ package com.huestew.studio;
 
 import com.huestew.studio.tools.*;
 
+import javafx.scene.Cursor;
+import javafx.scene.ImageCursor;
+import javafx.scene.image.Image;
+
 /**
  * A toolbox containing a set of tools.
  * 
@@ -12,24 +16,32 @@ import com.huestew.studio.tools.*;
  */
 
 public enum Toolbox {
-	POPULATE(new PopulateTool());
-	
+	POPULATE(new PopulateTool(), new ImageCursor(new Image("icon_16x16.png"), 8, 8)),
+	MOVE(new MoveTool(), Cursor.MOVE),
+	REMOVE(new RemoveTool(), Cursor.CLOSED_HAND);
+
 	private Tool tool;
-	
-	Toolbox(Tool tool) {
+	private Cursor cursor;
+
+	Toolbox(Tool tool, Cursor cursor) {
 		this.tool = tool;
+		this.cursor = cursor;
 	}
-	
+
 	/**
 	 * Select this tool.
 	 */
 	public void select() {
-		selected = tool;
+		selected = this;
 	}
 
-	private static Tool selected = POPULATE.tool;
+	private static Toolbox selected = POPULATE;
 
 	public static Tool getTool() {
-		return selected;
+		return selected.tool;
+	}
+
+	public static Cursor getCursor() {
+		return selected.cursor;
 	}
 }
