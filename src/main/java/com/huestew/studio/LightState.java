@@ -38,7 +38,7 @@ public class LightState {
 	 * @return the color of the keyframe as a rgb value
 	 */
 	public Color getColor() {
-		return color;
+		return new Color(color.getRGB());
 	}
 
 	/**

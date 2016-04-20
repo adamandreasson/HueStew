@@ -16,8 +16,11 @@ public class VirtualLightController extends LightController {
 
 	@Override
 	public void setState(LightState state) {
-		System.out.println("light controller update kek");
 		bulb.setColor(state.getColor());
+	}
+	
+	public VirtualBulb getBulb(){
+		return bulb;
 	}
 
 }

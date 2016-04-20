@@ -6,6 +6,9 @@ import java.util.List;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.CycleMethod;
+import javafx.scene.paint.RadialGradient;
+import javafx.scene.paint.Stop;
 
 /**
  * A class for graphical representation of virtual bulbs. 
@@ -56,12 +59,13 @@ public class VirtualRoom {
 		GraphicsContext gc = canvas.getGraphicsContext2D();
 		gc.setFill(Color.BLACK);
 		gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
-		gc.setFill(Color.RED);
-		gc.fillOval(canvas.getWidth() / 2 - 15, canvas.getHeight() / 2 - 15, 30, 30);
 
 		for (VirtualBulb bulb : bulbs) {
-			gc.setFill(new Color(bulb.getColor().getRed(), bulb.getColor().getGreen(), bulb.getColor().getBlue(), 1));
-			gc.fillOval(canvas.getWidth() / 2 - 15, canvas.getHeight() / 2 - 15, 30, 30);
+		    gc.setFill(new RadialGradient(0, 0, 0.5, 0.5, 0.5, true,
+		               CycleMethod.REFLECT,
+		               new Stop(0.0, new Color(bulb.getColor().getRed()/255, bulb.getColor().getGreen()/255, bulb.getColor().getBlue()/255, 1)),
+		               new Stop(1.0, Color.BLACK)));
+			gc.fillOval(bulb.getX()*canvas.getWidth()+60, bulb.getY()*canvas.getHeight()-30, 60, 60);
 		}
 
 	}

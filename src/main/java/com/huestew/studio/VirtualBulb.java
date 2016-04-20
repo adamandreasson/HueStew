@@ -4,7 +4,6 @@
 package com.huestew.studio;
 
 import java.awt.Color;
-import java.awt.geom.Point2D;
 
 /**
  * @author Adam
@@ -13,15 +12,20 @@ import java.awt.geom.Point2D;
  */
 public class VirtualBulb {
 
-	private Point2D point;
+	private double x = 0;
+	private double y = 0;
 	private Color color;
 
-	public Point2D getPoint() {
-		return point;
+	public void setPosition(double d, double e) {
+		this.x = d;
+		this.y = e;
 	}
 
-	public void setPoint(Point2D point) {
-		this.point = point;
+	public double getX() {
+		return x;
+	}
+	public double getY() {
+		return y;
 	}
 
 	public Color getColor() {
