@@ -36,6 +36,10 @@ public class HueStew {
 			light.getController().setState(light.getState());
 
 			virtualRoom.addBulb(bulb);
+			
+			LightTrack track = new LightTrack();
+			track.addLight(light);
+			show.addLightTrack(track);
 		}
 	}
 

@@ -20,4 +20,9 @@ public class Show {
 		lightTracks.remove(track);
 	}
 
+	public List<LightTrack> getLightTracks(){
+		//TODO
+		return lightTracks;
+	}
+	
 }
