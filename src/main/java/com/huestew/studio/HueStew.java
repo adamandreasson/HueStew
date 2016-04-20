@@ -21,6 +21,7 @@ public class HueStew {
 	protected HueStew() {
 		this.lightBank = new LightBank();
 		this.show = new Show();
+		this.virtualRoom = new VirtualRoom();
 
 		// TEST CODE PLS REMOVE LATER
 		for (int i = 0; i < 3; i++) {
@@ -34,6 +35,7 @@ public class HueStew {
 			lightBank.getLights().add(light);
 			light.getController().setState(light.getState());
 
+			virtualRoom.addBulb(bulb);
 		}
 	}
 
@@ -50,12 +52,6 @@ public class HueStew {
 
 	public void setVirtualRoom(VirtualRoom virtualRoom) {
 		this.virtualRoom = virtualRoom;
-
-		for(Light light : lightBank.getLights()){
-			if(light.getController() instanceof VirtualLightController){
-				virtualRoom.addBulb(((VirtualLightController)light.getController()).getBulb());
-			}
-		}
 	}
 
 	public LightBank getLightBank() {

@@ -32,7 +32,7 @@ public class MainViewController extends ViewController {
 		TrackView trackView = new TrackView(trackCanvas);
 		trackView.redraw();
 
-		HueStew.getInstance().setVirtualRoom(new VirtualRoom(previewCanvas));
+		HueStew.getInstance().getVirtualRoom().setCanvas(previewCanvas);
 		HueStew.getInstance().getVirtualRoom().redraw();
 
 		previewCanvasPane.widthProperty().addListener((observableValue, oldSceneWidth, newSceneWidth) -> {

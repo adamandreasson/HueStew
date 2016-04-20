@@ -25,11 +25,8 @@ public class VirtualRoom {
 
 	/**
 	 * Create a new virtual room with an associated canvas
-	 * @param canvas
-	 * 				the canvas in which the virtual room will be drawn.
 	 */
-	public VirtualRoom(Canvas canvas) {
-		this.canvas = canvas;
+	public VirtualRoom() {
 		bulbs = new ArrayList<VirtualBulb>();
 	}
 	
@@ -56,6 +53,9 @@ public class VirtualRoom {
 	 */
 	public void redraw() {
 
+		if(canvas == null)
+			return;
+		
 		GraphicsContext gc = canvas.getGraphicsContext2D();
 		gc.setFill(Color.BLACK);
 		gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
