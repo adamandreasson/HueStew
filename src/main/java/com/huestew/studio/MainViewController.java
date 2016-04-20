@@ -2,6 +2,7 @@ package com.huestew.studio;
 
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.AnchorPane;
 
 /**
@@ -17,9 +18,21 @@ public class MainViewController extends ViewController{
 
     @FXML
     private AnchorPane previewCanvasPane;
+    
+    @FXML
+    private Canvas trackCanvas;
 
+    @FXML
+    private AnchorPane trackCanvasPane;
+    
+    @FXML
+    private ScrollPane trackScrollPane;
+    
 	@Override
 	protected void init(){
+		TrackView trackView = new TrackView(trackCanvas);
+		trackView.redraw();
+		
 		HueStew.getInstance().setVirtualRoom(new VirtualRoom(previewCanvas));
 		HueStew.getInstance().getVirtualRoom().redraw();
 		
@@ -32,7 +45,16 @@ public class MainViewController extends ViewController{
 			previewCanvas.setHeight((double) newSceneHeight);
 			HueStew.getInstance().getVirtualRoom().redraw();
 		});
-	
+
+		trackScrollPane.widthProperty().addListener((observableValue, oldSceneWidth, newSceneWidth) -> {
+			trackCanvas.setWidth((double) newSceneWidth-20);
+			trackView.redraw();
+		});
+		
+		trackScrollPane.heightProperty().addListener((observableValue, oldSceneHeight, newSceneHeight) -> {
+			trackCanvas.setHeight((double) newSceneHeight-25);
+			trackView.redraw();
+		});
 	}
 	
 
