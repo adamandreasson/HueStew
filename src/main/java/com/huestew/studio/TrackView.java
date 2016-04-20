@@ -1,5 +1,7 @@
 package com.huestew.studio;
 
+import java.util.Iterator;
+
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.MouseEvent;
@@ -31,6 +33,8 @@ public class TrackView {
 			if (track != null) {
 				// Pass event to current tool
 				Toolbox.getTool().doAction(event, track, getTimeFromX(event.getX()));
+				
+				redraw();
 			}
 		});
 	}
@@ -84,11 +88,27 @@ public class TrackView {
 	private void drawLightTracks(GraphicsContext gc) {
 		int i = 0;
 		for(LightTrack track : HueStew.getInstance().getShow().getLightTracks()){
+			drawKeyFrames(gc, track, getTrackPositionY(i));
+			
 			gc.setStroke(Color.GRAY);
 			gc.setLineWidth(1);
 			gc.strokeLine(0, getTrackPositionY(i), canvas.getWidth(), getTrackPositionY(i));
 			i++;
 		}
+	}
+
+	private void drawKeyFrames(GraphicsContext gc, LightTrack track, double startY) {
+		Iterator<KeyFrame> iterator = track.getKeyFrames();
+		while(iterator.hasNext()){
+			KeyFrame frame = iterator.next();
+			drawKeyFrame(gc, getXFromTime(frame.getTimestamp()), startY+20);
+		}
+	}
+
+	private void drawKeyFrame(GraphicsContext gc, double x, double y) {
+		gc.setFill(Color.YELLOW);
+        gc.fillPolygon(new double[]{x-5, x, x+5, x},
+                new double[]{y, y+5, y, y-5}, 4);
 	}
 
 	private double getTrackHeight() {

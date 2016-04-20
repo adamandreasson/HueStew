@@ -1,6 +1,7 @@
 package com.huestew.studio;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -31,6 +32,10 @@ public class LightTrack {
 		keyFrames.add(keyFrame);
 	}
 
+	public Iterator<KeyFrame> getKeyFrames() {
+		return keyFrames.iterator();
+	}
+	
 	/**
 	 * Remove a key frame from this light track.
 	 * 
