@@ -23,7 +23,7 @@ public class TrackView {
 	 */
 	public TrackView(Canvas canvas) {
 		this.canvas = canvas;
-		canvas.setCursor(Toolbox.POPULATE.getCursor());
+		canvas.setCursor(Toolbox.getCursor());
 		canvas.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
 			System.out.println("TrackView: MouseClicked, x=" + event.getX() + ", y=" + event.getY());
 			// Get light track and timestamp from mouse coordinates
