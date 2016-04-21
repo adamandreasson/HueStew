@@ -25,4 +25,10 @@ public class Show {
 		return lightTracks;
 	}
 	
+	public void updateCursor(int cursor) {
+		// Update cursor in each light track
+		for (LightTrack track : lightTracks) {
+			track.updateCursor(cursor);
+		}
+	}
 }

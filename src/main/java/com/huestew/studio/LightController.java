@@ -3,14 +3,14 @@
  */
 package com.huestew.studio;
 
+import java.beans.PropertyChangeListener;
+
 import com.huestew.studio.model.LightState;
 
 /**
  * @author Adam
  *
  */
-public abstract class LightController {
-
-	public abstract void setState(LightState state);
-	
+public interface LightController extends PropertyChangeListener {
+	void setState(LightState state);
 }

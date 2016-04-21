@@ -1,8 +1,8 @@
 package com.huestew.studio.model;
 
-import java.util.HashSet;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.Iterator;
-import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -13,7 +13,7 @@ import java.util.TreeSet;
  */
 public class LightTrack {
 	private SortedSet<KeyFrame> keyFrames = new TreeSet<>();
-	private Set<Light> lights = new HashSet<>();
+	private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
 	/**
 	 * Add a key frame to this light track.
@@ -35,7 +35,7 @@ public class LightTrack {
 	public Iterator<KeyFrame> getKeyFrames() {
 		return keyFrames.iterator();
 	}
-	
+
 	/**
 	 * Remove a key frame from this light track.
 	 * 
@@ -47,22 +47,43 @@ public class LightTrack {
 	}
 
 	/**
-	 * Connect a light to this light track.
+	 * Add a listener.
 	 * 
-	 * @param light
-	 *            The light that should be connected to this light track.
+	 * @param listener
+	 *            The listener that should be added to this light track.
 	 */
-	public void addLight(Light light) {
-		lights.add(light);
+	public void addListener(PropertyChangeListener listener) {
+		pcs.addPropertyChangeListener("latestKeyFrame", listener);
 	}
 
 	/**
-	 * Disconnect a light from this light track.
+	 * Remove a listener.
 	 * 
 	 * @param light
-	 *            The light that should be disconnected from this light track.
+	 *            The listener that should be removed from this light track.
 	 */
-	public void removeLight(Light light) {
-		lights.add(light);
+	public void removeListener(PropertyChangeListener listener) {
+		pcs.removePropertyChangeListener("latestKeyFrame", listener);
+	}
+
+	/**
+	 * Update the cursor.
+	 * 
+	 * @param timestamp
+	 *            The new timestamp of the cursor.
+	 */
+	public void updateCursor(int timestamp) {
+		// Find latest key frame
+		KeyFrame latestKeyFrame = null;
+		for (KeyFrame keyFrame : keyFrames) {
+			if (keyFrame.getTimestamp() <= timestamp) {
+				latestKeyFrame = keyFrame;
+			} else {
+				break;
+			}
+		}
+
+		// Notify listeners
+		pcs.firePropertyChange("latestKeyFrame", null, latestKeyFrame);
 	}
 }

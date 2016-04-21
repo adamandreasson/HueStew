@@ -5,7 +5,6 @@ package com.huestew.studio;
 
 import java.awt.Color;
 
-import com.huestew.studio.model.Light;
 import com.huestew.studio.model.LightBank;
 import com.huestew.studio.model.LightState;
 import com.huestew.studio.model.LightTrack;
@@ -23,6 +22,7 @@ public class HueStew {
 	private VirtualRoom virtualRoom;
 	private LightBank lightBank;
 	private Show show;
+	private int cursor;
 
 	protected HueStew() {
 		this.lightBank = new LightBank();
@@ -34,17 +34,15 @@ public class HueStew {
 			VirtualBulb bulb = new VirtualBulb();
 			bulb.setPosition(i*(1.0/3), 1.0/2);
 
-			Light light = new Light();
+			LightController light = new VirtualLightController(bulb);
 			LightState state = new LightState(Color.WHITE, (short) 255, (short) 255);
 			light.setState(state);
-			light.setController(new VirtualLightController(bulb));
 			lightBank.getLights().add(light);
-			light.getController().setState(light.getState());
 
 			virtualRoom.addBulb(bulb);
 			
 			LightTrack track = new LightTrack();
-			track.addLight(light);
+			track.addListener(light);
 			show.addLightTrack(track);
 		}
 	}
@@ -70,5 +68,20 @@ public class HueStew {
 
 	public Show getShow() {
 		return show;
+	}
+	
+	public int getCursor() {
+		return cursor;
+	}
+	
+	public void setCursor(int cursor) {
+		if (cursor < 0) {
+			throw new IllegalArgumentException("Cursor must be positive.");
+		}
+		
+		this.cursor = cursor;
+		
+		// Update cursor in show
+		show.updateCursor(cursor);
 	}
 }

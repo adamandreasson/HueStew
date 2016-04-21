@@ -31,7 +31,7 @@ public class MainViewController extends ViewController {
 	private ScrollPane trackScrollPane;
 
 	@Override
-	protected void init() {
+	public void init() {
 		TrackView trackView = new TrackView(trackCanvas);
 		trackView.redraw();
 

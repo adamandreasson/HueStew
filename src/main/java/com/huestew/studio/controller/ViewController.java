@@ -21,12 +21,12 @@ public abstract class ViewController {
 	 * @param view
 	 *            The view associated with this controller.
 	 */
-	protected void setView(Parent view) {
+	public void setView(Parent view) {
 		this.view = view;
 	}
 
 	/**
 	 * Invoked after the view has been set.
 	 */
-	protected void init() {}
+	public void init() {}
 }

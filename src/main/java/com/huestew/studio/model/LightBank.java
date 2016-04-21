@@ -6,6 +6,8 @@ package com.huestew.studio.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.huestew.studio.LightController;
+
 /**
  * A bank of lights.
  * 
@@ -13,13 +15,9 @@ import java.util.List;
  */
 public class LightBank {
 
-	private List<Light> lights;
+	private List<LightController> lights = new ArrayList<>();
 
-	public LightBank() {
-		this.lights = new ArrayList<Light>();
-	}
-
-	public List<Light> getLights() {
+	public List<LightController> getLights() {
 		return lights;
 	}
 
