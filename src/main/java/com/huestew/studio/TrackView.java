@@ -1,12 +1,6 @@
-package com.huestew.studio.view;
+package com.huestew.studio;
 
 import java.util.Iterator;
-
-import com.huestew.studio.HueStew;
-import com.huestew.studio.Toolbox;
-import com.huestew.studio.model.KeyFrame;
-import com.huestew.studio.model.LightTrack;
-import com.huestew.studio.util.GraphicsUtil;
 
 import javafx.scene.Cursor;
 import javafx.scene.canvas.Canvas;

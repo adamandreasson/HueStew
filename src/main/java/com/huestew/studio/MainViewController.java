@@ -1,7 +1,4 @@
-package com.huestew.studio.controller;
-
-import com.huestew.studio.HueStew;
-import com.huestew.studio.view.TrackView;
+package com.huestew.studio;
 
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
@@ -31,7 +28,7 @@ public class MainViewController extends ViewController {
 	private ScrollPane trackScrollPane;
 
 	@Override
-	public void init() {
+	protected void init() {
 		TrackView trackView = new TrackView(trackCanvas);
 		trackView.redraw();
 

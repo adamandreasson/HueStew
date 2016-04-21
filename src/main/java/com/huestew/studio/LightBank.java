@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.huestew.studio.model;
+package com.huestew.studio;
 
 import java.util.ArrayList;
 import java.util.List;

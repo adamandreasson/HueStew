@@ -1,4 +1,4 @@
-package com.huestew.studio.model;
+package com.huestew.studio;
 
 /**
  * The class for a keyframe which is an event in a lighttrack

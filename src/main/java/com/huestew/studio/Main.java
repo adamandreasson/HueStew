@@ -1,8 +1,5 @@
 package com.huestew.studio;
 
-import com.huestew.studio.controller.MainViewController;
-import com.huestew.studio.util.Util;
-
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;

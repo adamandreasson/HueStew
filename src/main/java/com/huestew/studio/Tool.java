@@ -1,6 +1,4 @@
-package com.huestew.studio.controller;
-
-import com.huestew.studio.model.LightTrack;
+package com.huestew.studio;
 
 import javafx.event.Event;
 

@@ -1,4 +1,4 @@
-package com.huestew.studio.model;
+package com.huestew.studio;
 
 import java.util.HashSet;
 import java.util.Iterator;

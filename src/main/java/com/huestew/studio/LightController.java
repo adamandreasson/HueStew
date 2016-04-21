@@ -1,9 +1,7 @@
 /**
  * 
  */
-package com.huestew.studio.controller;
-
-import com.huestew.studio.model.LightState;
+package com.huestew.studio;
 
 /**
  * @author Adam

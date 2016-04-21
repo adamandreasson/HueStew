@@ -1,7 +1,7 @@
 package com.huestew.studio.tools;
 
-import com.huestew.studio.controller.Tool;
-import com.huestew.studio.model.LightTrack;
+import com.huestew.studio.LightTrack;
+import com.huestew.studio.Tool;
 
 import javafx.event.Event;
 

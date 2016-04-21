@@ -1,6 +1,4 @@
-package com.huestew.studio.model;
-
-import com.huestew.studio.controller.LightController;
+package com.huestew.studio;
 
 /**
  * A representation of a generic light that can receive commands in the form of

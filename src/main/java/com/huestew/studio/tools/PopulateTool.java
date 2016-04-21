@@ -2,10 +2,10 @@ package com.huestew.studio.tools;
 
 import java.awt.Color;
 
-import com.huestew.studio.controller.Tool;
-import com.huestew.studio.model.KeyFrame;
-import com.huestew.studio.model.LightState;
-import com.huestew.studio.model.LightTrack;
+import com.huestew.studio.KeyFrame;
+import com.huestew.studio.LightState;
+import com.huestew.studio.LightTrack;
+import com.huestew.studio.Tool;
 
 import javafx.event.Event;
 
