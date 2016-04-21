@@ -26,20 +26,6 @@ public abstract class ViewController {
 	}
 
 	/**
-	 * Show the view associated with this controller.
-	 */
-	public void show() {
-		view.toFront();
-	}
-
-	/**
-	 * Hide the view associated with this controller.
-	 */
-	public void hide() {
-		view.toBack();
-	}
-
-	/**
 	 * Invoked after the view has been set.
 	 */
 	protected void init() {}
