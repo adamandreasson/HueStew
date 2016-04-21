@@ -1,4 +1,7 @@
-package com.huestew.studio;
+package com.huestew.studio.controller;
+
+import com.huestew.studio.HueStew;
+import com.huestew.studio.view.TrackView;
 
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;

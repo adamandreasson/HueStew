@@ -1,5 +1,6 @@
 package com.huestew.studio;
 
+import com.huestew.studio.controller.Tool;
 import com.huestew.studio.tools.*;
 
 import javafx.scene.Cursor;

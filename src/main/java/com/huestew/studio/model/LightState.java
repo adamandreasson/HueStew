@@ -1,4 +1,4 @@
-package com.huestew.studio;
+package com.huestew.studio.model;
 
 import java.awt.Color;
 

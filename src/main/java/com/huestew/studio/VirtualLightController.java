@@ -1,5 +1,7 @@
 package com.huestew.studio;
 
+import com.huestew.studio.model.LightState;
+
 /**
  * Controller for a virtual light
  * 

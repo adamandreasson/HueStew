@@ -1,4 +1,4 @@
-package com.huestew.studio;
+package com.huestew.studio.controller;
 
 import javafx.scene.Parent;
 

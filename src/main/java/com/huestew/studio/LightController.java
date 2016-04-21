@@ -3,6 +3,8 @@
  */
 package com.huestew.studio;
 
+import com.huestew.studio.model.LightState;
+
 /**
  * @author Adam
  *
