@@ -1,6 +1,9 @@
-package com.huestew.studio;
+package com.huestew.studio.util;
 
 import java.io.IOException;
+import com.huestew.studio.controller.*;
+
+import com.huestew.studio.controller.ViewController;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;

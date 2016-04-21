@@ -1,4 +1,4 @@
-package com.huestew.studio;
+package com.huestew.studio.controller;
 
 import javafx.scene.Parent;
 
@@ -21,7 +21,7 @@ public abstract class ViewController {
 	 * @param view
 	 *            The view associated with this controller.
 	 */
-	protected void setView(Parent view) {
+	public void setView(Parent view) {
 		this.view = view;
 	}
 
@@ -42,5 +42,5 @@ public abstract class ViewController {
 	/**
 	 * Invoked after the view has been set.
 	 */
-	protected void init() {}
+	public void init() {}
 }

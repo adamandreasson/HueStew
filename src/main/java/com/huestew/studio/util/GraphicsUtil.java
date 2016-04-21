@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.huestew.studio;
+package com.huestew.studio.util;
 
 import javafx.scene.canvas.GraphicsContext;
 

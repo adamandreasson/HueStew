@@ -5,6 +5,12 @@ package com.huestew.studio;
 
 import java.awt.Color;
 
+import com.huestew.studio.model.Light;
+import com.huestew.studio.model.LightBank;
+import com.huestew.studio.model.LightState;
+import com.huestew.studio.model.LightTrack;
+import com.huestew.studio.model.Show;
+
 /**
  * Main class for the HueStew Studio model
  * 
