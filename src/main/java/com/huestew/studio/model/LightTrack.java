@@ -12,7 +12,7 @@ import java.util.TreeSet;
  * @author Patrik Olson
  */
 public class LightTrack {
-	private SortedSet<KeyFrame> keyFrames = new TreeSet<>();
+	private TreeSet<KeyFrame> keyFrames = new TreeSet<>();
 	private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
 	/**
@@ -74,15 +74,9 @@ public class LightTrack {
 	 */
 	public void updateCursor(int timestamp) {
 		// Find latest key frame
-		KeyFrame latestKeyFrame = null;
-		for (KeyFrame keyFrame : keyFrames) {
-			if (keyFrame.getTimestamp() <= timestamp) {
-				latestKeyFrame = keyFrame;
-			} else {
-				break;
-			}
-		}
+		KeyFrame latestKeyFrame = keyFrames.floor(new KeyFrame(timestamp, null));
 
+		// TODO should null key frames be allowed?
 		// Notify listeners
 		pcs.firePropertyChange("latestKeyFrame", null, latestKeyFrame);
 	}
