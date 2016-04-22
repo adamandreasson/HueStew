@@ -9,14 +9,18 @@ import java.util.List;
 import com.huestew.studio.LightController;
 
 /**
- * A bank of lights.
+ * A collection of currently available lights.
  * 
  * @author Adam Andreasson
  */
 public class LightBank {
 
+	/** An arraylist of lights currently being available to be used **/
 	private List<LightController> lights = new ArrayList<>();
 
+	/**
+	 * @return a list of currently available lights
+	 */
 	public List<LightController> getLights() {
 		return lights;
 	}

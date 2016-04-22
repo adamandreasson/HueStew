@@ -32,6 +32,10 @@ public class LightTrack {
 		keyFrames.add(keyFrame);
 	}
 
+	/**
+	 * 
+	 * @return the iterator of the list of keyframes. 
+	 */
 	public Iterator<KeyFrame> getKeyFrames() {
 		return keyFrames.iterator();
 	}

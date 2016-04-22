@@ -39,10 +39,20 @@ public enum Toolbox {
 
 	private static Toolbox selected = POPULATE;
 
+	/**
+	 * Returns the currently selected tool
+	 * @return 
+	 * 			the currently selected tool
+	 */
 	public static Tool getTool() {
 		return selected.tool;
 	}
 
+	/**
+	 * Returns the current cursor based on the tool being used 
+	 * @return
+	 * 			the cursor corresponding to the currently selected tool
+	 */
 	public static Cursor getCursor() {
 		return selected.cursor;
 	}
