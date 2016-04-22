@@ -4,6 +4,8 @@ import java.beans.PropertyChangeEvent;
 
 import com.huestew.studio.model.KeyFrame;
 import com.huestew.studio.model.LightState;
+import com.huestew.studio.model.VirtualBulb;
+import com.huestew.studio.view.Light;
 
 /**
  * Controller for a virtual light
@@ -11,7 +13,7 @@ import com.huestew.studio.model.LightState;
  * @author Adam
  *
  */
-public class VirtualLightController implements LightController {
+public class VirtualLightController implements Light {
 
 	private VirtualBulb bulb;
 

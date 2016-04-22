@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.huestew.studio;
+package com.huestew.studio.view;
 
 import java.beans.PropertyChangeListener;
 
@@ -12,7 +12,7 @@ import com.huestew.studio.model.LightState;
  * @author Adam
  *
  */
-public interface LightController extends PropertyChangeListener {
+public interface Light extends PropertyChangeListener {
 	
 	/**
 	 * Send a command to a specified light to change it's current state

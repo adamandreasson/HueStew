@@ -9,6 +9,9 @@ import com.huestew.studio.model.LightBank;
 import com.huestew.studio.model.LightState;
 import com.huestew.studio.model.LightTrack;
 import com.huestew.studio.model.Show;
+import com.huestew.studio.model.VirtualBulb;
+import com.huestew.studio.view.Light;
+import com.huestew.studio.view.VirtualRoom;
 
 /**
  * Main class for the HueStew Studio model
@@ -34,7 +37,7 @@ public class HueStew {
 			VirtualBulb bulb = new VirtualBulb();
 			bulb.setPosition(i*(1.0/3), 1.0/2);
 
-			LightController light = new VirtualLightController(bulb);
+			Light light = new VirtualLightController(bulb);
 			LightState state = new LightState(Color.WHITE, (short) 255, (short) 255);
 			light.setState(state);
 			lightBank.getLights().add(light);

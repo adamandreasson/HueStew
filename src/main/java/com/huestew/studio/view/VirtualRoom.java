@@ -1,7 +1,9 @@
-package com.huestew.studio;
+package com.huestew.studio.view;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.huestew.studio.model.VirtualBulb;
 
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
