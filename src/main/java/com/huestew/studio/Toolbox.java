@@ -19,9 +19,10 @@ import javafx.scene.image.Image;
 public enum Toolbox {
 	POPULATE(new PopulateTool(), new ImageCursor(new Image("cursor_pencil_add.png"), 4, 0)),
 	MOVE(new MoveTool(), Cursor.MOVE),
-	REMOVE(new RemoveTool(), Cursor.CLOSED_HAND);
+	REMOVE(new RemoveTool(), Cursor.CROSSHAIR);
 
 	private Tool tool;
+	
 	private Cursor cursor;
 
 	Toolbox(Tool tool, Cursor cursor) {

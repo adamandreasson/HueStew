@@ -1,10 +1,12 @@
 package com.huestew.studio.controller;
 
 import com.huestew.studio.HueStew;
+import com.huestew.studio.Toolbox;
 import com.huestew.studio.view.TrackView;
 
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.AnchorPane;
 
@@ -29,6 +31,12 @@ public class MainViewController extends ViewController {
 
 	@FXML
 	private ScrollPane trackScrollPane;
+	
+	@FXML
+	private Button removeToolButton;
+	
+	@FXML
+	private Button populateToolButton;
 
 	@Override
 	public void init() {
@@ -58,5 +66,17 @@ public class MainViewController extends ViewController {
 			trackView.redraw();
 		});
 	}
+	
+	@FXML
+	private void removeToolPressed(){
+		Toolbox.REMOVE.select();
+	}
+	
+	@FXML
+	private void populateToolPressed(){
+		Toolbox.POPULATE.select();
+	}
+	
+	
 
 }

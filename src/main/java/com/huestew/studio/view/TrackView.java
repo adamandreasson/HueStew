@@ -38,10 +38,12 @@ public class TrackView {
 			double inverseTrackY = getTrackHeight() - getRelativeTrackY(track, event.getY());
 			double normalizedY = inverseTrackY / getTrackHeight();
 			System.out.println(normalizedY);
-
+				
+			
+			
 			if (track != null) {
 				// Pass event to current tool
-				Toolbox.getTool().doAction(event, track, getTimeFromX(event.getX()), normalizedY);
+				Toolbox.getTool().doAction(event, track, getTimeFromX(event.getX()) , normalizedY);
 
 				redraw();
 			}
