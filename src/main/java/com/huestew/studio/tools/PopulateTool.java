@@ -11,7 +11,7 @@ import javafx.event.Event;
 
 public class PopulateTool implements Tool {
 	@Override
-	public void doAction(Event event, LightTrack lightTrack, int timestamp, double normalizedY) {
+	public void doAction(Event event, LightTrack lightTrack, KeyFrame keyFrame, int timestamp, double normalizedY) {
 		lightTrack.addKeyFrame(new KeyFrame(timestamp, new LightState(Color.green, (short) (255*normalizedY), (short) 0)));
 	}
 }

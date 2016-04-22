@@ -2,8 +2,6 @@ package com.huestew.studio.model;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.util.Iterator;
-import java.util.SortedSet;
 import java.util.TreeSet;
 
 /**
@@ -33,11 +31,10 @@ public class LightTrack {
 	}
 
 	/**
-	 * 
-	 * @return the iterator of the list of keyframes. 
+	 * @return A copy of the list of key frames in this light track.
 	 */
-	public Iterator<KeyFrame> getKeyFrames() {
-		return keyFrames.iterator();
+	public TreeSet<KeyFrame> getKeyFrames() {
+		return new TreeSet<KeyFrame>(keyFrames);
 	}
 
 	/**
