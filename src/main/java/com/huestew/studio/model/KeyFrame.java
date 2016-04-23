@@ -20,7 +20,7 @@ public class KeyFrame implements Comparable<KeyFrame> {
 	 * @param lightState
 	 */
 	public KeyFrame(int timestamp, LightState state) {
-		this.timestamp = timestamp;
+		this.setTimestamp(timestamp);
 		this.setState(state);
 	}
 
