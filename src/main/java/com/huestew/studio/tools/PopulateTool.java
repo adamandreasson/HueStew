@@ -8,10 +8,13 @@ import com.huestew.studio.model.LightState;
 import com.huestew.studio.model.LightTrack;
 
 import javafx.event.Event;
+import javafx.scene.input.MouseEvent;
 
 public class PopulateTool implements Tool {
 	@Override
 	public void doAction(Event event, LightTrack lightTrack, KeyFrame keyFrame, int timestamp, double normalizedY) {
-		lightTrack.addKeyFrame(new KeyFrame(timestamp, new LightState(Color.green, (short) (255*normalizedY), (short) 0)));
+		if (event.getEventType() == MouseEvent.MOUSE_CLICKED) {
+			lightTrack.addKeyFrame(new KeyFrame(timestamp, new LightState(Color.green, (short) (255*normalizedY), (short) 0)));
+		}
 	}
 }

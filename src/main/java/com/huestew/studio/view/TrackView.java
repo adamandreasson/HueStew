@@ -34,31 +34,14 @@ public class TrackView {
 		this.canvas = canvas;
 
 		canvas.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-			System.out.println("TrackView: MouseClicked, x=" + event.getX() + ", y=" + event.getY());
-			// Get light track and timestamp from mouse coordinates
-			LightTrack track = getTrackFromY(event.getY());
-			if (track == null) return;
-			
-			// Get normalized y coordinate
-			double inverseTrackY = getTrackHeight() - getRelativeTrackY(track, event.getY());
-			double normalizedY = inverseTrackY / getTrackHeight();
-			System.out.println(normalizedY);
-			
-			// Get clicked key frame
-			KeyFrame keyFrame = getKeyFrame(track, event.getX(), getRelativeTrackY(track, event.getY()));
-			
-			// Pass event to current tool
-			Toolbox.getTool().doAction(event, track, keyFrame, getTimeFromX(event.getX()) , normalizedY);
-
-			redraw();
+			sendMouseEventToTool(event);
 		});
-
+		
 		canvas.addEventHandler(MouseEvent.MOUSE_MOVED, event -> {
-			// System.out.println("TrackView: MouseMoved, x=" + event.getX() +
-			// ", y=" + event.getY());
-			// Get light track and timestamp from mouse coordinates
+			// Get light track from mouse coordinates
 			LightTrack track = getTrackFromY(event.getY());
 
+			// Set cursor
 			if (track == null) {
 				canvas.setCursor(Cursor.OPEN_HAND);
 			} else {
@@ -66,6 +49,25 @@ public class TrackView {
 			}
 		});
 	}
+	
+	private void sendMouseEventToTool(MouseEvent event) {
+		// Get light track and timestamp from mouse coordinates
+		LightTrack track = getTrackFromY(event.getY());
+		if (track == null) return;
+		
+		// Get normalized y coordinate
+		double inverseTrackY = getTrackHeight() - getRelativeTrackY(track, event.getY());
+		double normalizedY = inverseTrackY / getTrackHeight();
+		
+		// Get clicked key frame
+		KeyFrame keyFrame = getKeyFrame(track, event.getX(), getRelativeTrackY(track, event.getY()));
+		
+		// Pass event to current tool
+		Toolbox.getTool().doAction(event, track, keyFrame, getTimeFromX(event.getX()) , normalizedY);
+		
+		// Redraw canvas
+		redraw();
+}
 
 	public void redraw() {
 		GraphicsContext gc = canvas.getGraphicsContext2D();
