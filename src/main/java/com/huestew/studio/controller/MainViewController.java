@@ -77,6 +77,8 @@ public class MainViewController extends ViewController {
 		Toolbox.POPULATE.select();
 	}
 	
-	
-
+	@FXML
+	private void moveToolPressed() {
+		Toolbox.MOVE.select();
+	}
 }

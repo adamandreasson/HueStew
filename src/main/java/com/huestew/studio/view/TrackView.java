@@ -33,9 +33,9 @@ public class TrackView {
 	public TrackView(Canvas canvas) {
 		this.canvas = canvas;
 
-		canvas.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-			sendMouseEventToTool(event);
-		});
+		canvas.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> sendMouseEventToTool(event));
+		canvas.addEventHandler(MouseEvent.MOUSE_PRESSED, event -> sendMouseEventToTool(event));
+		canvas.addEventHandler(MouseEvent.MOUSE_DRAGGED, event -> sendMouseEventToTool(event));
 		
 		canvas.addEventHandler(MouseEvent.MOUSE_MOVED, event -> {
 			// Get light track from mouse coordinates
@@ -149,7 +149,7 @@ public class TrackView {
 
 	private int getTimeFromX(double x) {
 		double relativeX = x / canvas.getWidth();
-		return (int) (relativeX * 60000.0);
+		return Math.max(0, (int) (relativeX * 60000.0));
 	}
 
 	private void drawLightTracks(GraphicsContext gc) {
@@ -195,7 +195,6 @@ public class TrackView {
 	}
 
 	private double getTotalTrackPositionY() {
-		// TODO Auto-generated method stub
 		return 20;
 	}
 

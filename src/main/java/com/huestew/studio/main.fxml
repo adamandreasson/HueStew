@@ -28,6 +28,7 @@
                                  <children>
                                     <Button fx:id="removeToolButton" layoutX="49.0" layoutY="58.0" mnemonicParsing="false" onAction="#removeToolPressed" text="remove" />
                                     <Button fx:id="populateToolButton" layoutX="144.0" layoutY="58.0" mnemonicParsing="false" onAction="#populateToolPressed" text="populate" />
+                                    <Button fx:id="moveToolButton" layoutX="246.0" layoutY="58.0" mnemonicParsing="false" onAction="#moveToolPressed" text="move" />
                                  </children></AnchorPane>
                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                                  <children>
