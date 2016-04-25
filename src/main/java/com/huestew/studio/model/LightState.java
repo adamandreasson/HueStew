@@ -24,7 +24,7 @@ public class LightState {
 	 * @param state values which is to be copied.
 	 */
 	public LightState(LightState state) {
-		this(state.getColor(),state.getBrightness(), state.getSaturation());
+		this(state.getColor(), state.getBrightness(), state.getSaturation());
 	}
 
 	/**
@@ -34,7 +34,7 @@ public class LightState {
 	 * @param brightness
 	 * @param saturation
 	 */
-	public LightState(Color color, short brightness, short saturation) {
+	public LightState(Color color, int brightness, int saturation) {
 		this.setColor(color);
 		this.setBrightness(brightness);
 		this.setSaturation(saturation);
@@ -75,9 +75,9 @@ public class LightState {
 	 * @param brightness
 	 *            must be greater than -1 and less than 256.
 	 */
-	public void setBrightness(short brightness) {
+	public void setBrightness(int brightness) {
 		if (brightness > -1 && brightness < 256) {
-			this.brightness = brightness;
+			this.brightness = (short) brightness;
 		} else {
 			throw new IllegalArgumentException("Brightness must be greater than -1 and less than 256");
 		}
@@ -98,9 +98,9 @@ public class LightState {
 	 * @param saturation
 	 *            must be greater than -1 and less than 256.
 	 */
-	public void setSaturation(short saturation) {
+	public void setSaturation(int saturation) {
 		if (saturation > -1 && saturation < 256) {
-			this.saturation = saturation;
+			this.saturation = (short) saturation;
 		} else {
 			throw new IllegalArgumentException("Saturation must be greater than -1 and less than 256");
 		}

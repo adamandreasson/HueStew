@@ -39,7 +39,7 @@ public class HueStew {
 			bulb.setPosition(i*(1.0/3), 1.0/2);
 
 			Light light = new VirtualLight(bulb);
-			LightState state = new LightState(Color.WHITE, (short) 255, (short) 255);
+			LightState state = new LightState(Color.WHITE, 255, 255);
 			light.setState(state);
 			lightBank.getLights().add(light);
 
