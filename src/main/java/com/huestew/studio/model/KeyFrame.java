@@ -73,4 +73,32 @@ public class KeyFrame implements Comparable<KeyFrame> {
 		return this.timestamp - o.getTimestamp();
 	}
 
+	@Override
+	/**
+	 * @super
+	 */
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + timestamp;
+		return result;
+	}
+
+	@Override
+	/**
+	 * Compares to keyframes based on their timestamp.
+	 */
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (!(obj instanceof KeyFrame))
+			return false;
+		KeyFrame other = (KeyFrame) obj;
+		if (timestamp != other.timestamp)
+			return false;
+		return true;
+	}
+
 }
