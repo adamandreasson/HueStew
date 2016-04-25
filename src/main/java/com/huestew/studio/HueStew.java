@@ -28,7 +28,7 @@ public class HueStew {
 	private Show show;
 	private int cursor;
 
-	protected HueStew() {
+	private HueStew() {
 		this.lightBank = new LightBank();
 		this.show = new Show();
 		this.virtualRoom = new VirtualRoom();
