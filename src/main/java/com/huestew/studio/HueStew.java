@@ -27,11 +27,13 @@ public class HueStew {
 	private LightBank lightBank;
 	private Show show;
 	private int cursor;
+	private int tickDuration;
 
 	private HueStew() {
 		this.lightBank = new LightBank();
 		this.show = new Show();
 		this.virtualRoom = new VirtualRoom();
+		this.tickDuration = 100;
 
 		// TEST CODE PLS REMOVE LATER
 		for (int i = 0; i < 3; i++) {
@@ -87,5 +89,17 @@ public class HueStew {
 		
 		// Update cursor in show
 		show.updateCursor(cursor);
+	}
+	
+	public int getTickDuration() {
+		return tickDuration;
+	}
+	
+	public void setTickDuration(int tickDuration) {
+		if (tickDuration <= 0) {
+			throw new IllegalArgumentException("Tick duration must be greater than zero.");
+		}
+		
+		this.tickDuration = tickDuration;
 	}
 }
