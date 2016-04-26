@@ -1,5 +1,7 @@
 package com.huestew.studio;
 
+import com.huestew.studio.model.Show;
+
 /**
  * A class for playing a lightshow.
  * @author Marcus
@@ -9,6 +11,9 @@ public class Player {
 
 	/** used to determine whether or not the player is currently playing a show **/
 	private boolean playing;
+	
+	/** the show which the player will be playing **/
+	private Show show;
 	
 	/** starts playing the show **/
 	public void play() {
