@@ -36,7 +36,7 @@ public class TrackView {
 		canvas.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> sendMouseEventToTool(event));
 		canvas.addEventHandler(MouseEvent.MOUSE_PRESSED, event -> sendMouseEventToTool(event));
 		canvas.addEventHandler(MouseEvent.MOUSE_DRAGGED, event -> sendMouseEventToTool(event));
-		
+
 		canvas.addEventHandler(MouseEvent.MOUSE_MOVED, event -> {
 			// Get light track from mouse coordinates
 			LightTrack track = getTrackFromY(event.getY());
@@ -49,25 +49,26 @@ public class TrackView {
 			}
 		});
 	}
-	
+
 	private void sendMouseEventToTool(MouseEvent event) {
 		// Get light track and timestamp from mouse coordinates
 		LightTrack track = getTrackFromY(event.getY());
-		if (track == null) return;
-		
+		if (track == null)
+			return;
+
 		// Get normalized y coordinate
 		double inverseTrackY = getTrackHeight() - getRelativeTrackY(track, event.getY());
 		double normalizedY = inverseTrackY / getTrackHeight();
-		
+
 		// Get clicked key frame
 		KeyFrame keyFrame = getKeyFrame(track, event.getX(), getRelativeTrackY(track, event.getY()));
-		
+
 		// Pass event to current tool
-		Toolbox.getTool().doAction(event, track, keyFrame, getTimeFromX(event.getX()) , normalizedY);
-		
+		Toolbox.getTool().doAction(event, track, keyFrame, getTimeFromX(event.getX()), normalizedY);
+
 		// Redraw canvas
 		redraw();
-}
+	}
 
 	public void redraw() {
 		GraphicsContext gc = canvas.getGraphicsContext2D();
@@ -76,6 +77,7 @@ public class TrackView {
 
 		drawTimeline(gc);
 		drawLightTracks(gc);
+		drawCursor(gc);
 	}
 
 	private void drawTimeline(GraphicsContext gc) {
@@ -96,60 +98,6 @@ public class TrackView {
 			}
 			GraphicsUtil.sharpLine(gc, getXFromTime(time), i % 5 == 0 ? 12 : 16, getXFromTime(time), 20);
 		}
-	}
-
-	private LightTrack getTrackFromY(double y) {
-		double adjustedY = y - getTotalTrackPositionY();
-		int trackNumber = (int) Math.floor(adjustedY / getTrackHeight());
-		if (trackNumber >= 0 && trackNumber < HueStew.getInstance().getShow().getLightTracks().size()) {
-			return HueStew.getInstance().getShow().getLightTracks().get(trackNumber);
-		}
-		return null;
-	}
-
-	private KeyFrame getKeyFrame(LightTrack track, double x, double y) {
-		TreeSet<KeyFrame> keyFrames = track.getKeyFrames();
-		KeyFrame target = new KeyFrame(getTimeFromX(x), null);
-		
-		KeyFrame left = keyFrames.floor(target);
-		KeyFrame right = keyFrames.ceiling(target);
-		
-		if (right != null && isInside(right, x, y)) {
-			return right;
-		} else if (left != null && isInside(left, x, y)) {
-			return left;
-		} else {
-			return null;
-		}
-	}
-	
-	private boolean isInside(KeyFrame keyFrame, double x, double y) {
-		double kX = getXFromTime(keyFrame.getTimestamp());
-		
-		if (kX < x - KEY_FRAME_SIZE || kX > x + KEY_FRAME_SIZE) {
-			return false;
-		}
-		
-		double kY = getTrackHeight() - getRelativeYFromBrightness(keyFrame.getState().getBrightness());
-		
-		System.out.println("kY: " + kY + ", y: " + y);
-		
-		return kY >= y - KEY_FRAME_SIZE && kY <= y + KEY_FRAME_SIZE;
-	}
-
-	private double getRelativeTrackY(LightTrack track, double y) {
-		int trackNumber = HueStew.getInstance().getShow().getLightTracks().indexOf(track);
-		double trackStartY = getTrackPositionY(trackNumber);
-		return (y - trackStartY);
-	}
-
-	private double getXFromTime(int i) {
-		return (i * canvas.getWidth()) / 60000;
-	}
-
-	private int getTimeFromX(double x) {
-		double relativeX = x / canvas.getWidth();
-		return Math.max(0, (int) (relativeX * 60000.0));
 	}
 
 	private void drawLightTracks(GraphicsContext gc) {
@@ -173,13 +121,76 @@ public class TrackView {
 		}
 	}
 
-	private double getRelativeYFromBrightness(int brightness) {
-		return (brightness / 255.0) * getTrackHeight();
+	private void drawCursor(GraphicsContext gc) {
+		double x = getXFromTime(HueStew.getInstance().getCursor());
+		
+		gc.setStroke(Color.GRAY);
+		gc.setLineWidth(1);
+		GraphicsUtil.sharpLine(gc, x, 0, x, canvas.getHeight());
 	}
 
 	private void drawKeyFrame(GraphicsContext gc, double x, double y) {
 		gc.setFill(Color.YELLOW);
-		gc.fillPolygon(new double[] { x - KEY_FRAME_SIZE, x, x + KEY_FRAME_SIZE, x }, new double[] { y, y + KEY_FRAME_SIZE, y, y - KEY_FRAME_SIZE }, 4);
+		gc.fillPolygon(new double[] { x - KEY_FRAME_SIZE, x, x + KEY_FRAME_SIZE, x },
+				new double[] { y, y + KEY_FRAME_SIZE, y, y - KEY_FRAME_SIZE }, 4);
+	}
+
+	private LightTrack getTrackFromY(double y) {
+		double adjustedY = y - getTotalTrackPositionY();
+		int trackNumber = (int) Math.floor(adjustedY / getTrackHeight());
+		if (trackNumber >= 0 && trackNumber < HueStew.getInstance().getShow().getLightTracks().size()) {
+			return HueStew.getInstance().getShow().getLightTracks().get(trackNumber);
+		}
+		return null;
+	}
+
+	private KeyFrame getKeyFrame(LightTrack track, double x, double y) {
+		TreeSet<KeyFrame> keyFrames = track.getKeyFrames();
+		KeyFrame target = new KeyFrame(getTimeFromX(x), null);
+
+		KeyFrame left = keyFrames.floor(target);
+		KeyFrame right = keyFrames.ceiling(target);
+
+		if (right != null && isInside(right, x, y)) {
+			return right;
+		} else if (left != null && isInside(left, x, y)) {
+			return left;
+		} else {
+			return null;
+		}
+	}
+
+	private boolean isInside(KeyFrame keyFrame, double x, double y) {
+		double kX = getXFromTime(keyFrame.getTimestamp());
+
+		if (kX < x - KEY_FRAME_SIZE || kX > x + KEY_FRAME_SIZE) {
+			return false;
+		}
+
+		double kY = getTrackHeight() - getRelativeYFromBrightness(keyFrame.getState().getBrightness());
+
+		System.out.println("kY: " + kY + ", y: " + y);
+
+		return kY >= y - KEY_FRAME_SIZE && kY <= y + KEY_FRAME_SIZE;
+	}
+
+	private double getRelativeTrackY(LightTrack track, double y) {
+		int trackNumber = HueStew.getInstance().getShow().getLightTracks().indexOf(track);
+		double trackStartY = getTrackPositionY(trackNumber);
+		return (y - trackStartY);
+	}
+
+	private double getXFromTime(int i) {
+		return (i * canvas.getWidth()) / 60000;
+	}
+
+	private int getTimeFromX(double x) {
+		double relativeX = x / canvas.getWidth();
+		return Math.max(0, (int) (relativeX * 60000.0));
+	}
+
+	private double getRelativeYFromBrightness(int brightness) {
+		return (brightness / 255.0) * getTrackHeight();
 	}
 
 	private double getTrackHeight() {

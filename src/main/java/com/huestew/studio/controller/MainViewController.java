@@ -31,10 +31,10 @@ public class MainViewController extends ViewController {
 
 	@FXML
 	private ScrollPane trackScrollPane;
-	
+
 	@FXML
 	private Button removeToolButton;
-	
+
 	@FXML
 	private Button populateToolButton;
 
@@ -43,17 +43,17 @@ public class MainViewController extends ViewController {
 		TrackView trackView = new TrackView(trackCanvas);
 		trackView.redraw();
 
-		HueStew.getInstance().getVirtualRoom().setCanvas(previewCanvas);
-		HueStew.getInstance().getVirtualRoom().redraw();
+		HueStew.getInstance().getView().getVirtualRoom().setCanvas(previewCanvas);
+		HueStew.getInstance().getView().getVirtualRoom().redraw();
 
 		previewCanvasPane.widthProperty().addListener((observableValue, oldSceneWidth, newSceneWidth) -> {
 			previewCanvas.setWidth((double) newSceneWidth);
-			HueStew.getInstance().getVirtualRoom().redraw();
+			HueStew.getInstance().getView().getVirtualRoom().redraw();
 		});
 
 		previewCanvasPane.heightProperty().addListener((observableValue, oldSceneHeight, newSceneHeight) -> {
 			previewCanvas.setHeight((double) newSceneHeight);
-			HueStew.getInstance().getVirtualRoom().redraw();
+			HueStew.getInstance().getView().getVirtualRoom().redraw();
 		});
 
 		trackScrollPane.widthProperty().addListener((observableValue, oldSceneWidth, newSceneWidth) -> {
@@ -65,20 +65,32 @@ public class MainViewController extends ViewController {
 			trackCanvas.setHeight((double) newSceneHeight - 16);
 			trackView.redraw();
 		});
+
+		HueStew.getInstance().getView().setTrackView(trackView);
 	}
-	
+
 	@FXML
-	private void removeToolPressed(){
+	private void removeToolPressed() {
 		Toolbox.REMOVE.select();
 	}
-	
+
 	@FXML
-	private void populateToolPressed(){
+	private void populateToolPressed() {
 		Toolbox.POPULATE.select();
 	}
-	
+
 	@FXML
 	private void moveToolPressed() {
 		Toolbox.MOVE.select();
+	}
+
+	@FXML
+	private void playButtonPressed() {
+		HueStew.getInstance().getPlayer().play();
+	}
+
+	@FXML
+	private void pauseButtonPressed() {
+		HueStew.getInstance().getPlayer().pause();
 	}
 }

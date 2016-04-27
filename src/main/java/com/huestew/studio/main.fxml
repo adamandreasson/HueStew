@@ -36,8 +36,8 @@
                                        <children>
                                           <HBox prefHeight="100.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="32.0" AnchorPane.rightAnchor="32.0" AnchorPane.topAnchor="0.0">
                                              <children>
-                                                <Button mnemonicParsing="false" text="Play" />
-                                                <Button mnemonicParsing="false" text="Pause" />
+                                                <Button mnemonicParsing="false" onAction="#playButtonPressed" text="Play" />
+                                                <Button mnemonicParsing="false" onAction="#pauseButtonPressed" text="Pause" />
                                              </children>
                                           </HBox>
                                        </children>

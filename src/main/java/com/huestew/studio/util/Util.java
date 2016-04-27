@@ -20,7 +20,6 @@ public class Util {
 	 * @return The controller of the view.
 	 */
 	public static ViewController loadFxml(String path) {
-		System.out.println(HueStew.class.getResource(path));
 		FXMLLoader loader = new FXMLLoader(HueStew.class.getResource(path));
 		Parent view;
 

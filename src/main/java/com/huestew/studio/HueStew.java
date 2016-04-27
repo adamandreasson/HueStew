@@ -10,6 +10,7 @@ import com.huestew.studio.model.LightState;
 import com.huestew.studio.model.LightTrack;
 import com.huestew.studio.model.Show;
 import com.huestew.studio.model.VirtualBulb;
+import com.huestew.studio.view.HueStewView;
 import com.huestew.studio.view.Light;
 import com.huestew.studio.view.VirtualLight;
 import com.huestew.studio.view.VirtualRoom;
@@ -23,16 +24,17 @@ public class HueStew {
 
 	private static HueStew instance = null;
 
-	private VirtualRoom virtualRoom;
+	private HueStewView view;
 	private LightBank lightBank;
 	private Show show;
+	private Player player;
 	private int cursor;
 	private int tickDuration;
 
 	private HueStew() {
+		this.view = new HueStewView();
 		this.lightBank = new LightBank();
 		this.show = new Show();
-		this.virtualRoom = new VirtualRoom();
 		this.tickDuration = 100;
 
 		// TEST CODE PLS REMOVE LATER
@@ -45,12 +47,14 @@ public class HueStew {
 			light.setState(state);
 			lightBank.getLights().add(light);
 
-			virtualRoom.addBulb(bulb);
+			view.getVirtualRoom().addBulb(bulb);
 			
 			LightTrack track = new LightTrack();
 			track.addListener(light);
 			show.addLightTrack(track);
 		}
+		
+		player = new Player();		
 	}
 
 	public static HueStew getInstance() {
@@ -58,14 +62,6 @@ public class HueStew {
 			instance = new HueStew();
 		}
 		return instance;
-	}
-
-	public VirtualRoom getVirtualRoom() {
-		return virtualRoom;
-	}
-
-	public void setVirtualRoom(VirtualRoom virtualRoom) {
-		this.virtualRoom = virtualRoom;
 	}
 
 	public LightBank getLightBank() {
@@ -102,4 +98,20 @@ public class HueStew {
 		
 		this.tickDuration = tickDuration;
 	}
+
+	/**
+	 * @return the player
+	 */
+	public Player getPlayer() {
+		return player;
+	}
+
+	public HueStewView getView() {
+		return view;
+	}
+
+	public void setView(HueStewView view) {
+		this.view = view;
+	}
+	
 }
