@@ -37,7 +37,7 @@ public class Show {
 	 */
 	public List<LightTrack> getLightTracks(){
 		//TODO
-		return lightTracks;
+		return new ArrayList<>(lightTracks);
 	}
 	
 	/**
