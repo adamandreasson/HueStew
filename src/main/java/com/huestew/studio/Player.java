@@ -6,6 +6,7 @@ import com.huestew.studio.model.Show;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaPlayer.Status;
+import javafx.util.Duration;
 
 /**
  * A class for playing a lightshow.
@@ -57,11 +58,7 @@ public class Player {
 				//Keep updating unless the thread is interrupted
 				while (keepRunning) {
 
-					// Update model logics
-					HueStew.getInstance().setCursor(getCurrentTime());
-					
-					// Update track view canvas
-					HueStew.getInstance().getView().updateTrackView();
+					tick();
 					
 					try {
 						// Sleep for 33 ms (Run at 30 fps)
@@ -76,6 +73,15 @@ public class Player {
 		});
 
 		playingThread.start();
+	}
+	
+	private void tick(){
+
+		// Update model logics
+		HueStew.getInstance().setCursor(getCurrentTime());
+		
+		// Update track view canvas
+		HueStew.getInstance().getView().updateTrackView();
 	}
 
 	/** pauses the show at the current timestamp **/
@@ -96,5 +102,13 @@ public class Player {
 	/** Whether or not the player is currently playing **/
 	public boolean isPlaying() {
 		return mediaPlayer.getStatus() == Status.PLAYING;
+	}
+
+	public void seek(int time) {
+		mediaPlayer.seek(Duration.millis(time));	
+		
+		if(!isPlaying()){
+			tick();
+		}
 	}
 }

@@ -56,9 +56,10 @@ public class TrackView {
 	private void sendMouseEventToTool(MouseEvent event) {
 		// Get light track and timestamp from mouse coordinates
 		LightTrack track = getTrackFromY(event.getY());
-		if (track == null)
+		if (track == null){
+			parseTrackEvent(event);
 			return;
-
+		}
 		// Get normalized y coordinate
 		double inverseTrackY = getTrackHeight() - getRelativeTrackY(track, event.getY());
 		double normalizedY = inverseTrackY / getTrackHeight();
@@ -71,6 +72,16 @@ public class TrackView {
 
 		// Redraw canvas
 		redraw();
+	}
+
+	private void parseTrackEvent(MouseEvent event) {
+		
+		// Seeking event
+		if(event.getY() < 20){
+			int time = getTimeFromX(event.getX());
+			HueStew.getInstance().getPlayer().seek(time);
+			redraw();
+		}
 	}
 
 	public void redraw() {
@@ -130,10 +141,15 @@ public class TrackView {
 
 	private void drawCursor(GraphicsContext gc) {
 		double x = getXFromTime(HueStew.getInstance().getCursor());
-		
-		gc.setStroke(Color.GRAY);
+		double y = 20+KEY_FRAME_SIZE;
+
+		gc.setStroke(Color.BLACK);
 		gc.setLineWidth(1);
 		GraphicsUtil.sharpLine(gc, x, 20, x, canvas.getHeight());
+		
+		gc.setFill(Color.BROWN);
+		gc.fillPolygon(new double[] { x, x - KEY_FRAME_SIZE, x + KEY_FRAME_SIZE, x },
+				new double[] { y, y - KEY_FRAME_SIZE, y - KEY_FRAME_SIZE, y }, 3);
 	}
 
 	private void drawKeyFrame(GraphicsContext gc, double x, double y) {
