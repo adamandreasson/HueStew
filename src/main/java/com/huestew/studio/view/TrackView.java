@@ -43,7 +43,10 @@ public class TrackView {
 
 			// Set cursor
 			if (track == null) {
+				if(event.getY() > 20)
 				canvas.setCursor(Cursor.OPEN_HAND);
+				else
+					canvas.setCursor(Cursor.E_RESIZE);
 			} else {
 				canvas.setCursor(Toolbox.getCursor());
 			}
@@ -83,7 +86,11 @@ public class TrackView {
 	private void drawTimeline(GraphicsContext gc) {
 
 		gc.setFill(Color.WHITESMOKE);
-		gc.fillRect(0, 0, canvas.getWidth(), 20);
+		gc.fillRect(0, 0, canvas.getWidth(), 40);
+		
+		gc.setStroke(Color.GRAY);
+		gc.setLineWidth(1);
+		gc.strokeLine(0, 20.5, canvas.getWidth(), 20.5);
 
 		gc.setFill(Color.BLACK);
 
@@ -94,9 +101,9 @@ public class TrackView {
 			// If the timestamp is divisible by 10, we will draw a longer tick
 			// and display the time.
 			if (i % 10 == 0) {
-				gc.fillText("" + i, getXFromTime(time), 14);
+				gc.fillText("" + i, getXFromTime(time), 34);
 			}
-			GraphicsUtil.sharpLine(gc, getXFromTime(time), i % 5 == 0 ? 12 : 16, getXFromTime(time), 20);
+			GraphicsUtil.sharpLine(gc, getXFromTime(time), i % 5 == 0 ? 32 : 36, getXFromTime(time), 40);
 		}
 	}
 
@@ -126,7 +133,7 @@ public class TrackView {
 		
 		gc.setStroke(Color.GRAY);
 		gc.setLineWidth(1);
-		GraphicsUtil.sharpLine(gc, x, 0, x, canvas.getHeight());
+		GraphicsUtil.sharpLine(gc, x, 20, x, canvas.getHeight());
 	}
 
 	private void drawKeyFrame(GraphicsContext gc, double x, double y) {
@@ -204,7 +211,7 @@ public class TrackView {
 	}
 
 	private double getTotalTrackPositionY() {
-		return 20;
+		return 40;
 	}
 
 }
