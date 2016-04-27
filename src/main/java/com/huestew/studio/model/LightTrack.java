@@ -79,6 +79,8 @@ public class LightTrack {
 
 		// TODO should null key frames be allowed?
 		// Notify listeners
-		//pcs.firePropertyChange("latestKeyFrame", null, latestKeyFrame);
+		if (latestKeyFrame != null) {
+			pcs.firePropertyChange("latestKeyFrame", null, latestKeyFrame);
+		}
 	}
 }

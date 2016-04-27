@@ -169,8 +169,6 @@ public class TrackView {
 
 		double kY = getTrackHeight() - getRelativeYFromBrightness(keyFrame.getState().getBrightness());
 
-		System.out.println("kY: " + kY + ", y: " + y);
-
 		return kY >= y - KEY_FRAME_SIZE && kY <= y + KEY_FRAME_SIZE;
 	}
 

@@ -13,7 +13,6 @@ import com.huestew.studio.model.VirtualBulb;
 import com.huestew.studio.view.HueStewView;
 import com.huestew.studio.view.Light;
 import com.huestew.studio.view.VirtualLight;
-import com.huestew.studio.view.VirtualRoom;
 
 /**
  * Main class for the HueStew Studio model
@@ -85,6 +84,9 @@ public class HueStew {
 		
 		// Update cursor in show
 		show.updateCursor(cursor);
+		
+		// TODO this should probably not be here
+		getView().getVirtualRoom().redraw();
 	}
 	
 	public int getTickDuration() {
