@@ -18,8 +18,8 @@ public class PopulateTool implements Tool {
 		if (event.getEventType() == MouseEvent.MOUSE_CLICKED) {
 			// TODO let user pick a color
 			Random random = ThreadLocalRandom.current();
-			Color color = new Color(random.nextInt(256), random.nextInt(256), random.nextInt(256));
-			
+			Color color = new Color(128 + random.nextInt(128), 128 + random.nextInt(128), 128 + random.nextInt(128));
+
 			lightTrack.addKeyFrame(new KeyFrame(timestamp, new LightState(color, (int) (255 * normalizedY), 0)));
 		}
 	}
