@@ -58,11 +58,11 @@ public class Player {
 				//Keep updating unless the thread is interrupted
 				while (keepRunning) {
 
-					tick();
+					HueStew.getInstance().tick();
 					
 					try {
 						// Sleep for 33 ms (Run at 30 fps)
-						Thread.sleep(1000 / 30);
+						Thread.sleep(HueStew.getInstance().getTickDuration());
 					} catch (InterruptedException e) {
 						// If the thread is interrupted, stop the loop and kill it safely
 						keepRunning = false;
@@ -73,15 +73,6 @@ public class Player {
 		});
 
 		playingThread.start();
-	}
-	
-	private void tick(){
-
-		// Update model logics
-		HueStew.getInstance().setCursor(getCurrentTime());
-		
-		// Update track view canvas
-		HueStew.getInstance().getView().updateTrackView();
 	}
 
 	/** pauses the show at the current timestamp **/
@@ -108,7 +99,7 @@ public class Player {
 		mediaPlayer.seek(Duration.millis(time));	
 		
 		if(!isPlaying()){
-			tick();
+			HueStew.getInstance().tick();
 		}
 	}
 }

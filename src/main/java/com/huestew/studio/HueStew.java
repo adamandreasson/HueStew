@@ -34,7 +34,7 @@ public class HueStew {
 		this.view = new HueStewView();
 		this.lightBank = new LightBank();
 		this.show = new Show();
-		this.tickDuration = 100;
+		this.tickDuration = 33;
 
 		// TEST CODE PLS REMOVE LATER
 		for (int i = 0; i < 3; i++) {
@@ -99,6 +99,15 @@ public class HueStew {
 		}
 		
 		this.tickDuration = tickDuration;
+	}
+
+	public void tick(){
+
+		// Update model logics
+		HueStew.getInstance().setCursor(player.getCurrentTime());
+		
+		// Update track view canvas
+		HueStew.getInstance().getView().updateTrackView();
 	}
 
 	/**
