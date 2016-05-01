@@ -22,11 +22,22 @@
       </plugins>
     </pluginManagement>
   </build>
+  <repositories>
+    <repository>
+      <id>xuggle repo</id>
+      <url>http://xuggle.googlecode.com/svn/trunk/repo/share/java/</url>
+    </repository>
+  </repositories>
   <dependencies>
   	<dependency>
   		<groupId>junit</groupId>
   		<artifactId>junit</artifactId>
   		<version>4.12</version>
   	</dependency>
+    <dependency>
+      <groupId>xuggle</groupId>
+      <artifactId>xuggle-xuggler</artifactId>
+      <version>5.4</version>
+    </dependency>
   </dependencies>
 </project>

@@ -1,6 +1,7 @@
 package com.huestew.studio.view;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.TreeSet;
 
 import com.huestew.studio.HueStew;
@@ -161,8 +162,9 @@ public class TrackView {
 	private LightTrack getTrackFromY(double y) {
 		double adjustedY = y - getTotalTrackPositionY();
 		int trackNumber = (int) Math.floor(adjustedY / getTrackHeight());
-		if (trackNumber >= 0 && trackNumber < HueStew.getInstance().getShow().getLightTracks().size()) {
-			return HueStew.getInstance().getShow().getLightTracks().get(trackNumber);
+		List<LightTrack> tracks = HueStew.getInstance().getShow().getLightTracks();
+		if (trackNumber >= 0 && trackNumber < tracks.size()) {
+			return tracks.get(trackNumber);
 		}
 		return null;
 	}
