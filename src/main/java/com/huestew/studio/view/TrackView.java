@@ -10,9 +10,11 @@ import com.huestew.studio.model.KeyFrame;
 import com.huestew.studio.model.LightTrack;
 import com.huestew.studio.util.GraphicsUtil;
 
+import javafx.application.Platform;
 import javafx.scene.Cursor;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 
@@ -34,6 +36,7 @@ public class TrackView {
 	public TrackView(Canvas canvas) {
 		this.canvas = canvas;
 
+		// Register mouse event handlers
 		canvas.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> sendMouseEventToTool(event));
 		canvas.addEventHandler(MouseEvent.MOUSE_PRESSED, event -> sendMouseEventToTool(event));
 		canvas.addEventHandler(MouseEvent.MOUSE_DRAGGED, event -> sendMouseEventToTool(event));
@@ -50,6 +53,14 @@ public class TrackView {
 					canvas.setCursor(Cursor.E_RESIZE);
 			} else {
 				canvas.setCursor(Toolbox.getCursor());
+			}
+		});
+		
+		// Register key event handlers (after the scene has been created)
+		Platform.runLater(new Runnable() {
+			public void run() {
+				canvas.getScene().addEventHandler(KeyEvent.KEY_PRESSED, event -> Toolbox.getTool().doAction(event));
+				canvas.getScene().addEventHandler(KeyEvent.KEY_RELEASED, event -> Toolbox.getTool().doAction(event));
 			}
 		});
 	}
