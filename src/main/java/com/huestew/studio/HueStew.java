@@ -57,6 +57,7 @@ public class HueStew {
 			show.addLightTrack(track);
 		}
 		
+		// TEST CODE PLS IGNORE
 		show.setAudio(new Audio(new File("song.mp3")));
 		player = new Player(show);
 	}
