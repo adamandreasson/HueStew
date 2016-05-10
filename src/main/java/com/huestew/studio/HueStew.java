@@ -5,6 +5,7 @@ package com.huestew.studio;
 
 import java.awt.Color;
 
+import com.huestew.studio.controller.Player;
 import com.huestew.studio.model.LightBank;
 import com.huestew.studio.model.LightState;
 import com.huestew.studio.model.LightTrack;
@@ -53,7 +54,7 @@ public class HueStew {
 			show.addLightTrack(track);
 		}
 		
-		player = new Player();		
+		player = new Player(show);
 	}
 
 	public static HueStew getInstance() {
@@ -103,10 +104,10 @@ public class HueStew {
 
 	public void tick(){
 		// Update model logics
-		HueStew.getInstance().setCursor(player.getCurrentTime());
+		setCursor(player.getCurrentTime());
 		
 		// Update track view canvas
-		HueStew.getInstance().getView().updateTrackView();
+		getView().updateTrackView();
 	}
 
 	/**

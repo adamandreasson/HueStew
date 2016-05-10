@@ -1,7 +1,8 @@
-package com.huestew.studio;
+package com.huestew.studio.controller;
 
 import java.nio.file.Paths;
 
+import com.huestew.studio.HueStew;
 import com.huestew.studio.model.Show;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
@@ -26,8 +27,10 @@ public class Player {
 	
 	private int pauseTime;
 
-	public Player() {
+	public Player(Show show) {
 
+		this.show = show;
+		
 		try {
 
 			String song = Paths.get("song.mp3").toUri().toString();
@@ -35,6 +38,8 @@ public class Player {
 			mediaPlayer = new MediaPlayer(media);
 			mediaPlayer.setAutoPlay(false);
 
+			show.setDuration((int)mediaPlayer.getTotalDuration().toMillis());
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
