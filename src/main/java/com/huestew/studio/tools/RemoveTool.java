@@ -1,9 +1,9 @@
 package com.huestew.studio.tools;
 
-import com.huestew.studio.controller.Tool;
 import com.huestew.studio.model.KeyFrame;
 import com.huestew.studio.model.LightTrack;
 
+import javafx.scene.Cursor;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 
@@ -18,5 +18,10 @@ public class RemoveTool implements Tool {
 	@Override
 	public void doAction(KeyEvent event) {
 		// TODO Should this do anything?
+	}
+
+	@Override
+	public Cursor getCursor(boolean hoveringKeyFrame, boolean isMouseDown) {
+		return Cursor.CROSSHAIR;
 	}
 }

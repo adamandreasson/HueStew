@@ -1,11 +1,8 @@
 package com.huestew.studio;
 
-import com.huestew.studio.controller.Tool;
 import com.huestew.studio.tools.*;
 
 import javafx.scene.Cursor;
-import javafx.scene.ImageCursor;
-import javafx.scene.image.Image;
 
 /**
  * A toolbox containing a set of tools.
@@ -17,17 +14,14 @@ import javafx.scene.image.Image;
  */
 
 public enum Toolbox {
-	POPULATE(new PopulateTool(), new ImageCursor(new Image("cursor_pencil_add.png"), 4, 0)),
-	MOVE(new MoveTool(), Cursor.MOVE),
-	REMOVE(new RemoveTool(), Cursor.CROSSHAIR);
+	POPULATE(new PopulateTool()),
+	MOVE(new MoveTool()),
+	REMOVE(new RemoveTool());
 
 	private Tool tool;
-	
-	private Cursor cursor;
 
-	Toolbox(Tool tool, Cursor cursor) {
+	Toolbox(Tool tool) {
 		this.tool = tool;
-		this.cursor = cursor;
 	}
 
 	/**
@@ -50,10 +44,12 @@ public enum Toolbox {
 
 	/**
 	 * Returns the current cursor based on the tool being used 
+	 * @param isMouseDown 
+	 * @param hoveringCursor 
 	 * @return
 	 * 			the cursor corresponding to the currently selected tool
 	 */
-	public static Cursor getCursor() {
-		return selected.cursor;
+	public static Cursor getCursor(boolean hoveringCursor, boolean isMouseDown) {
+		return selected.tool.getCursor(hoveringCursor, isMouseDown);
 	}
 }

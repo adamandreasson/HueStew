@@ -26,6 +26,9 @@ public class TrackView {
 	private static final int KEY_FRAME_SIZE = 5;
 
 	private Canvas canvas;
+	
+	private KeyFrame hoveringKeyFrame = null;
+	private boolean isMouseDown = false;
 
 	/**
 	 * Create a new track view with an associated canvas
@@ -52,8 +55,10 @@ public class TrackView {
 				else
 					canvas.setCursor(Cursor.E_RESIZE);
 			} else {
-				canvas.setCursor(Toolbox.getCursor());
+				updateHoveringKeyFrame(track, event);
+				canvas.setCursor(Toolbox.getCursor(hoveringKeyFrame != null, isMouseDown));
 			}
+			
 		});
 		
 		// Register key event handlers (after the scene has been created)
@@ -63,6 +68,10 @@ public class TrackView {
 				canvas.getScene().addEventHandler(KeyEvent.KEY_RELEASED, event -> Toolbox.getTool().doAction(event));
 			}
 		});
+	}
+
+	private void updateHoveringKeyFrame(LightTrack track, MouseEvent event) {
+		this.hoveringKeyFrame = getKeyFrame(track, event.getX(), getRelativeTrackY(track, event.getY()));
 	}
 
 	private void sendMouseEventToTool(MouseEvent event) {

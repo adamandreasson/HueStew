@@ -1,8 +1,9 @@
-package com.huestew.studio.controller;
+package com.huestew.studio.tools;
 
 import com.huestew.studio.model.KeyFrame;
 import com.huestew.studio.model.LightTrack;
 
+import javafx.scene.Cursor;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 
@@ -42,4 +43,15 @@ public interface Tool {
 	 *            The key event that was called.
 	 */
 	void doAction(KeyEvent event);
+
+	/**
+	 * Returns the desired cursor depending on mouse position and state.
+	 * 
+	 * @param hoveringKeyFrame
+	 *            Is the mouse cursor hovering a keyframe on the trackview?
+	 * @param isMouseDown
+	 *            Is the left mouse button down?
+	 * 
+	 */
+	Cursor getCursor(boolean hoveringKeyFrame, boolean isMouseDown);
 }

@@ -4,11 +4,11 @@ import java.util.List;
 import java.util.TreeSet;
 
 import com.huestew.studio.HueStew;
-import com.huestew.studio.controller.Tool;
 import com.huestew.studio.model.KeyFrame;
 import com.huestew.studio.model.LightState;
 import com.huestew.studio.model.LightTrack;
 
+import javafx.scene.Cursor;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 
@@ -26,17 +26,17 @@ public class MoveTool implements Tool {
 			// Store selected key frame and light track
 			selectedKeyFrame = keyFrame;
 			selectedLightTrack = lightTrack;
-			
+
 			if (keyFrame == null) {
 				return;
 			}
-			
+
 			TreeSet<KeyFrame> keyFrames = lightTrack.getKeyFrames();
-			
+
 			// Determine lower timestamp limit
 			KeyFrame lower = keyFrames.lower(keyFrame);
 			floor = lower == null ? 0 : lower.getTimestamp() + HueStew.getInstance().getTickDuration();
-			
+
 			// Determine upper timestamp limit
 			KeyFrame higher = keyFrames.higher(keyFrame);
 			ceiling = higher == null ? Integer.MAX_VALUE : higher.getTimestamp() - HueStew.getInstance().getTickDuration();
@@ -45,7 +45,7 @@ public class MoveTool implements Tool {
 				// Update timestamp
 				selectedKeyFrame.setTimestamp(Math.max(floor, Math.min(ceiling, timestamp)));
 			}
-			
+
 			if (moveVertically) {
 				if (lightTrack != selectedLightTrack) {
 					// Correct the normalized Y value
@@ -56,7 +56,7 @@ public class MoveTool implements Tool {
 						normalizedY = 1;
 					}
 				}
-				
+
 				// Update brightness
 				LightState state = selectedKeyFrame.getState();
 				state.setBrightness((int) (255 * normalizedY));
@@ -68,7 +68,7 @@ public class MoveTool implements Tool {
 	@Override
 	public void doAction(KeyEvent event) {
 		boolean pressed = event.getEventType() == KeyEvent.KEY_PRESSED;
-		
+
 		switch (event.getCode()) {
 		case CONTROL:
 			moveVertically = !pressed;
@@ -79,5 +79,13 @@ public class MoveTool implements Tool {
 		default:
 			break;
 		}
+	}
+
+	@Override
+	public Cursor getCursor(boolean hoveringKeyFrame, boolean isMouseDown) {
+		if(hoveringKeyFrame)
+			return Cursor.HAND;
+		else
+			return Cursor.DEFAULT;
 	}
 }
