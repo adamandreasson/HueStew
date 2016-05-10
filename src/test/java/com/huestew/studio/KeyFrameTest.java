@@ -2,7 +2,7 @@ package com.huestew.studio;
 
 import static org.junit.Assert.*;
 
-import java.awt.Color;
+import javafx.scene.paint.Color;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -27,7 +27,7 @@ public class KeyFrameTest {
 
 	@Test
 	public void setState() {
-		LightState state = new LightState(Color.black, 0, 0);
+		LightState state = new LightState(Color.BLACK, 0, 0);
 		keyFrame.setState(state);
 		
 		assertTrue(keyFrame.getState() == state);

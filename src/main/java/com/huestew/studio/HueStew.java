@@ -3,7 +3,7 @@
  */
 package com.huestew.studio;
 
-import java.awt.Color;
+import javafx.scene.paint.Color;
 
 import com.huestew.studio.model.LightBank;
 import com.huestew.studio.model.LightState;

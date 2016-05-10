@@ -1,6 +1,6 @@
 package com.huestew.studio.model;
 
-import java.awt.Color;
+import javafx.scene.paint.Color;
 
 /**
  * A light state. Self-explanatory.
@@ -52,11 +52,11 @@ public class LightState {
 	/**
 	 * Method for setting the value of rgb value of a keyframe.
 	 * 
-	 * @param color
+	 * @param c
 	 *            the new rgb value for the keyframe.
 	 */
-	public void setColor(Color color) {
-		Color temp = new Color(color.getRGB());
+	public void setColor(Color c) {
+		Color temp = new Color(c.getRGB());
 		this.color = temp;
 	}
 
