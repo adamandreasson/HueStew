@@ -40,8 +40,14 @@ public class TrackView {
 		this.canvas = canvas;
 
 		// Register mouse event handlers
-		canvas.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> sendMouseEventToTool(event));
-		canvas.addEventHandler(MouseEvent.MOUSE_PRESSED, event -> sendMouseEventToTool(event));
+		canvas.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+			isMouseDown = false;
+			sendMouseEventToTool(event);
+		});
+		canvas.addEventHandler(MouseEvent.MOUSE_PRESSED, event -> {
+			isMouseDown = true;
+			sendMouseEventToTool(event);
+		});
 		canvas.addEventHandler(MouseEvent.MOUSE_DRAGGED, event -> sendMouseEventToTool(event));
 
 		canvas.addEventHandler(MouseEvent.MOUSE_MOVED, event -> {
@@ -85,11 +91,8 @@ public class TrackView {
 		double inverseTrackY = getTrackHeight() - getRelativeTrackY(track, event.getY());
 		double normalizedY = inverseTrackY / getTrackHeight();
 
-		// Get clicked key frame
-		KeyFrame keyFrame = getKeyFrame(track, event.getX(), getRelativeTrackY(track, event.getY()));
-
 		// Pass event to current tool
-		Toolbox.getTool().doAction(event, track, keyFrame, getTimeFromX(event.getX()), normalizedY);
+		Toolbox.getTool().doAction(event, track, hoveringKeyFrame, getTimeFromX(event.getX()), normalizedY);
 
 		// Redraw canvas
 		redraw();
