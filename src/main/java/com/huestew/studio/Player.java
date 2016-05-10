@@ -54,12 +54,12 @@ public class Player {
 			@Override
 			public void run() {
 				boolean keepRunning = true;
-				
+
 				//Keep updating unless the thread is interrupted
 				while (keepRunning) {
 
 					HueStew.getInstance().tick();
-					
+
 					try {
 						// Sleep for 33 ms (Run at 30 fps)
 						Thread.sleep(HueStew.getInstance().getTickDuration());
@@ -97,9 +97,16 @@ public class Player {
 
 	public void seek(int time) {
 		mediaPlayer.seek(Duration.millis(time));	
-		
+
 		if(!isPlaying()){
 			HueStew.getInstance().tick();
 		}
+	}
+
+	public void toggle() {
+		if(!isPlaying())
+			play();
+		else
+			pause();
 	}
 }

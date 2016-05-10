@@ -26,7 +26,7 @@ public class TrackView {
 	private static final int KEY_FRAME_SIZE = 5;
 
 	private Canvas canvas;
-	
+
 	private KeyFrame hoveringKeyFrame = null;
 	private boolean isMouseDown = false;
 
@@ -57,23 +57,39 @@ public class TrackView {
 			// Set cursor
 			if (track == null) {
 				if(event.getY() > 20)
-				canvas.setCursor(Cursor.OPEN_HAND);
+					canvas.setCursor(Cursor.OPEN_HAND);
 				else
 					canvas.setCursor(Cursor.E_RESIZE);
 			} else {
 				updateHoveringKeyFrame(track, event);
 				canvas.setCursor(Toolbox.getCursor(hoveringKeyFrame != null, isMouseDown));
 			}
-			
+
 		});
-		
+
 		// Register key event handlers (after the scene has been created)
 		Platform.runLater(new Runnable() {
 			public void run() {
 				canvas.getScene().addEventHandler(KeyEvent.KEY_PRESSED, event -> Toolbox.getTool().doAction(event));
-				canvas.getScene().addEventHandler(KeyEvent.KEY_RELEASED, event -> Toolbox.getTool().doAction(event));
+				canvas.getScene().addEventHandler(KeyEvent.KEY_RELEASED, event -> {
+					keyDownEvent(event);
+					Toolbox.getTool().doAction(event);
+				});
 			}
 		});
+	}
+
+	private void keyDownEvent(KeyEvent event) {
+		
+		switch (event.getCode()) {
+		case SPACE:
+			System.out.println("TOGGLE PLAY");
+			HueStew.getInstance().getPlayer().toggle();
+			break;
+		default:
+			break;
+		}
+		
 	}
 
 	private void updateHoveringKeyFrame(LightTrack track, MouseEvent event) {
@@ -99,7 +115,7 @@ public class TrackView {
 	}
 
 	private void parseTrackEvent(MouseEvent event) {
-		
+
 		// Seeking event
 		if(event.getY() < 20){
 			int time = getTimeFromX(event.getX());
@@ -122,7 +138,7 @@ public class TrackView {
 
 		gc.setFill(Color.WHITESMOKE);
 		gc.fillRect(0, 0, canvas.getWidth(), 40);
-		
+
 		gc.setStroke(Color.GRAY);
 		gc.setLineWidth(1);
 		gc.strokeLine(0, 20.5, canvas.getWidth(), 20.5);
@@ -170,7 +186,7 @@ public class TrackView {
 		gc.setStroke(Color.BLACK);
 		gc.setLineWidth(1);
 		GraphicsUtil.sharpLine(gc, x, 20, x, canvas.getHeight());
-		
+
 		gc.setFill(Color.BROWN);
 		gc.fillPolygon(new double[] { x, x - KEY_FRAME_SIZE, x + KEY_FRAME_SIZE, x },
 				new double[] { y, y - KEY_FRAME_SIZE, y - KEY_FRAME_SIZE, y }, 3);
