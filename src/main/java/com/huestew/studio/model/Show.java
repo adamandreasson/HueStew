@@ -4,19 +4,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A light show is a collection of lighttracks and may also have an audiotrack aswell.
+ * A show is a collection of light tracks and an audio.
  * 
  * @author Adam Andreasson
  */
 public class Show {
 
-	/** the collection of lighttracks in this show **/
+	/** The collection of lighttracks in this show */
 	private List<LightTrack> lightTracks = new ArrayList<>();
+
+	private Audio audio;
 
 	/**
 	 * Add a new lighttrack to the show.
-	 * @param track 
-	 * 				the new lighttrack to be added.
+	 * 
+	 * @param track
+	 *            the new lighttrack to be added.
 	 */
 	public void addLightTrack(LightTrack track) {
 		lightTracks.add(track);
@@ -24,26 +27,44 @@ public class Show {
 
 	/**
 	 * Remove a lighttrack from the show.
+	 * 
 	 * @param track
-	 * 				the lighttrack to remove.
+	 *            the lighttrack to remove.
 	 */
 	public void removeLightTrack(LightTrack track) {
 		lightTracks.remove(track);
 	}
 
 	/**
-	 * @return
-	 * 			a list of all the lighttracks.
+	 * @return a list of all the lighttracks.
 	 */
-	public List<LightTrack> getLightTracks(){
-		//TODO
+	public List<LightTrack> getLightTracks() {
+		// TODO
 		return new ArrayList<>(lightTracks);
 	}
-	
+
+	/**
+	 * @return the audio associated with the show
+	 */
+	public Audio getAudio() {
+		return audio;
+	}
+
+	/**
+	 * Change the audio of the show.
+	 * 
+	 * @param audio
+	 *            the new audio reference
+	 */
+	public void setAudio(Audio audio) {
+		this.audio = audio;
+	}
+
 	/**
 	 * Update the cursor position in all of the ligthtracks.
+	 * 
 	 * @param cursor
-	 * 				the timestamp at which the cursor is currently at.
+	 *            the timestamp at which the cursor is currently at.
 	 */
 	public void updateCursor(int cursor) {
 		// Update cursor in each light track
