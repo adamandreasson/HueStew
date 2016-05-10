@@ -1,5 +1,6 @@
 package com.huestew.studio.view;
 
+import java.nio.file.Paths;
 import java.util.Iterator;
 import java.util.List;
 import java.util.TreeSet;
@@ -14,6 +15,7 @@ import javafx.application.Platform;
 import javafx.scene.Cursor;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
@@ -27,6 +29,7 @@ public class TrackView {
 	private static final int TIMELINE_WIDTH_MILLISECONDS = 30000;
 
 	private Canvas canvas;
+	private Image backgroundWaves;
 
 	private KeyFrame hoveringKeyFrame = null;
 	private boolean isMouseDown = false;
@@ -39,6 +42,7 @@ public class TrackView {
 	 */
 	public TrackView(Canvas canvas) {
 		this.canvas = canvas;
+		this.backgroundWaves = new Image(Paths.get("wave.png").toUri().toString());
 
 		// Register mouse event handlers
 		canvas.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
@@ -138,6 +142,8 @@ public class TrackView {
 
 		gc.setFill(Color.WHITESMOKE);
 		gc.fillRect(0, 0, canvas.getWidth(), 40);
+		
+		gc.drawImage(backgroundWaves, 0, 40, backgroundWaves.getWidth(), canvas.getHeight() - 40);
 
 		gc.setStroke(Color.GRAY);
 		gc.setLineWidth(1);
