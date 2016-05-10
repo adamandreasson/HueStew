@@ -23,6 +23,8 @@ public class Player {
 	private MediaPlayer mediaPlayer;
 
 	private Thread playingThread;
+	
+	private int pauseTime;
 
 	public Player() {
 
@@ -68,6 +70,8 @@ public class Player {
 						keepRunning = false;
 					}
 				}
+
+				pauseTime = 0;
 			}
 
 		});
@@ -77,6 +81,7 @@ public class Player {
 
 	/** pauses the show at the current timestamp **/
 	public void pause() {
+		pauseTime = getCurrentTime();
 		mediaPlayer.pause();
 		playingThread.interrupt();
 	}
@@ -87,6 +92,8 @@ public class Player {
 	}
 
 	public int getCurrentTime() {
+		if(pauseTime > 0)
+			return pauseTime;
 		return (int) mediaPlayer.getCurrentTime().toMillis();
 	}
 

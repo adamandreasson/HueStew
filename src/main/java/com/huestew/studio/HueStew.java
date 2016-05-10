@@ -102,7 +102,6 @@ public class HueStew {
 	}
 
 	public void tick(){
-
 		// Update model logics
 		HueStew.getInstance().setCursor(player.getCurrentTime());
 		

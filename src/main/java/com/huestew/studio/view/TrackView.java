@@ -24,6 +24,7 @@ import javafx.scene.paint.Color;
  */
 public class TrackView {
 	private static final int KEY_FRAME_SIZE = 5;
+	private static final int TIMELINE_WIDTH_MILLISECONDS = 30000;
 
 	private Canvas canvas;
 
@@ -56,7 +57,7 @@ public class TrackView {
 
 			// Set cursor
 			if (track == null) {
-				if(event.getY() > 20)
+				if (event.getY() > 20)
 					canvas.setCursor(Cursor.OPEN_HAND);
 				else
 					canvas.setCursor(Cursor.E_RESIZE);
@@ -80,16 +81,15 @@ public class TrackView {
 	}
 
 	private void keyDownEvent(KeyEvent event) {
-		
+
 		switch (event.getCode()) {
 		case SPACE:
-			System.out.println("TOGGLE PLAY");
 			HueStew.getInstance().getPlayer().toggle();
 			break;
 		default:
 			break;
 		}
-		
+
 	}
 
 	private void updateHoveringKeyFrame(LightTrack track, MouseEvent event) {
@@ -99,7 +99,7 @@ public class TrackView {
 	private void sendMouseEventToTool(MouseEvent event) {
 		// Get light track and timestamp from mouse coordinates
 		LightTrack track = getTrackFromY(event.getY());
-		if (track == null){
+		if (track == null) {
 			parseTrackEvent(event);
 			return;
 		}
@@ -117,7 +117,7 @@ public class TrackView {
 	private void parseTrackEvent(MouseEvent event) {
 
 		// Seeking event
-		if(event.getY() < 20){
+		if (event.getY() < 20) {
 			int time = getTimeFromX(event.getX());
 			HueStew.getInstance().getPlayer().seek(time);
 			redraw();
@@ -181,7 +181,7 @@ public class TrackView {
 
 	private void drawCursor(GraphicsContext gc) {
 		double x = getXFromTime(HueStew.getInstance().getCursor());
-		double y = 20+KEY_FRAME_SIZE;
+		double y = 20 + KEY_FRAME_SIZE;
 
 		gc.setStroke(Color.BLACK);
 		gc.setLineWidth(1);
@@ -243,12 +243,12 @@ public class TrackView {
 	}
 
 	private double getXFromTime(int i) {
-		return (i * canvas.getWidth()) / 60000;
+		return (i * canvas.getWidth()) / TIMELINE_WIDTH_MILLISECONDS;
 	}
 
 	private int getTimeFromX(double x) {
 		double relativeX = x / canvas.getWidth();
-		return Math.max(0, (int) (relativeX * 60000.0));
+		return Math.max(0, (int) (relativeX * TIMELINE_WIDTH_MILLISECONDS));
 	}
 
 	private double getRelativeYFromBrightness(int brightness) {
