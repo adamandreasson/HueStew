@@ -13,6 +13,8 @@ public class Show {
 	/** The collection of lighttracks in this show */
 	private List<LightTrack> lightTracks = new ArrayList<>();
 
+	private int duration;
+	
 	private Audio audio;
 
 	/**
@@ -71,5 +73,19 @@ public class Show {
 		for (LightTrack track : lightTracks) {
 			track.updateCursor(cursor);
 		}
+	}
+
+	/**
+	 * @return the duration
+	 */
+	public int getDuration() {
+		return duration;
+	}
+
+	/**
+	 * @param duration the duration to set
+	 */
+	public void setDuration(int duration) {
+		this.duration = duration;
 	}
 }
