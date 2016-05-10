@@ -59,6 +59,7 @@ public class TrackView {
 				stage.setScene(new Scene(cpc.getView())); 
 				stage.initModality(Modality.APPLICATION_MODAL);  
 				stage.show();
+				cpc.setKeyFrame(hoveringKeyFrame);
 				
 			}
 			

@@ -7,8 +7,9 @@ import com.huestew.studio.model.LightState;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ColorPicker;
+import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.AnchorPane;
+
 
 import javafx.scene.paint.Color;
 
@@ -17,34 +18,44 @@ public class ColorPickerController extends ViewController {
 	
 	@FXML ColorPicker colorPicker;
 		
-	@FXML TextField timestamp;
+	@FXML TextField newTimestamp;
 		
 	@FXML Button changeLightStateButton;
 		
-	private LightState state;
-		          
-	@FXML
-	private void colorPickerOnAction(){
-		Color c = colorPicker.getValue();
-		
-        System.out.println("New Color's RGB = "+c.getRed()+" "+c.getGreen()+" "+c.getBlue());
-	}
+	@FXML Slider brightnessSlider;
+	
+	private KeyFrame keyframe; 
 	
 	@FXML
 	private void changeLightStateButtonPressed() {
-		setLightState();
-		//hoveringKeyFrame.setState(state);
+		updateKeyFrame();
 	
+		
+		
 	}
 	
 		
-	private void setLightState(){
+	private void updateKeyFrame(){
+		
 		Color c = colorPicker.getValue();
 		
+		keyframe.getState().setColor(c);
+		keyframe.setTimestamp(Integer.parseInt(newTimestamp.getText()));
 		
-		state.setColor(c);
-		state.setBrightness((int)c.getBrightness()*255);
-		state.setSaturation((int)c.getSaturation()*255);
+		
+		/*
+        .setColor(c);
+        .setBrightness((int)c.getBrightness()*255);
+        .setSaturation((int)c.getSaturation()*255);
+			*/
+		
+	}
+	
+	public void setKeyFrame(KeyFrame keyframe){
+		this.keyframe = keyframe;
+		
+		newTimestamp.setText(keyframe.getTimestamp() + "");
+		brightnessSlider.setValue(keyframe.getState().getBrightness());
 		
 	}
 	
