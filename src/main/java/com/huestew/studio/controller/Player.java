@@ -33,8 +33,7 @@ public class Player {
 		
 		try {
 
-			String song = Paths.get("song.mp3").toUri().toString();
-			Media media = new Media(song);
+			Media media = show.getAudio().getFxMedia();
 			mediaPlayer = new MediaPlayer(media);
 			mediaPlayer.setAutoPlay(false);
 

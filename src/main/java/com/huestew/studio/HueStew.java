@@ -5,7 +5,10 @@ package com.huestew.studio;
 
 import javafx.scene.paint.Color;
 
+import java.io.File;
+
 import com.huestew.studio.controller.Player;
+import com.huestew.studio.model.Audio;
 import com.huestew.studio.model.LightBank;
 import com.huestew.studio.model.LightState;
 import com.huestew.studio.model.LightTrack;
@@ -54,6 +57,7 @@ public class HueStew {
 			show.addLightTrack(track);
 		}
 		
+		show.setAudio(new Audio(new File("song.mp3")));
 		player = new Player(show);
 	}
 
