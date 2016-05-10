@@ -2,7 +2,7 @@ package com.huestew.studio;
 
 import static org.junit.Assert.*;
 
-import java.awt.Color;
+import javafx.scene.paint.Color;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -14,14 +14,14 @@ public class LightStateTest {
 	
 	@Before
 	public void before() {
-		lightState = new LightState(Color.black, 0, 0);
+		lightState = new LightState(Color.BLACK, 0, 0);
 	}
 	
 	@Test
 	public void setColor() {
-		lightState.setColor(Color.green);
+		lightState.setColor(Color.GREEN);
 		
-		assertTrue(lightState.getColor().equals(Color.green));
+		assertTrue(lightState.getColor().equals(Color.GREEN));
 	}
 	
 	@Test
