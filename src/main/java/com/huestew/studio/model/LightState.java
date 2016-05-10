@@ -46,7 +46,7 @@ public class LightState {
 	 * @return the color of the keyframe as a rgb value
 	 */
 	public Color getColor() {
-		return new Color(color.getRGB());
+		return new Color(color.getRed(), color.getGreen(), color.getBlue(), 1);
 	}
 
 	/**
@@ -56,7 +56,7 @@ public class LightState {
 	 *            the new rgb value for the keyframe.
 	 */
 	public void setColor(Color c) {
-		Color temp = new Color(c.getRGB());
+		Color temp = new Color(c.getRed(), c.getGreen(), c.getBlue(), 1);
 		this.color = temp;
 	}
 

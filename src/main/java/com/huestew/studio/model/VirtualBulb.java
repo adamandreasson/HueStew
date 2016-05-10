@@ -3,7 +3,7 @@
  */
 package com.huestew.studio.model;
 
-import java.awt.Color;
+import javafx.scene.paint.Color;
 
 /**
  * A class for graphical representation of virtual bulbs.
@@ -55,7 +55,7 @@ public class VirtualBulb {
 	 * 			the color of the bulb as an RGB value.
 	 */
 	public Color getColor() {
-		return new Color(color.getRGB());
+		return new Color(color.getRed(), color.getGreen(), color.getBlue(), 1);
 	}
 
 	/**
@@ -64,7 +64,7 @@ public class VirtualBulb {
 	 * 				the new color of the bulb as an RGB value.
 	 */
 	public void setColor(Color color) {
-		this.color = new Color(color.getRGB());
+		this.color = new Color(color.getRed(), color.getGreen(), color.getBlue(), 1);
 	}
 
 }
