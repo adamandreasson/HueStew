@@ -30,24 +30,26 @@ public class ColorPickerController extends ViewController {
 	
 	private KeyFrame keyframe; 
 	
+	public MainViewController mvc = new MainViewController();
+	
 	@Override
 	public void init() {
 		
-		brightnessSlider.valueChangingProperty().addListener(new ChangeListener<Object>(){
+		/*
+		brightnessSlider.setMajorTickUnit(1);
+		brightnessSlider.setMinorTickCount(0);
+		brightnessSlider.setSnapToTicks(true);
+		*/
+		brightnessSlider.valueProperty().addListener(new ChangeListener<Object>(){
 
 			@Override
-			public void changed(ObservableValue arg0, Object arg1, Object arg2) {
+			public void changed(ObservableValue<?> arg0, Object arg1, Object arg2) {
 				brightnessLabel.textProperty().setValue(String.valueOf((int)brightnessSlider.getValue()));
-				
+				keyframe.getState().setBrightness((int)(brightnessSlider.getValue()));
 			}
-			 
-			
-			
-			               
+			          
 		});
-		
-		brightnessLabel.textProperty().setValue("value");
-		
+
 	}
 	
 	
@@ -56,8 +58,6 @@ public class ColorPickerController extends ViewController {
 		Color c = colorPicker.getValue();
 		keyframe.getState().setColor(c);
 	
-		
-		
 	}
 /*
 	/*so fakkin laggy
@@ -73,7 +73,6 @@ public class ColorPickerController extends ViewController {
 		keyframe.setTimestamp(Integer.parseInt(newTimestamp.getText()));
 	}
 	
-	
 		
 	public void setKeyFrame(KeyFrame keyframe){
 		this.keyframe = keyframe;
@@ -81,10 +80,8 @@ public class ColorPickerController extends ViewController {
 		colorPicker.setValue(keyframe.getState().getColor());
 		newTimestamp.setText(keyframe.getTimestamp() + "");
 		brightnessSlider.setValue(keyframe.getState().getBrightness());
-		
+		brightnessLabel.textProperty().setValue(keyframe.getState().getBrightness() + "");
 	}
 	
 	
-	
-
 }

@@ -1,15 +1,25 @@
 package com.huestew.studio.controller;
 
 import java.io.File;
+<<<<<<< Updated upstream
 import com.huestew.studio.HueStew;
 import com.huestew.studio.Toolbox;
 import com.huestew.studio.util.Util;
+=======
+
+
+
+
+>>>>>>> Stashed changes
 import com.huestew.studio.view.TrackView;
 
 import javafx.fxml.FXML;
+
+import javafx.scene.Parent;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.SplitPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -34,6 +44,9 @@ public class MainViewController extends ViewController {
 	private AnchorPane trackCanvasPane;
 
 	@FXML
+	public AnchorPane colorPickerPane;
+	
+	@FXML
 	private ScrollPane trackScrollPane;
 
 	@FXML
@@ -41,9 +54,14 @@ public class MainViewController extends ViewController {
 
 	@FXML
 	private Button populateToolButton;
+	
+	@FXML
+	private Button moveToolButton;
+	
 
 	@Override
 	public void init() {
+
 		TrackView trackView = new TrackView(trackCanvas);
 		trackView.redraw();
 
@@ -74,6 +92,14 @@ public class MainViewController extends ViewController {
 		HueStew.getInstance().getView().setTrackView(trackView);
 	}
 
+	
+	public void setColorPickerPane(Parent colorPickerPane){
+		
+		this.colorPickerPane = (AnchorPane) colorPickerPane;
+		this.colorPickerPane.getChildren().add(colorPickerPane);
+	
+	}
+	
 	@FXML
 	private void removeToolPressed() {
 		Toolbox.REMOVE.select();

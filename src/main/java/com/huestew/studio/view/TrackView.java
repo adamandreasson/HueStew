@@ -7,6 +7,7 @@ import java.util.TreeSet;
 import com.huestew.studio.HueStew;
 import com.huestew.studio.Toolbox;
 import com.huestew.studio.controller.ColorPickerController;
+import com.huestew.studio.controller.MainViewController;
 import com.huestew.studio.model.KeyFrame;
 import com.huestew.studio.model.LightTrack;
 import com.huestew.studio.util.GraphicsUtil;
@@ -53,22 +54,28 @@ public class TrackView {
 		// Register mouse event handlers
 		canvas.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
 			if (event.getButton() == MouseButton.SECONDARY && hoveringKeyFrame != null) {
-				ColorPickerController cpc = (ColorPickerController) Util.loadFxml("/com/huestew/studio/colorpicker.fxml");
-
-				Stage stage = new Stage();
-				stage.setScene(new Scene(cpc.getView()));
-				//stage.initModality(Modality.APPLICATION_MODAL);
-				stage.show();
 				
+				ColorPickerController cpc = (ColorPickerController) Util.loadFxml("/com/huestew/studio/colorpicker.fxml");
+				
+				cpc.setKeyFrame(hoveringKeyFrame);
+				
+				cpc.mvc.setColorPickerPane(cpc.getView());
+				
+				
+				//Stage stage = new Stage();
+				//stage.setScene(new Scene(mvc.getView()));
+				//stage.initModality(Modality.APPLICATION_MODAL);
+				//stage.show();
+				/*
 				stage.setOnCloseRequest(new EventHandler<WindowEvent>(){
 					public void handle(WindowEvent we) {
 			              System.out.println("window closed, update trackview");
 			              HueStew.getInstance().getView().updateTrackView();
 			          }
-					//test
+					
 				});
+				*/
 				
-				cpc.setKeyFrame(hoveringKeyFrame);
 
 			}
 
