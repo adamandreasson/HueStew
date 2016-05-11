@@ -164,13 +164,18 @@ public class TrackView {
 			loadWave();
 		}
 
-		GraphicsContext gc = canvas.getGraphicsContext2D();
-		gc.setFill(Color.LIGHTGRAY);
-		gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+		// Perform drawing on javafx main thread
+		Platform.runLater(new Runnable() {
+			public void run() {
+				GraphicsContext gc = canvas.getGraphicsContext2D();
+				gc.setFill(Color.LIGHTGRAY);
+				gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
-		drawTimeline(gc);
-		drawLightTracks(gc);
-		drawCursor(gc);
+				drawTimeline(gc);
+				drawLightTracks(gc);
+				drawCursor(gc);
+			}
+		});
 	}
 
 	private void drawTimeline(GraphicsContext gc) {
@@ -188,8 +193,14 @@ public class TrackView {
 
 		gc.setFill(Color.BLACK);
 
-		// Draw out 60 ticks on the timeline
-		for (int i = 0; i < 60; i++) {
+		// TODO how many ticks should be drawn before the show duration has been set?
+		int ticks = HueStew.getInstance().getShow().getDuration() / 1000;
+		if (ticks == 0) {
+			ticks = 60;
+		}
+		
+		// Draw out the ticks on the timeline
+		for (int i = 0; i <= ticks; i++) {
 
 			int time = i * 1000;
 			// If the timestamp is divisible by 10, we will draw a longer tick
