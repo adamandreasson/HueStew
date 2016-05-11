@@ -32,7 +32,7 @@ import javafx.stage.WindowEvent;
  */
 public class TrackView {
 	private static final int KEY_FRAME_SIZE = 5;
-	public static final int PIXELS_PER_SECOND = 100;
+	public static final int PIXELS_PER_SECOND = 10;
 
 	private Canvas canvas;
 	private String backgroundWaveFilePath = null;
