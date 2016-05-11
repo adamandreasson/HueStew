@@ -1,7 +1,5 @@
 package com.huestew.studio.controller;
 
-import java.nio.file.Paths;
-
 import com.huestew.studio.HueStew;
 import com.huestew.studio.model.Show;
 import javafx.scene.media.Media;
@@ -37,7 +35,14 @@ public class Player {
 			mediaPlayer = new MediaPlayer(media);
 			mediaPlayer.setAutoPlay(false);
 
-			show.setDuration((int)mediaPlayer.getTotalDuration().toMillis());
+			 mediaPlayer.setOnReady(new Runnable() {
+
+			        @Override
+			        public void run() {
+						show.setDuration((int)media.getDuration().toMillis());
+			        }
+			    });
+			
 			
 		} catch (Exception e) {
 			e.printStackTrace();

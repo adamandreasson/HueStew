@@ -6,6 +6,9 @@ package com.huestew.studio;
 import javafx.scene.paint.Color;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import com.huestew.studio.controller.Player;
 import com.huestew.studio.model.Audio;
@@ -14,8 +17,11 @@ import com.huestew.studio.model.LightState;
 import com.huestew.studio.model.LightTrack;
 import com.huestew.studio.model.Show;
 import com.huestew.studio.model.VirtualBulb;
+import com.huestew.studio.util.FileUtil;
+import com.huestew.studio.util.WaveBuilder;
 import com.huestew.studio.view.HueStewView;
 import com.huestew.studio.view.Light;
+import com.huestew.studio.view.TrackView;
 import com.huestew.studio.view.VirtualLight;
 
 /**
@@ -51,15 +57,42 @@ public class HueStew {
 			lightBank.getLights().add(light);
 
 			view.getVirtualRoom().addBulb(bulb);
-			
+
 			LightTrack track = new LightTrack();
 			track.addListener(light);
 			show.addLightTrack(track);
 		}
-		
+
 		// TEST CODE PLS IGNORE
 		show.setAudio(new Audio(new File("song.mp3")));
 		player = new Player(show);
+
+
+		// THIS SHOULD ALL BE ELSEWHERE
+		Thread thread = new Thread(new Runnable(){
+
+			@Override
+			public void run() {
+				try {
+					Path tmp = Files.createTempDirectory("HueStew_");
+					String tmpSongFile = tmp.toString()+"/song.wav";
+					FileUtil.convertAudioFile("song.mp3", tmpSongFile);
+
+					System.out.println("SHOW DURACTION " + show.getDuration());
+					int width = (int) ((show.getDuration()/1000.0) * TrackView.PIXELS_PER_SECOND);
+					System.out.println("wave width " + width);
+					new WaveBuilder(tmpSongFile, "wave.png", width, 400);
+
+					System.out.println("WAVE GENERATED DONE");
+					HueStew.getInstance().getView().updateWaveImage();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+
+		});
+		thread.start();
+
 	}
 
 	public static HueStew getInstance() {
@@ -76,41 +109,41 @@ public class HueStew {
 	public Show getShow() {
 		return show;
 	}
-	
+
 	public int getCursor() {
 		return cursor;
 	}
-	
+
 	public void setCursor(int cursor) {
 		if (cursor < 0) {
 			throw new IllegalArgumentException("Cursor must be positive.");
 		}
-		
+
 		this.cursor = cursor;
-		
+
 		// Update cursor in show
 		show.updateCursor(cursor);
-		
+
 		// TODO this should probably not be here
 		getView().getVirtualRoom().redraw();
 	}
-	
+
 	public int getTickDuration() {
 		return tickDuration;
 	}
-	
+
 	public void setTickDuration(int tickDuration) {
 		if (tickDuration <= 0) {
 			throw new IllegalArgumentException("Tick duration must be greater than zero.");
 		}
-		
+
 		this.tickDuration = tickDuration;
 	}
 
 	public void tick(){
 		// Update model logics
 		setCursor(player.getCurrentTime());
-		
+
 		// Update track view canvas
 		getView().updateTrackView();
 	}
@@ -129,5 +162,5 @@ public class HueStew {
 	public void setView(HueStewView view) {
 		this.view = view;
 	}
-	
+
 }

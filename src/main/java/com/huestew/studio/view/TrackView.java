@@ -32,10 +32,10 @@ import javafx.stage.Stage;
  */
 public class TrackView {
 	private static final int KEY_FRAME_SIZE = 5;
-	private static final int TIMELINE_WIDTH_MILLISECONDS = 30000;
+	public static final int PIXELS_PER_SECOND = 100;
 
 	private Canvas canvas;
-	private Image backgroundWaves;
+	private Image backgroundWave;
 
 	private KeyFrame hoveringKeyFrame = null;
 	private boolean isMouseDown = false;
@@ -48,23 +48,21 @@ public class TrackView {
 	 */
 	public TrackView(Canvas canvas) {
 		this.canvas = canvas;
-		this.backgroundWaves = new Image(Paths.get("wave.png").toUri().toString());
-
+		
 		// Register mouse event handlers
 		canvas.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-			if(event.getButton() == MouseButton.SECONDARY && hoveringKeyFrame != null){
-				ColorPickerController cpc = (ColorPickerController)Util.loadFxml("/com/huestew/studio/colorpicker.fxml");
-				
+			if (event.getButton() == MouseButton.SECONDARY && hoveringKeyFrame != null) {
+				ColorPickerController cpc = (ColorPickerController) Util
+						.loadFxml("/com/huestew/studio/colorpicker.fxml");
+
 				Stage stage = new Stage();
-				stage.setScene(new Scene(cpc.getView())); 
-				stage.initModality(Modality.APPLICATION_MODAL);  
+				stage.setScene(new Scene(cpc.getView()));
+				stage.initModality(Modality.APPLICATION_MODAL);
 				stage.show();
 				cpc.setKeyFrame(hoveringKeyFrame);
 				
 			}
-			
-			
-			
+
 			isMouseDown = false;
 			sendMouseEventToTool(event);
 		});
@@ -101,6 +99,15 @@ public class TrackView {
 				});
 			}
 		});
+	}
+
+	public void loadWave() {
+		System.out.println("loading wave");
+		try {
+			this.backgroundWave = new Image(Paths.get("wave.png").toUri().toString());
+		} catch (IllegalArgumentException e) {
+			System.out.println("wave not generated yet probably?");
+		}
 	}
 
 	private void keyDownEvent(KeyEvent event) {
@@ -142,12 +149,19 @@ public class TrackView {
 		// Seeking event
 		if (event.getY() < 20) {
 			int time = getTimeFromX(event.getX());
+			System.out.println(time);
 			HueStew.getInstance().getPlayer().seek(time);
 			redraw();
 		}
 	}
 
 	public void redraw() {
+		
+		//TODO move this elsewhere
+		if(backgroundWave == null){
+			loadWave();
+		}
+		
 		GraphicsContext gc = canvas.getGraphicsContext2D();
 		gc.setFill(Color.LIGHTGRAY);
 		gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
@@ -161,8 +175,10 @@ public class TrackView {
 
 		gc.setFill(Color.WHITESMOKE);
 		gc.fillRect(0, 0, canvas.getWidth(), 40);
-		
-		gc.drawImage(backgroundWaves, 0, 40, backgroundWaves.getWidth(), canvas.getHeight() - 40);
+
+		if (backgroundWave != null) {
+			gc.drawImage(backgroundWave, 0, 40, backgroundWave.getWidth(), canvas.getHeight() - 40);
+		}
 
 		gc.setStroke(Color.GRAY);
 		gc.setLineWidth(1);
@@ -267,13 +283,12 @@ public class TrackView {
 		return (y - trackStartY);
 	}
 
-	private double getXFromTime(int i) {
-		return (i * canvas.getWidth()) / TIMELINE_WIDTH_MILLISECONDS;
+	private double getXFromTime(int time) {
+		return (time * PIXELS_PER_SECOND/1000.0);
 	}
 
 	private int getTimeFromX(double x) {
-		double relativeX = x / canvas.getWidth();
-		return Math.max(0, (int) (relativeX * TIMELINE_WIDTH_MILLISECONDS));
+		return (int) (x / (PIXELS_PER_SECOND/1000.0));
 	}
 
 	private double getRelativeYFromBrightness(int brightness) {

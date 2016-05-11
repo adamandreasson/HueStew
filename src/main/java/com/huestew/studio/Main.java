@@ -1,16 +1,7 @@
 package com.huestew.studio;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-
-import javax.sound.sampled.UnsupportedAudioFileException;
-
 import com.huestew.studio.controller.MainViewController;
-import com.huestew.studio.util.FileUtil;
 import com.huestew.studio.util.Util;
-import com.huestew.studio.util.WaveBuilder;
-
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -29,16 +20,7 @@ public class Main extends Application {
 		primaryStage.show();
 	}
 
-	public static void main(String[] args) throws IOException, UnsupportedAudioFileException {
-		
-		// THIS SHOULD ALL BE ELSEWHERE
-		Path tmp = Files.createTempDirectory("HueStew_");
-		String tmpSongFile = tmp.toString()+"/song.wav";
-		FileUtil.convertAudioFile("song.mp3", tmpSongFile);
-		System.out.println(tmpSongFile);
-		
-		WaveBuilder wave = new WaveBuilder(tmpSongFile, "wave.png", 4000, 400);
-		
+	public static void main(String[] args) {
 		launch(args);
 	}
 }
