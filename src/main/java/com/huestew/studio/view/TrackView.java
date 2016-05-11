@@ -7,16 +7,13 @@ import java.util.TreeSet;
 import com.huestew.studio.HueStew;
 import com.huestew.studio.Toolbox;
 import com.huestew.studio.controller.ColorPickerController;
-import com.huestew.studio.controller.MainViewController;
 import com.huestew.studio.model.KeyFrame;
 import com.huestew.studio.model.LightTrack;
 import com.huestew.studio.util.GraphicsUtil;
 import com.huestew.studio.util.Util;
 
 import javafx.application.Platform;
-import javafx.event.EventHandler;
 import javafx.scene.Cursor;
-import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
@@ -24,8 +21,6 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
-import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 
 /**
  * @author Adam
@@ -61,22 +56,6 @@ public class TrackView {
 				cpc.setKeyFrame(hoveringKeyFrame);
 				
 				HueStew.getInstance().getMainViewController().setColorPickerPane(cpc.getView());
-				
-				//Stage stage = new Stage();
-				//stage.setScene(new Scene(mvc.getView()));
-				//stage.initModality(Modality.APPLICATION_MODAL);
-				//stage.show();
-				/*
-				stage.setOnCloseRequest(new EventHandler<WindowEvent>(){
-					public void handle(WindowEvent we) {
-			              System.out.println("window closed, update trackview");
-			              HueStew.getInstance().getView().updateTrackView();
-			          }
-					
-				});
-				*/
-				
-
 			}
 
 			if (event.getButton() == MouseButton.PRIMARY) {

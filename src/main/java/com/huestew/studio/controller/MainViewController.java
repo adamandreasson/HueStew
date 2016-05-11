@@ -5,24 +5,15 @@ import java.io.File;
 import com.huestew.studio.HueStew;
 import com.huestew.studio.Toolbox;
 import com.huestew.studio.util.Util;
-
-
-
-
-
-
 import com.huestew.studio.view.TrackView;
 
 import javafx.fxml.FXML;
-
 import javafx.scene.Parent;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.SplitPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
-import javafx.stage.Stage;
 
 /**
  * Controller class for the Main JavaFX view
@@ -45,7 +36,7 @@ public class MainViewController extends ViewController {
 
 	@FXML
 	public AnchorPane colorPickerPane;
-	
+
 	@FXML
 	private ScrollPane trackScrollPane;
 
@@ -54,10 +45,9 @@ public class MainViewController extends ViewController {
 
 	@FXML
 	private Button populateToolButton;
-	
+
 	@FXML
 	private Button moveToolButton;
-	
 
 	@Override
 	public void init() {
@@ -92,13 +82,11 @@ public class MainViewController extends ViewController {
 		HueStew.getInstance().getView().setTrackView(trackView);
 	}
 
-	
-	public void setColorPickerPane(Parent colorPickerPane){
+	public void setColorPickerPane(Parent colorPickerPane) {
 		this.colorPickerPane.getChildren().add(colorPickerPane);
-	
+
 	}
-	
-	
+
 	@FXML
 	private void removeToolPressed() {
 		Toolbox.REMOVE.select();
@@ -123,7 +111,7 @@ public class MainViewController extends ViewController {
 	private void pauseButtonPressed() {
 		HueStew.getInstance().getPlayer().pause();
 	}
-	
+
 	@FXML
 	private void newButtonPressed() {
 		System.out.println("new");

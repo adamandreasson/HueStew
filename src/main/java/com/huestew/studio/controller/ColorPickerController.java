@@ -1,8 +1,6 @@
 package com.huestew.studio.controller;
 
-import com.huestew.studio.Toolbox;
 import com.huestew.studio.model.KeyFrame;
-import com.huestew.studio.model.LightState;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;

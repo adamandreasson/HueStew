@@ -3,7 +3,6 @@ package com.huestew.studio.view;
 import java.beans.PropertyChangeEvent;
 
 import com.huestew.studio.HueStew;
-import com.huestew.studio.model.KeyFrame;
 import com.huestew.studio.model.KeyFrameTransition;
 import com.huestew.studio.model.LightState;
 import com.huestew.studio.model.VirtualBulb;
