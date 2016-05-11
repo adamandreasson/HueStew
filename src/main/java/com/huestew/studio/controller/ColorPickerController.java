@@ -26,6 +26,17 @@ public class ColorPickerController extends ViewController {
 	
 	private KeyFrame keyframe; 
 	
+	
+	@FXML
+	private void colorPickerOnAction() {
+		Color c = colorPicker.getValue();
+		keyframe.getState().setColor(c);
+	
+		
+		
+	}
+	
+	
 	@FXML
 	private void changeLightStateButtonPressed() {
 		updateKeyFrame();
@@ -35,13 +46,11 @@ public class ColorPickerController extends ViewController {
 	}
 	
 		
+		
 	private void updateKeyFrame(){
-		
-		Color c = colorPicker.getValue();
-		
-		keyframe.getState().setColor(c);
+							
 		keyframe.setTimestamp(Integer.parseInt(newTimestamp.getText()));
-		
+		keyframe.getState().setBrightness((int)(brightnessSlider.getValue()));
 		
 		/*
         .setColor(c);
@@ -54,6 +63,7 @@ public class ColorPickerController extends ViewController {
 	public void setKeyFrame(KeyFrame keyframe){
 		this.keyframe = keyframe;
 		
+		colorPicker.setValue(keyframe.getState().getColor());
 		newTimestamp.setText(keyframe.getTimestamp() + "");
 		brightnessSlider.setValue(keyframe.getState().getBrightness());
 		
