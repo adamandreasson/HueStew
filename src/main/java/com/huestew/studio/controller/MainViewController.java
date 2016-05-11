@@ -94,12 +94,10 @@ public class MainViewController extends ViewController {
 
 	
 	public void setColorPickerPane(Parent colorPickerPane){
-		
-		this.colorPickerPane = (AnchorPane) colorPickerPane;
 		this.colorPickerPane.getChildren().add(colorPickerPane);
 	
-		
 	}
+	
 	
 	@FXML
 	private void removeToolPressed() {
