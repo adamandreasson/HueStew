@@ -136,6 +136,8 @@ public class WaveBuilder {
 			int numChannels = format.getChannels();
 			
 			for (double x = 0; x < width * ACCURACY && audioData != null; x++) {
+				if(x%32 != 0)
+					continue;
 				int totalByte = 0;
 				for (int i = 0; i < ACCURACY; i++) {
 					int idx = (int) (frames_per_pixel * numChannels * x / ACCURACY);

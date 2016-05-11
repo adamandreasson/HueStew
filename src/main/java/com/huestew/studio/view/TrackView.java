@@ -32,7 +32,7 @@ import javafx.stage.WindowEvent;
  */
 public class TrackView {
 	private static final int KEY_FRAME_SIZE = 5;
-	public static final int PIXELS_PER_SECOND = 10;
+	public static final int PIXELS_PER_SECOND = 100;
 
 	private Canvas canvas;
 	private String backgroundWaveFilePath = null;
@@ -119,6 +119,7 @@ public class TrackView {
 		backgroundWaveFilePath = filePath;
 		try {
 			this.backgroundWave = new Image(filePath);
+			System.out.println("setting canvas wirdth to " + backgroundWave.getWidth());
 			canvas.setWidth(backgroundWave.getWidth());
 			redraw();
 			
