@@ -16,7 +16,7 @@ public class Main extends Application {
 		Scene scene = new Scene(controller.getView(),1280,720);
 		primaryStage.setScene(scene);
 
-		primaryStage.getIcons().add(new Image("icon_256x256.png"));
+		primaryStage.getIcons().add(new Image("/icon_256x256.png"));
 		primaryStage.show();
 	}
 
