@@ -160,7 +160,6 @@ public class TrackView {
 	}
 
 	public void redraw() {
-
 		// TODO move this elsewhere
 		if (backgroundWave == null) {
 			loadWave();
@@ -217,13 +216,13 @@ public class TrackView {
 	}
 
 	private void drawTrackPolygon(GraphicsContext gc, LightTrack track, double startY) {
-		gc.setFill(new Color(0.0,0.2,0.7,0.5));
+		gc.setFill(new Color(0.0, 0.2, 0.7, 0.5));
 		gc.beginPath();
 		gc.moveTo(0, startY + getTrackHeight());
-		
+
 		Iterator<KeyFrame> iterator = track.getKeyFrames().iterator();
 		double x = 0.0;
-		
+
 		while (iterator.hasNext()) {
 			KeyFrame frame = iterator.next();
 			x = getXFromTime(frame.getTimestamp());
@@ -232,8 +231,9 @@ public class TrackView {
 		}
 		gc.lineTo(x, startY + getTrackHeight());
 		gc.lineTo(0, startY + getTrackHeight());
-		
+
 		gc.fill();
+		gc.closePath();
 	}
 
 	private void drawKeyFrames(GraphicsContext gc, LightTrack track, double startY) {
