@@ -54,7 +54,7 @@ public class LightTrack {
 	 *            The listener that should be added to this light track.
 	 */
 	public void addListener(PropertyChangeListener listener) {
-		pcs.addPropertyChangeListener("latestKeyFrame", listener);
+		pcs.addPropertyChangeListener("keyFrameTransition", listener);
 	}
 
 	/**
@@ -64,7 +64,7 @@ public class LightTrack {
 	 *            The listener that should be removed from this light track.
 	 */
 	public void removeListener(PropertyChangeListener listener) {
-		pcs.removePropertyChangeListener("latestKeyFrame", listener);
+		pcs.removePropertyChangeListener("keyFrameTransition", listener);
 	}
 
 	/**
@@ -82,8 +82,7 @@ public class LightTrack {
 
 		// TODO should null key frames be allowed?
 		// Notify listeners
-		if (latestKeyFrame != null) {
-			pcs.firePropertyChange("latestKeyFrame", null, latestKeyFrame);
-		}
+		pcs.firePropertyChange("keyFrameTransition", null, new KeyFrameTransition(latestKeyFrame, nextKeyFrame));
+
 	}
 }
