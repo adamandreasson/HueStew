@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import com.huestew.studio.controller.MainViewController;
 import com.huestew.studio.controller.Player;
 import com.huestew.studio.model.Audio;
 import com.huestew.studio.model.LightBank;
@@ -39,13 +40,15 @@ public class HueStew {
 	private Player player;
 	private int cursor;
 	private int tickDuration;
+	private MainViewController mvc;
 
 	private HueStew() {
 		this.view = new HueStewView();
 		this.lightBank = new LightBank();
 		this.show = new Show();
 		this.tickDuration = 33;
-
+		
+		
 		// TEST CODE PLS REMOVE LATER
 		for (int i = 0; i < 3; i++) {
 			VirtualBulb bulb = new VirtualBulb();
@@ -98,7 +101,17 @@ public class HueStew {
 		// TODO this should probably not be here
 		getView().getVirtualRoom().redraw();
 	}
-
+	
+	public void setMainViewController(MainViewController mvc){
+		this.mvc = mvc;
+	}
+	
+	public MainViewController getMainViewController(){
+		return mvc;
+		
+	}
+	
+	
 	public int getTickDuration() {
 		return tickDuration;
 	}

@@ -1,16 +1,16 @@
 package com.huestew.studio.controller;
 
 import java.io.File;
-<<<<<<< Updated upstream
+
 import com.huestew.studio.HueStew;
 import com.huestew.studio.Toolbox;
 import com.huestew.studio.util.Util;
-=======
 
 
 
 
->>>>>>> Stashed changes
+
+
 import com.huestew.studio.view.TrackView;
 
 import javafx.fxml.FXML;
@@ -98,6 +98,7 @@ public class MainViewController extends ViewController {
 		this.colorPickerPane = (AnchorPane) colorPickerPane;
 		this.colorPickerPane.getChildren().add(colorPickerPane);
 	
+		
 	}
 	
 	@FXML

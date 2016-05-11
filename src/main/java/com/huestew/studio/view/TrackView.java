@@ -59,8 +59,7 @@ public class TrackView {
 				
 				cpc.setKeyFrame(hoveringKeyFrame);
 				
-				cpc.mvc.setColorPickerPane(cpc.getView());
-				
+				HueStew.getInstance().getMainViewController().setColorPickerPane(cpc.getView());
 				
 				//Stage stage = new Stage();
 				//stage.setScene(new Scene(mvc.getView()));

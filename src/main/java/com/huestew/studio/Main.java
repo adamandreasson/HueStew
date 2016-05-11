@@ -18,6 +18,9 @@ public class Main extends Application {
 
 		primaryStage.getIcons().add(new Image("/icon_256x256.png"));
 		primaryStage.show();
+		
+		HueStew.getInstance().setMainViewController(controller);
+		
 	}
 
 	public static void main(String[] args) {

@@ -29,9 +29,7 @@ public class ColorPickerController extends ViewController {
 	@FXML Label brightnessLabel;
 	
 	private KeyFrame keyframe; 
-	
-	public MainViewController mvc = new MainViewController();
-	
+			
 	@Override
 	public void init() {
 		
