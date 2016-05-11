@@ -15,13 +15,16 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 
 public class PopulateTool implements Tool {
-	
+
 	private Cursor cursor = new ImageCursor(new Image("cursor_pencil_add.png"), 4, 0);
-	
+
 	@Override
 	public void doAction(MouseEvent event, LightTrack lightTrack, KeyFrame keyFrame, int timestamp, double normalizedY) {
+		if(keyFrame != null)
+			return;
+
 		if (event.getEventType() == MouseEvent.MOUSE_CLICKED) {
-					
+
 			lightTrack.addKeyFrame(new KeyFrame(timestamp, new LightState(Color.WHITE, (int) (255 * normalizedY), 0)));
 		}
 	}
@@ -33,6 +36,9 @@ public class PopulateTool implements Tool {
 
 	@Override
 	public Cursor getCursor(boolean hoveringKeyFrame, boolean isMouseDown) {
-		return cursor;
+		if(hoveringKeyFrame)
+			return Cursor.DEFAULT;
+		else
+			return cursor;
 	}
 }
