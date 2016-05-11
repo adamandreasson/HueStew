@@ -48,7 +48,7 @@ public class TrackView {
 	 */
 	public TrackView(Canvas canvas) {
 		this.canvas = canvas;
-		
+
 		// Register mouse event handlers
 		canvas.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
 			if (event.getButton() == MouseButton.SECONDARY && hoveringKeyFrame != null) {
@@ -60,15 +60,15 @@ public class TrackView {
 				stage.initModality(Modality.APPLICATION_MODAL);
 				stage.show();
 				cpc.setKeyFrame(hoveringKeyFrame);
-				
+
 			}
-			
-			if (event.getButton() == MouseButton.PRIMARY){
+
+			if (event.getButton() == MouseButton.PRIMARY) {
 				sendMouseEventToTool(event);
 			}
 
 			isMouseDown = false;
-			
+
 		});
 		canvas.addEventHandler(MouseEvent.MOUSE_PRESSED, event -> {
 			isMouseDown = true;
@@ -160,12 +160,12 @@ public class TrackView {
 	}
 
 	public void redraw() {
-		
-		//TODO move this elsewhere
-		if(backgroundWave == null){
+
+		// TODO move this elsewhere
+		if (backgroundWave == null) {
 			loadWave();
 		}
-		
+
 		GraphicsContext gc = canvas.getGraphicsContext2D();
 		gc.setFill(Color.LIGHTGRAY);
 		gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
@@ -206,6 +206,7 @@ public class TrackView {
 	private void drawLightTracks(GraphicsContext gc) {
 		int i = 0;
 		for (LightTrack track : HueStew.getInstance().getShow().getLightTracks()) {
+			drawTrackPolygon(gc, track, getTrackPositionY(i));
 			drawKeyFrames(gc, track, getTrackPositionY(i));
 
 			gc.setStroke(Color.GRAY);
@@ -215,6 +216,26 @@ public class TrackView {
 		}
 	}
 
+	private void drawTrackPolygon(GraphicsContext gc, LightTrack track, double startY) {
+		gc.setFill(new Color(0.0,0.2,0.7,0.5));
+		gc.beginPath();
+		gc.moveTo(0, startY + getTrackHeight());
+		
+		Iterator<KeyFrame> iterator = track.getKeyFrames().iterator();
+		double x = 0.0;
+		
+		while (iterator.hasNext()) {
+			KeyFrame frame = iterator.next();
+			x = getXFromTime(frame.getTimestamp());
+			double y = startY + getTrackHeight() - getRelativeYFromBrightness(frame.getState().getBrightness());
+			gc.lineTo(x, y);
+		}
+		gc.lineTo(x, startY + getTrackHeight());
+		gc.lineTo(0, startY + getTrackHeight());
+		
+		gc.fill();
+	}
+
 	private void drawKeyFrames(GraphicsContext gc, LightTrack track, double startY) {
 		Iterator<KeyFrame> iterator = track.getKeyFrames().iterator();
 		while (iterator.hasNext()) {
@@ -222,6 +243,7 @@ public class TrackView {
 			drawKeyFrame(gc, getXFromTime(frame.getTimestamp()),
 					startY + getTrackHeight() - getRelativeYFromBrightness(frame.getState().getBrightness()));
 		}
+
 	}
 
 	private void drawCursor(GraphicsContext gc) {
@@ -288,11 +310,11 @@ public class TrackView {
 	}
 
 	private double getXFromTime(int time) {
-		return (time * PIXELS_PER_SECOND/1000.0);
+		return (time * PIXELS_PER_SECOND / 1000.0);
 	}
 
 	private int getTimeFromX(double x) {
-		return (int) (x / (PIXELS_PER_SECOND/1000.0));
+		return (int) (x / (PIXELS_PER_SECOND / 1000.0));
 	}
 
 	private double getRelativeYFromBrightness(int brightness) {
