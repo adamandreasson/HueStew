@@ -40,6 +40,8 @@ public class Player {
 			        @Override
 			        public void run() {
 						show.setDuration((int)media.getDuration().toMillis());
+						
+						HueStew.getInstance().loadWave();
 			        }
 			    });
 			

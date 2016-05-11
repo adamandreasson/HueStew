@@ -66,33 +66,6 @@ public class HueStew {
 		// TEST CODE PLS IGNORE
 		show.setAudio(new Audio(new File("song.mp3")));
 		player = new Player(show);
-
-
-		// THIS SHOULD ALL BE ELSEWHERE
-		Thread thread = new Thread(new Runnable(){
-
-			@Override
-			public void run() {
-				try {
-					Path tmp = Files.createTempDirectory("HueStew_");
-					String tmpSongFile = tmp.toString()+"/song.wav";
-					FileUtil.convertAudioFile("song.mp3", tmpSongFile);
-
-					System.out.println("SHOW DURACTION " + show.getDuration());
-					int width = (int) ((show.getDuration()/1000.0) * TrackView.PIXELS_PER_SECOND);
-					System.out.println("wave width " + width);
-					new WaveBuilder(tmpSongFile, "wave.png", width, 400);
-
-					System.out.println("WAVE GENERATED DONE");
-					HueStew.getInstance().getView().updateWaveImage();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-
-		});
-		thread.start();
-
 	}
 
 	public static HueStew getInstance() {
@@ -161,6 +134,35 @@ public class HueStew {
 
 	public void setView(HueStewView view) {
 		this.view = view;
+	}
+	
+	public void loadWave(){
+
+		// THIS SHOULD ALL BE ELSEWHERE
+		Thread thread = new Thread(new Runnable(){
+
+			@Override
+			public void run() {
+				try {
+					Path tmp = Files.createTempDirectory("HueStew_");
+					String tmpSongFile = tmp.toString()+"/song.wav";
+					FileUtil.convertAudioFile("song.mp3", tmpSongFile);
+
+					System.out.println("SHOW DURACTION " + show.getDuration());
+					int width = (int) ((show.getDuration()/1000.0) * TrackView.PIXELS_PER_SECOND);
+					System.out.println("wave width " + width);
+					new WaveBuilder(tmpSongFile, "wave.png", width, 400);
+
+					System.out.println("WAVE GENERATED DONE");
+					HueStew.getInstance().getView().updateWaveImage();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+
+		});
+		thread.start();
+		
 	}
 
 }
