@@ -149,7 +149,6 @@ public class TrackView {
 		// Seeking event
 		if (event.getY() < 20) {
 			int time = getTimeFromX(event.getX());
-			System.out.println(time);
 			HueStew.getInstance().getPlayer().seek(time);
 			redraw();
 		}
