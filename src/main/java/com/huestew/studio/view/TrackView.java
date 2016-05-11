@@ -62,9 +62,13 @@ public class TrackView {
 				cpc.setKeyFrame(hoveringKeyFrame);
 				
 			}
+			
+			if (event.getButton() == MouseButton.PRIMARY){
+				sendMouseEventToTool(event);
+			}
 
 			isMouseDown = false;
-			sendMouseEventToTool(event);
+			
 		});
 		canvas.addEventHandler(MouseEvent.MOUSE_PRESSED, event -> {
 			isMouseDown = true;

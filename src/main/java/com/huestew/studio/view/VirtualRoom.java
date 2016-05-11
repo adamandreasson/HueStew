@@ -65,7 +65,7 @@ public class VirtualRoom {
 		for (VirtualBulb bulb : bulbs) {
 		    gc.setFill(new RadialGradient(0, 0, 0.5, 0.5, 0.5, true,
 		               CycleMethod.REFLECT,
-		               new Stop(0.1, new Color(bulb.getColor().getRed()/255D, bulb.getColor().getGreen()/255D, bulb.getColor().getBlue()/255D, 1)),
+		               new Stop(0.1, new Color(bulb.getColor().getRed(), bulb.getColor().getGreen(), bulb.getColor().getBlue(), 1)),
 		               new Stop(1.0, Color.BLACK)));
 			gc.fillOval(bulb.getX()*canvas.getWidth()+60, bulb.getY()*canvas.getHeight()-30, 60, 60);
 		}
