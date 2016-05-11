@@ -12,6 +12,7 @@ import javafx.scene.ImageCursor;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
 
 public class PopulateTool implements Tool {
 	
@@ -21,7 +22,7 @@ public class PopulateTool implements Tool {
 	public void doAction(MouseEvent event, LightTrack lightTrack, KeyFrame keyFrame, int timestamp, double normalizedY) {
 		if (event.getEventType() == MouseEvent.MOUSE_CLICKED) {
 					
-			lightTrack.addKeyFrame(new KeyFrame(timestamp, new LightState(null, (int) (255 * normalizedY), 0)));
+			lightTrack.addKeyFrame(new KeyFrame(timestamp, new LightState(Color.WHITE, (int) (255 * normalizedY), 0)));
 		}
 	}
 
