@@ -109,6 +109,7 @@ public class TrackView {
 		System.out.println("loading wave");
 		try {
 			this.backgroundWave = new Image(Paths.get("wave.png").toUri().toString());
+			canvas.setWidth(backgroundWave.getWidth());
 		} catch (IllegalArgumentException e) {
 			System.out.println("wave not generated yet probably?");
 		}
