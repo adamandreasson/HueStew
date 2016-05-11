@@ -1,5 +1,8 @@
 package com.huestew.studio.controller;
 
+import java.io.File;
+import java.io.IOException;
+
 import com.huestew.studio.HueStew;
 import com.huestew.studio.Toolbox;
 import com.huestew.studio.view.TrackView;
@@ -9,6 +12,8 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.AnchorPane;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 
 /**
  * Controller class for the Main JavaFX view
@@ -57,12 +62,11 @@ public class MainViewController extends ViewController {
 		});
 
 		/*
-		trackScrollPane.widthProperty().addListener((observableValue, oldSceneWidth, newSceneWidth) -> {
-			trackCanvas.setWidth((double) newSceneWidth - 16);
-			trackView.redraw();
-		});
-*/
-		
+		 * trackScrollPane.widthProperty().addListener((observableValue,
+		 * oldSceneWidth, newSceneWidth) -> { trackCanvas.setWidth((double)
+		 * newSceneWidth - 16); trackView.redraw(); });
+		 */
+
 		trackScrollPane.heightProperty().addListener((observableValue, oldSceneHeight, newSceneHeight) -> {
 			trackCanvas.setHeight((double) newSceneHeight - 16);
 			trackView.redraw();
@@ -94,5 +98,20 @@ public class MainViewController extends ViewController {
 	@FXML
 	private void pauseButtonPressed() {
 		HueStew.getInstance().getPlayer().pause();
+	}
+
+	@FXML
+	private void saveButtonClicked() {
+		System.out.println("saving");
+		FileChooser fileChooser = new FileChooser();
+		fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
+		fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("JPG", "*.jpg"),
+				new FileChooser.ExtensionFilter("PNG", "*.png"));
+		fileChooser.setTitle("Choose save location");
+		File file = fileChooser.showSaveDialog(new Stage());
+		if (file != null) {
+			System.out.println("SAVING");
+		}
+
 	}
 }

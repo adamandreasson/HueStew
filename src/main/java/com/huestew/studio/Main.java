@@ -8,7 +8,7 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 public class Main extends Application {
-
+	
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		MainViewController controller = (MainViewController) Util.loadFxml("main.fxml");
