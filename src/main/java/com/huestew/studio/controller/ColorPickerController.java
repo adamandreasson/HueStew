@@ -5,12 +5,11 @@ import com.huestew.studio.model.KeyFrame;
 import com.huestew.studio.model.LightState;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
+
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
-
-
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 
 public class ColorPickerController extends ViewController {
@@ -20,9 +19,10 @@ public class ColorPickerController extends ViewController {
 		
 	@FXML TextField newTimestamp;
 		
-	@FXML Button changeLightStateButton;
-		
 	@FXML Slider brightnessSlider;
+	
+	@FXML AnchorPane colorPickerPane;
+	
 	
 	private KeyFrame keyframe; 
 	
@@ -36,30 +36,20 @@ public class ColorPickerController extends ViewController {
 		
 	}
 	
-	
 	@FXML
-	private void changeLightStateButtonPressed() {
-		updateKeyFrame();
-	
-		
-		
-	}
-	
-		
-		
-	private void updateKeyFrame(){
-							
-		keyframe.setTimestamp(Integer.parseInt(newTimestamp.getText()));
+	private void brightnessSliderOnDragDetected() {
 		keyframe.getState().setBrightness((int)(brightnessSlider.getValue()));
 		
-		/*
-        .setColor(c);
-        .setBrightness((int)c.getBrightness()*255);
-        .setSaturation((int)c.getSaturation()*255);
-			*/
 		
 	}
 	
+	@FXML
+	private void newTimestampOnAction(){
+		keyframe.setTimestamp(Integer.parseInt(newTimestamp.getText()));
+	}
+	
+	
+		
 	public void setKeyFrame(KeyFrame keyframe){
 		this.keyframe = keyframe;
 		
