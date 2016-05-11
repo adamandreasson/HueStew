@@ -50,6 +50,7 @@ public class TrackView {
 	 */
 	public TrackView(Canvas canvas) {
 		this.canvas = canvas;
+		canvas.setVisible(false);
 
 		// Register mouse event handlers
 		canvas.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
@@ -179,13 +180,14 @@ public class TrackView {
 	}
 
 	public void redraw() {
-		if(HueStew.getInstance().getShow().getAudio() == null){
-			System.out.println("AUDIO IS NULL");
+		if (HueStew.getInstance().getShow().getAudio() == null || backgroundWave == null) {
+			System.out.println("Missing audio or waveform image");
 			return;
-		
 		}
-		if(backgroundWave == null && backgroundWaveFilePath != null)
-			loadWave(backgroundWaveFilePath);
+		
+		if (!canvas.isVisible()) {
+			canvas.setVisible(true);
+		}
 		
 		// Perform drawing on javafx main thread
 		Platform.runLater(new Runnable() {
