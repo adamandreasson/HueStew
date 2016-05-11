@@ -3,8 +3,6 @@
  */
 package com.huestew.studio.model;
 
-import javafx.scene.paint.Color;
-
 /**
  * A class for graphical representation of virtual bulbs.
  * @author Adam
@@ -17,7 +15,7 @@ public class VirtualBulb {
 	private double x = 0;
 	private double y = 0;
 	/** the color of the virtual bulb. **/
-	private Color color;
+	private LightState state;
 
 	/**
 	 * Sets the new position for the virtual bulb.
@@ -48,23 +46,19 @@ public class VirtualBulb {
 	public double getY() {
 		return y;
 	}
-
+	
 	/**
-	 * Get the color of the bulb.
-	 * @return
-	 * 			the color of the bulb as an RGB value.
+	 * @return the state
 	 */
-	public Color getColor() {
-		return new Color(color.getRed(), color.getGreen(), color.getBlue(), 1);
+	public LightState getState() {
+		return state;
 	}
 
 	/**
-	 * Change the color of the bulb.
-	 * @param color
-	 * 				the new color of the bulb as an RGB value.
+	 * @param state the state to set
 	 */
-	public void setColor(Color color) {
-		this.color = new Color(color.getRed(), color.getGreen(), color.getBlue(), 1);
+	public void setState(LightState state) {
+		this.state = state;
 	}
 
 }

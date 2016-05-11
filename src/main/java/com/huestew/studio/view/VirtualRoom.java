@@ -13,15 +13,16 @@ import javafx.scene.paint.RadialGradient;
 import javafx.scene.paint.Stop;
 
 /**
- * A class for graphical representation of virtual bulbs. 
+ * A class for graphical representation of virtual bulbs.
+ * 
  * @author Adam
  *
  */
 public class VirtualRoom {
 
-	/** the canvas used to draw the virtual room in.**/
+	/** the canvas used to draw the virtual room in. **/
 	private Canvas canvas;
-	
+
 	/** list of all virtual bulbs in the virtual room **/
 	private List<VirtualBulb> bulbs;
 
@@ -31,11 +32,12 @@ public class VirtualRoom {
 	public VirtualRoom() {
 		bulbs = new ArrayList<VirtualBulb>();
 	}
-	
+
 	/**
 	 * Adds a bulb to the list
+	 * 
 	 * @param bulb
-	 * 				the buld which is to be added to the list
+	 *            the buld which is to be added to the list
 	 */
 	public void addBulb(VirtualBulb bulb) {
 		bulbs.add(bulb);
@@ -43,9 +45,10 @@ public class VirtualRoom {
 
 	/**
 	 * Sets a new canvas for the virtual room to be drawn in.
+	 * 
 	 * @param canvas
-	 * 				the new canvas.
-	 */				
+	 *            the new canvas.
+	 */
 	public void setCanvas(Canvas canvas) {
 		this.canvas = canvas;
 	}
@@ -55,19 +58,23 @@ public class VirtualRoom {
 	 */
 	public void redraw() {
 
-		if(canvas == null)
+		if (canvas == null)
 			return;
-		
+
 		GraphicsContext gc = canvas.getGraphicsContext2D();
 		gc.setFill(Color.BLACK);
 		gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
 		for (VirtualBulb bulb : bulbs) {
-		    gc.setFill(new RadialGradient(0, 0, 0.5, 0.5, 0.5, true,
-		               CycleMethod.REFLECT,
-		               new Stop(0.1, new Color(bulb.getColor().getRed(), bulb.getColor().getGreen(), bulb.getColor().getBlue(), 1)),
-		               new Stop(1.0, Color.BLACK)));
-			gc.fillOval(bulb.getX()*canvas.getWidth()+60, bulb.getY()*canvas.getHeight()-30, 60, 60);
+
+			Color bulbColor = new Color(bulb.getState().getColor().getRed(), bulb.getState().getColor().getGreen(),
+					bulb.getState().getColor().getBlue(), (bulb.getState().getBrightness() / 255.0));
+			
+			double firstStop = 0.0 + 0.1 * (bulb.getState().getBrightness() / 255.0);
+
+			gc.setFill(new RadialGradient(0, 0, 0.5, 0.5, 0.5, true, CycleMethod.REFLECT,
+					new Stop(firstStop, bulbColor), new Stop(1.0, Color.BLACK)));
+			gc.fillOval(bulb.getX() * canvas.getWidth() + 60, bulb.getY() * canvas.getHeight() - 30, 60, 60);
 		}
 
 	}

@@ -42,7 +42,7 @@ public class VirtualLight implements Light {
 	 * 				the new state for the virtualbulb
 	 */
 	public void setState(LightState state) {
-		bulb.setColor(state.getColor());
+		bulb.setState(state);
 	}
 
 	@Override
