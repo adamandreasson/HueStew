@@ -4,9 +4,12 @@ import com.huestew.studio.Toolbox;
 import com.huestew.studio.model.KeyFrame;
 import com.huestew.studio.model.LightState;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 
 import javafx.scene.control.ColorPicker;
+import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
@@ -23,8 +26,29 @@ public class ColorPickerController extends ViewController {
 	
 	@FXML AnchorPane colorPickerPane;
 	
+	@FXML Label brightnessLabel;
 	
 	private KeyFrame keyframe; 
+	
+	@Override
+	public void init() {
+		
+		brightnessSlider.valueChangingProperty().addListener(new ChangeListener<Object>(){
+
+			@Override
+			public void changed(ObservableValue arg0, Object arg1, Object arg2) {
+				brightnessLabel.textProperty().setValue(String.valueOf((int)brightnessSlider.getValue()));
+				
+			}
+			 
+			
+			
+			               
+		});
+		
+		brightnessLabel.textProperty().setValue("value");
+		
+	}
 	
 	
 	@FXML
@@ -35,14 +59,15 @@ public class ColorPickerController extends ViewController {
 		
 		
 	}
-	
+/*
+	/*so fakkin laggy
 	@FXML
 	private void brightnessSliderOnDragDetected() {
 		keyframe.getState().setBrightness((int)(brightnessSlider.getValue()));
 		
 		
 	}
-	
+	*/
 	@FXML
 	private void newTimestampOnAction(){
 		keyframe.setTimestamp(Integer.parseInt(newTimestamp.getText()));

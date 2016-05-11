@@ -14,6 +14,7 @@ import com.huestew.studio.util.GraphicsUtil;
 import com.huestew.studio.util.Util;
 
 import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.scene.Cursor;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -25,6 +26,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 /**
  * @author Adam
@@ -58,6 +60,15 @@ public class TrackView {
 				stage.setScene(new Scene(cpc.getView()));
 				//stage.initModality(Modality.APPLICATION_MODAL);
 				stage.show();
+				
+				stage.setOnCloseRequest(new EventHandler<WindowEvent>(){
+					public void handle(WindowEvent we) {
+			              System.out.println("window closed, update trackview");
+			              HueStew.getInstance().getView().updateTrackView();
+			          }
+					//test
+				});
+				
 				cpc.setKeyFrame(hoveringKeyFrame);
 
 			}
