@@ -68,11 +68,10 @@ public class MainViewController extends ViewController {
 			HueStew.getInstance().getView().getVirtualRoom().redraw();
 		});
 
-		/*
-		 * trackScrollPane.widthProperty().addListener((observableValue,
-		 * oldSceneWidth, newSceneWidth) -> { trackCanvas.setWidth((double)
-		 * newSceneWidth - 16); trackView.redraw(); });
-		 */
+		trackScrollPane.widthProperty().addListener((observableValue, oldSceneWidth, newSceneWidth) -> {
+			trackCanvas.setWidth((double) newSceneWidth - 16);
+			trackView.redraw();
+		});
 
 		trackScrollPane.heightProperty().addListener((observableValue, oldSceneHeight, newSceneHeight) -> {
 			trackCanvas.setHeight((double) newSceneHeight - 16);

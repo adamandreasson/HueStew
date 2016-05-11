@@ -10,6 +10,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
 import javax.imageio.ImageIO;
@@ -22,8 +24,9 @@ import javax.sound.sampled.TargetDataLine;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 /**
- * Class for creating a waveform png image from a wav-file.
- * Original code written by Andrew Thompson at stackoverflow.com: http://stackoverflow.com/a/11024268
+ * Class for creating a waveform png image from a wav-file. Original code
+ * written by Andrew Thompson at stackoverflow.com:
+ * http://stackoverflow.com/a/11024268
  * 
  * @author Andrew Thompson
  * @author Adam
@@ -33,7 +36,7 @@ public class WaveBuilder {
 
 	final int SCALE = 2;
 	final int ACCURACY = 40;
-	
+
 	AudioInputStream audioInputStream;
 	Vector<Line2D.Double> lines = new Vector<Line2D.Double>();
 	Capture capture = new Capture();
@@ -41,11 +44,13 @@ public class WaveBuilder {
 	String fileName;
 	SamplingGraph samplingGraph;
 	String waveformFilename;
-	
+
 	int width;
 	int height;
 	int imgWidth;
 	int imgHeight;
+	
+	private List<String> imagePaths;
 
 	public WaveBuilder(String string, String waveformFilename, int width, int height) {
 		this.width = width * SCALE;
@@ -53,6 +58,8 @@ public class WaveBuilder {
 		this.imgWidth = width;
 		this.imgHeight = height;
 		this.fileName = waveformFilename;
+		
+		this.imagePaths = new ArrayList<String>();
 
 		try {
 			audioInputStream = AudioSystem.getAudioInputStream(new File(string));
@@ -68,6 +75,13 @@ public class WaveBuilder {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	/**
+	 * @return the imagePaths
+	 */
+	public List<String> getImagePaths() {
+		return imagePaths;
 	}
 
 	/**
@@ -134,10 +148,8 @@ public class WaveBuilder {
 			byte my_byte = 0;
 			double y_last = 0;
 			int numChannels = format.getChannels();
-			
+
 			for (double x = 0; x < width * ACCURACY && audioData != null; x++) {
-				if(x%32 != 0)
-					continue;
 				int totalByte = 0;
 				for (int i = 0; i < ACCURACY; i++) {
 					int idx = (int) (frames_per_pixel * numChannels * x / ACCURACY);
@@ -172,17 +184,32 @@ public class WaveBuilder {
 			// Create a new BufferedImage to write to disk
 			BufferedImage saveImage = new BufferedImage(imgWidth, imgHeight, BufferedImage.TYPE_INT_ARGB);
 			Graphics g = saveImage.getGraphics();
-			
+
 			// Copy downscaled image onto saveImage
 			g.drawImage(scaledImage, 0, 0, null);
 			g.dispose();
 			
-			try {
-				// Save as PNG
-				File file = new File(fileName);
-				ImageIO.write(saveImage, "png", file);
+			int images = (int) Math.ceil(imgWidth/1024.0);
+			
+			for (int i = 0; i < images; i++) {
+
+				int widthCrop = 1024;
+				if(1024 * (i+1) > imgWidth)
+					widthCrop = imgWidth - 1024 * i;
 				
-			} catch (IOException e) {
+				BufferedImage crop = saveImage.getSubimage(1024 * i, 0, widthCrop, imgHeight);
+
+				try {
+					// Save as PNG
+					File file = new File(fileName + "_" + i + ".png");
+					ImageIO.write(crop, "png", file);
+
+					System.out.println("SAVED CROP TO " + file.getPath());
+					
+					imagePaths.add(file.toURI().toString());
+
+				} catch (IOException e) {
+				}
 			}
 		}
 

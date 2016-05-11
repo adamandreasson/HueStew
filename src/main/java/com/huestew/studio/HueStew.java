@@ -169,11 +169,12 @@ public class HueStew {
 					int width = (int) ((show.getDuration()/1000.0) * TrackView.PIXELS_PER_SECOND);
 					System.out.println("wave width " + width);
 					
-					String tmpWaveFile = tmp.toString()+System.getProperty("file.separator")+"wave.png";
-					new WaveBuilder(tmpSongFile, tmpWaveFile, width, 400);
+					String tmpWaveFile = tmp.toString()+System.getProperty("file.separator")+"wave";
+					WaveBuilder builder = new WaveBuilder(tmpSongFile, tmpWaveFile, width, 400);
 
 					System.out.println("WAVE GENERATED DONE");
-					HueStew.getInstance().getView().updateWaveImage(new File(tmpWaveFile).toURI().toString());
+					
+					HueStew.getInstance().getView().updateWaveImage(builder.getImagePaths(), width);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}

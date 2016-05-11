@@ -77,8 +77,6 @@ public class LightTrack {
 		// Find latest key frame
 		KeyFrame latestKeyFrame = keyFrames.floor(new KeyFrame(timestamp, null));
 		KeyFrame nextKeyFrame = keyFrames.ceiling(new KeyFrame(timestamp, null));
-		if (latestKeyFrame != null && nextKeyFrame != null)
-			System.out.println(latestKeyFrame.getTimestamp() + " > " + nextKeyFrame.getTimestamp());
 
 		// TODO should null key frames be allowed?
 		// Notify listeners

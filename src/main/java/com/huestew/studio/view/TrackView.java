@@ -1,5 +1,6 @@
 package com.huestew.studio.view;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.TreeSet;
@@ -31,8 +32,7 @@ public class TrackView {
 	public static final int PIXELS_PER_SECOND = 100;
 
 	private Canvas canvas;
-	private String backgroundWaveFilePath = null;
-	private Image backgroundWave;
+	private List<Image> backgroundWaveImages;
 
 	private KeyFrame hoveringKeyFrame = null;
 	private boolean isMouseDown = false;
@@ -50,11 +50,11 @@ public class TrackView {
 		// Register mouse event handlers
 		canvas.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
 			if (event.getButton() == MouseButton.SECONDARY && hoveringKeyFrame != null) {
-				
+
 				ColorPickerController cpc = (ColorPickerController) Util.loadFxml("/com/huestew/studio/colorpicker.fxml");
-				
+
 				cpc.setKeyFrame(hoveringKeyFrame);
-				
+
 				HueStew.getInstance().getMainViewController().setColorPickerPane(cpc.getView());
 			}
 
@@ -100,15 +100,19 @@ public class TrackView {
 		});
 	}
 
-	public void loadWave(String filePath) {
+	public void loadWaves(List<String> filePaths, int totalWidth) {
+
+		this.backgroundWaveImages = new ArrayList<Image>();
 		
-		backgroundWaveFilePath = filePath;
 		try {
-			this.backgroundWave = new Image(filePath);
-			System.out.println("setting canvas wirdth to " + backgroundWave.getWidth());
-			canvas.setWidth(backgroundWave.getWidth());
+			for(String path : filePaths){
+				System.out.println(path);
+				this.backgroundWaveImages.add(new Image(path));
+			}
+			System.out.println("setting canvas wirdth to " + totalWidth);
+			//canvas.setWidth(totalWidth);
 			redraw();
-			
+
 		} catch (IllegalArgumentException e) {
 			System.out.println("wave not generated yet probably?");
 		}
@@ -159,19 +163,19 @@ public class TrackView {
 	}
 
 	public void redraw() {
-		if (HueStew.getInstance().getShow().getAudio() == null || backgroundWave == null) {
+		if (HueStew.getInstance().getShow().getAudio() == null || backgroundWaveImages == null) {
 			System.out.println("Missing audio or waveform image");
 			return;
 		}
-		
+
 		if (!canvas.isVisible()) {
 			canvas.setVisible(true);
 		}
-		
+
 		// Perform drawing on javafx main thread
 		Platform.runLater(new Runnable() {
 			public void run() {
-				
+
 				GraphicsContext gc = canvas.getGraphicsContext2D();
 				gc.setFill(Color.LIGHTGRAY);
 				gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
@@ -188,9 +192,7 @@ public class TrackView {
 		gc.setFill(Color.WHITESMOKE);
 		gc.fillRect(0, 0, canvas.getWidth(), 40);
 
-		if (backgroundWave != null) {
-			gc.drawImage(backgroundWave, 0, 40, backgroundWave.getWidth(), canvas.getHeight() - 40);
-		}
+		drawWave(gc);
 
 		gc.setStroke(Color.GRAY);
 		gc.setLineWidth(1);
@@ -203,7 +205,7 @@ public class TrackView {
 		if (ticks == 0) {
 			ticks = 60;
 		}
-		
+
 		// Draw out the ticks on the timeline
 		for (int i = 0; i <= ticks; i++) {
 
@@ -215,6 +217,24 @@ public class TrackView {
 			}
 			GraphicsUtil.sharpLine(gc, getXFromTime(time), i % 5 == 0 ? 32 : 36, getXFromTime(time), 40);
 		}
+	}
+
+	private void drawWave(GraphicsContext gc) {
+		if (backgroundWaveImages == null) 
+			return;
+		
+		int i = 0;
+		for(Image image : backgroundWaveImages){
+			
+			int startY = 1024*i;
+			
+			if(startY > canvas.getWidth())
+				return;
+			
+			gc.drawImage(image, startY, 40, image.getWidth(), canvas.getHeight() - 40);
+			i++;
+		}
+		
 	}
 
 	private void drawLightTracks(GraphicsContext gc) {

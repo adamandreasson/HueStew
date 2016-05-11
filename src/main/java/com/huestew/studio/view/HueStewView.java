@@ -3,6 +3,8 @@
  */
 package com.huestew.studio.view;
 
+import java.util.List;
+
 /**
  * @author Adam Andreasson
  *
@@ -36,7 +38,7 @@ public class HueStewView {
 		this.trackView = trackView;
 	}
 
-	public void updateWaveImage(String filePath) {
-		trackView.loadWave(filePath);
+	public void updateWaveImage(List<String> filePaths, int totalWidth) {
+		trackView.loadWaves(filePaths, totalWidth);
 	}
 }
