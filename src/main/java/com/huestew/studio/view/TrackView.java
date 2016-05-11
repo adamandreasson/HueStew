@@ -1,6 +1,5 @@
 package com.huestew.studio.view;
 
-import java.nio.file.Paths;
 import java.util.Iterator;
 import java.util.List;
 import java.util.TreeSet;
@@ -24,7 +23,6 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
@@ -37,6 +35,7 @@ public class TrackView {
 	public static final int PIXELS_PER_SECOND = 100;
 
 	private Canvas canvas;
+	private String backgroundWaveFilePath = null;
 	private Image backgroundWave;
 
 	private KeyFrame hoveringKeyFrame = null;
@@ -115,11 +114,14 @@ public class TrackView {
 		});
 	}
 
-	public void loadWave() {
-		System.out.println("loading wave");
+	public void loadWave(String filePath) {
+		
+		backgroundWaveFilePath = filePath;
 		try {
-			this.backgroundWave = new Image(Paths.get("wave.png").toUri().toString());
+			this.backgroundWave = new Image(filePath);
 			canvas.setWidth(backgroundWave.getWidth());
+			redraw();
+			
 		} catch (IllegalArgumentException e) {
 			System.out.println("wave not generated yet probably?");
 		}
@@ -170,14 +172,18 @@ public class TrackView {
 	}
 
 	public void redraw() {
-		// TODO move this elsewhere
-		if (backgroundWave == null) {
-			loadWave();
+		if(HueStew.getInstance().getShow().getAudio() == null){
+			System.out.println("AUDIO IS NULL");
+			return;
+		
 		}
-
+		if(backgroundWave == null && backgroundWaveFilePath != null)
+			loadWave(backgroundWaveFilePath);
+		
 		// Perform drawing on javafx main thread
 		Platform.runLater(new Runnable() {
 			public void run() {
+				
 				GraphicsContext gc = canvas.getGraphicsContext2D();
 				gc.setFill(Color.LIGHTGRAY);
 				gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());

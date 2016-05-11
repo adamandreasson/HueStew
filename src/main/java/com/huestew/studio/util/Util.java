@@ -7,6 +7,8 @@ import com.huestew.studio.controller.ViewController;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import javafx.scene.image.Image;
+import javafx.stage.Stage;
 
 /**
  * Various utilities.
@@ -34,5 +36,11 @@ public class Util {
 		controller.setView(view);
 		controller.init();
 		return controller;
+	}
+	
+	public static Stage createStage(){
+		Stage stage = new Stage();
+		stage.getIcons().add(new Image("icon_256x256.png"));
+		return stage;
 	}
 }

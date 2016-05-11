@@ -19,6 +19,10 @@ public class Audio {
 		return new Media(file.toURI().toString());
 	}
 	
+	public File getFile(){
+		return file;
+	}
+	
 	public Image getWaveBackground() {
 		// TODO 
 		throw new UnsupportedOperationException();

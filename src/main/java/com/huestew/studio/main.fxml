@@ -59,7 +59,7 @@
                         </AnchorPane>
                         <ScrollPane fx:id="trackScrollPane" hbarPolicy="ALWAYS" prefHeight="200.0" prefWidth="200.0" style="-fx-focus-color: transparent; -fx-faint-focus-color: transparent;" vbarPolicy="ALWAYS" AnchorPane.bottomAnchor="32.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                           <content>
-                            <AnchorPane fx:id="trackCanvasPane" minHeight="0.0" minWidth="0.0" prefHeight="165.0" prefWidth="626.0">
+                            <AnchorPane fx:id="trackCanvasPane" minHeight="0.0" minWidth="0.0">
                                  <children>
                                     <Canvas fx:id="trackCanvas" height="164.0" width="626.0" AnchorPane.bottomAnchor="27.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                  </children>
@@ -97,9 +97,9 @@
             </MenuBar>
             <FlowPane>
                <children>
-                  <Button mnemonicParsing="false" text="New" />
+                  <Button mnemonicParsing="false" onAction="#newButtonPressed" text="New" />
                   <Button mnemonicParsing="false" text="Open" />
-                  <Button mnemonicParsing="false" onAction="#saveButtonClicked" text="Save" />
+                  <Button mnemonicParsing="false" onAction="#saveButtonPressed" text="Save" />
                   <Button mnemonicParsing="false" text="Save As" />
                   <Separator orientation="VERTICAL" prefHeight="30.0">
                      <padding>

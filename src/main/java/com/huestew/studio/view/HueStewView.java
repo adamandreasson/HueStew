@@ -36,7 +36,7 @@ public class HueStewView {
 		this.trackView = trackView;
 	}
 
-	public void updateWaveImage() {
-		trackView.loadWave();
+	public void updateWaveImage(String filePath) {
+		trackView.loadWave(filePath);
 	}
 }

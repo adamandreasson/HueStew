@@ -63,9 +63,7 @@ public class HueStew {
 			show.addLightTrack(track);
 		}
 
-		// TEST CODE PLS IGNORE
-		show.setAudio(new Audio(new File("song.mp3")));
-		player = new Player(show);
+
 	}
 
 	public static HueStew getInstance() {
@@ -135,6 +133,11 @@ public class HueStew {
 	public void setView(HueStewView view) {
 		this.view = view;
 	}
+
+	public void openAudio(File file) {
+		show.setAudio(new Audio(file));
+		player = new Player(show);
+	}
 	
 	public void loadWave(){
 
@@ -145,16 +148,19 @@ public class HueStew {
 			public void run() {
 				try {
 					Path tmp = Files.createTempDirectory("HueStew_");
-					String tmpSongFile = tmp.toString()+"/song.wav";
-					FileUtil.convertAudioFile("song.mp3", tmpSongFile);
+					String tmpSongFile = tmp.toString()+System.getProperty("file.separator")+"/song.wav";
+					System.out.println(" eh "+show.getAudio().getFile().getPath());
+					FileUtil.convertAudioFile(show.getAudio().getFile().getPath(), tmpSongFile);
 
 					System.out.println("SHOW DURACTION " + show.getDuration());
 					int width = (int) ((show.getDuration()/1000.0) * TrackView.PIXELS_PER_SECOND);
 					System.out.println("wave width " + width);
-					new WaveBuilder(tmpSongFile, "wave.png", width, 400);
+					
+					String tmpWaveFile = tmp.toString()+System.getProperty("file.separator")+"wave.png";
+					new WaveBuilder(tmpSongFile, tmpWaveFile, width, 400);
 
 					System.out.println("WAVE GENERATED DONE");
-					HueStew.getInstance().getView().updateWaveImage();
+					HueStew.getInstance().getView().updateWaveImage(new File(tmpWaveFile).toURI().toString());
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
