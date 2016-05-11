@@ -92,9 +92,11 @@ public class Player {
 
 	/** pauses the show at the current timestamp **/
 	public void pause() {
-		pauseTime = getCurrentTime();
-		mediaPlayer.pause();
-		playingThread.interrupt();
+		if (mediaPlayer.getStatus() == Status.PLAYING) {
+			pauseTime = getCurrentTime();
+			mediaPlayer.pause();
+			playingThread.interrupt();
+		}
 	}
 
 	/** stops playing the show and resets the timestamp to 0 **/
