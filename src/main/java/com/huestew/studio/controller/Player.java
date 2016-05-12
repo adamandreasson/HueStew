@@ -87,6 +87,7 @@ public class Player {
 
 		});
 
+		playingThread.setDaemon(true);
 		playingThread.start();
 	}
 

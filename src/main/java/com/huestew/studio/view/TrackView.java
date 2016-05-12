@@ -33,6 +33,9 @@ public class TrackView {
 
 	private Canvas canvas;
 	private List<Image> backgroundWaveImages;
+	
+	private double offsetX = 0;
+	private double scrollOriginX = -1;
 
 	private KeyFrame hoveringKeyFrame = null;
 	private boolean isMouseDown = false;
@@ -49,6 +52,8 @@ public class TrackView {
 
 		// Register mouse event handlers
 		canvas.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+			isMouseDown = false;
+			
 			if (event.getButton() == MouseButton.SECONDARY && hoveringKeyFrame != null) {
 
 				ColorPickerController cpc = (ColorPickerController) Util.loadFxml("/com/huestew/studio/colorpicker.fxml");
@@ -58,18 +63,34 @@ public class TrackView {
 				HueStew.getInstance().getMainViewController().setColorPickerPane(cpc.getView());
 			}
 
-			if (event.getButton() == MouseButton.PRIMARY) {
+			if (scrollOriginX != -1) {
+				scrollOriginX = -1;
+			} else {
 				sendMouseEventToTool(event);
 			}
-
-			isMouseDown = false;
-
 		});
 		canvas.addEventHandler(MouseEvent.MOUSE_PRESSED, event -> {
 			isMouseDown = true;
-			sendMouseEventToTool(event);
+			
+			if (event.getButton() == MouseButton.PRIMARY && event.getY() >= 20 
+					&& getTrackFromY(event.getY()) == null) {
+				// Scroll
+				scrollOriginX = event.getX();
+			} else {
+				sendMouseEventToTool(event);
+			}
 		});
-		canvas.addEventHandler(MouseEvent.MOUSE_DRAGGED, event -> sendMouseEventToTool(event));
+		canvas.addEventHandler(MouseEvent.MOUSE_DRAGGED, event -> {
+			if (scrollOriginX != -1) {
+				double offset = offsetX + scrollOriginX - event.getX();
+				double maxOffset = getXFromTime(HueStew.getInstance().getShow().getDuration()) + offsetX - canvas.getWidth();
+				offsetX = Math.max(0, Math.min(maxOffset, offset));
+				scrollOriginX = event.getX();
+				redraw();
+			} else {
+				sendMouseEventToTool(event);
+			}
+		});
 
 		canvas.addEventHandler(MouseEvent.MOUSE_MOVED, event -> {
 			// Get light track from mouse coordinates
@@ -85,7 +106,6 @@ public class TrackView {
 				updateHoveringKeyFrame(track, event);
 				canvas.setCursor(Toolbox.getCursor(hoveringKeyFrame != null, isMouseDown));
 			}
-
 		});
 
 		// Register key event handlers (after the scene has been created)
@@ -188,7 +208,6 @@ public class TrackView {
 	}
 
 	private void drawTimeline(GraphicsContext gc) {
-
 		gc.setFill(Color.WHITESMOKE);
 		gc.fillRect(0, 0, canvas.getWidth(), 40);
 
@@ -200,22 +219,19 @@ public class TrackView {
 
 		gc.setFill(Color.BLACK);
 
-		// TODO how many ticks should be drawn before the show duration has been set?
-		int ticks = HueStew.getInstance().getShow().getDuration() / 1000;
-		if (ticks == 0) {
-			ticks = 60;
-		}
+		int firstTick = getTimeFromX(0) / 1000;
+		int lastTick = getTimeFromX(canvas.getWidth()) / 1000;
 
 		// Draw out the ticks on the timeline
-		for (int i = 0; i <= ticks; i++) {
-
+		for (int i = firstTick; i <= lastTick; i++) {
 			int time = i * 1000;
+			double x = getXFromTime(time);
 			// If the timestamp is divisible by 10, we will draw a longer tick
 			// and display the time.
 			if (i % 10 == 0) {
-				gc.fillText("" + i, getXFromTime(time), 34);
+				gc.fillText("" + i, x, 34);
 			}
-			GraphicsUtil.sharpLine(gc, getXFromTime(time), i % 5 == 0 ? 32 : 36, getXFromTime(time), 40);
+			GraphicsUtil.sharpLine(gc, x, i % 5 == 0 ? 32 : 36, x, 40);
 		}
 	}
 
@@ -223,18 +239,20 @@ public class TrackView {
 		if (backgroundWaveImages == null) 
 			return;
 		
-		int i = 0;
-		for(Image image : backgroundWaveImages){
+		for (int i = 0; i < backgroundWaveImages.size(); i++) {
+			int startX = 1024 * i;
+			Image image = backgroundWaveImages.get(i);
 			
-			int startY = 1024*i;
+			// Skip if image is to the left of the canvas
+			if (startX + image.getWidth() < offsetX)
+				continue;
 			
-			if(startY > canvas.getWidth())
+			// Skip the rest if image is to the right of the canvas
+			if (startX > canvas.getWidth() + offsetX)
 				return;
 			
-			gc.drawImage(image, startY, 40, image.getWidth(), canvas.getHeight() - 40);
-			i++;
+			gc.drawImage(image, startX - offsetX, 40, image.getWidth(), canvas.getHeight() - 40);
 		}
-		
 	}
 
 	private void drawLightTracks(GraphicsContext gc) {
@@ -253,7 +271,7 @@ public class TrackView {
 	private void drawTrackPolygon(GraphicsContext gc, LightTrack track, double startY) {
 		gc.setFill(new Color(0.0, 0.2, 0.7, 0.5));
 		gc.beginPath();
-		gc.moveTo(0, startY + getTrackHeight());
+		gc.moveTo(getXFromTime(0), startY + getTrackHeight());
 
 		Iterator<KeyFrame> iterator = track.getKeyFrames().iterator();
 		double x = 0.0;
@@ -345,11 +363,11 @@ public class TrackView {
 	}
 
 	private double getXFromTime(int time) {
-		return (time * PIXELS_PER_SECOND / 1000.0);
+		return (time * PIXELS_PER_SECOND / 1000.0) - offsetX;
 	}
 
 	private int getTimeFromX(double x) {
-		return (int) (x / (PIXELS_PER_SECOND / 1000.0));
+		return (int) ((x + offsetX) / (PIXELS_PER_SECOND / 1000.0));
 	}
 
 	private double getRelativeYFromBrightness(int brightness) {

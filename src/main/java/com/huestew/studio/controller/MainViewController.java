@@ -38,9 +38,6 @@ public class MainViewController extends ViewController {
 	public AnchorPane colorPickerPane;
 
 	@FXML
-	private ScrollPane trackScrollPane;
-
-	@FXML
 	private Button removeToolButton;
 
 	@FXML
@@ -68,16 +65,15 @@ public class MainViewController extends ViewController {
 			HueStew.getInstance().getView().getVirtualRoom().redraw();
 		});
 
-		trackScrollPane.widthProperty().addListener((observableValue, oldSceneWidth, newSceneWidth) -> {
-			trackCanvas.setWidth((double) newSceneWidth - 16);
+		trackCanvasPane.widthProperty().addListener((observableValue, oldWidth, newWidth) -> {
+			trackCanvas.setWidth(newWidth.doubleValue());
 			trackView.redraw();
 		});
-
-		trackScrollPane.heightProperty().addListener((observableValue, oldSceneHeight, newSceneHeight) -> {
-			trackCanvas.setHeight((double) newSceneHeight - 16);
+		trackCanvasPane.heightProperty().addListener((observableValue, oldHeight, newHeight) -> {
+			trackCanvas.setHeight(newHeight.doubleValue());
 			trackView.redraw();
 		});
-
+		
 		HueStew.getInstance().getView().setTrackView(trackView);
 	}
 
