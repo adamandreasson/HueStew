@@ -64,6 +64,12 @@ public class MainViewController extends ViewController {
     @FXML
     private Button pauseButton;
     
+    @FXML
+    private Button saveButton;
+    
+    @FXML
+    private Button saveAsButton;
+    
 	private Stage stage;
 
 	@Override
@@ -228,6 +234,15 @@ public class MainViewController extends ViewController {
 	 */
 	public void updateTitle(String title) {
 		stage.setTitle(title);
+	}
+	
+	public void enableControls(){
+		saveButton.setDisable(false);
+		saveAsButton.setDisable(false);
+		playStartButton.setDisable(false);
+		playButton.setDisable(false);
+		pauseButton.setDisable(false);
+		volumeSlider.setDisable(false);
 	}
 
 	/**

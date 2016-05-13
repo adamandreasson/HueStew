@@ -92,4 +92,15 @@ public class HueStewView {
 	public void setWindowDimensions(String dimensions){
 		mvc.setStageSize(dimensions);
 	}
+
+	public void enableControls() {
+		Platform.runLater(new Runnable(){
+
+			@Override
+			public void run() {
+				mvc.enableControls();
+			}
+			
+		});
+	}
 }

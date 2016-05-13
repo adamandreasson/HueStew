@@ -117,6 +117,7 @@ public class HueStew {
 		player.setVolume(config.getVolume());
 
 		view.updateTitle(audioFile.getName() + " - HueStew Studio");
+		view.enableControls();
 
 	}
 
