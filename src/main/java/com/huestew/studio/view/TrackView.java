@@ -97,10 +97,7 @@ public class TrackView {
 		});
 		canvas.addEventHandler(MouseEvent.MOUSE_DRAGGED, event -> {
 			if (scrollOriginX != -1) {
-				double offset = offsetX + scrollOriginX - event.getX();
-				double maxOffset = getXFromTime(HueStew.getInstance().getShow().getDuration()) + offsetX
-						- canvas.getWidth();
-				offsetX = Math.max(0, Math.min(maxOffset, offset));
+				setOffset(offsetX + scrollOriginX - event.getX());
 				scrollOriginX = event.getX();
 				redraw();
 			} else {
@@ -277,6 +274,12 @@ public class TrackView {
 			redraw();
 		}
 	}
+	
+	private void setOffset(double offset) {
+		double maxOffset = getXFromTime(HueStew.getInstance().getShow().getDuration()) + offsetX
+				- canvas.getWidth();
+		offsetX = Math.max(0, Math.min(maxOffset, offset));
+	}
 
 	public void redraw() {
 		if (HueStew.getInstance().getShow() == null || HueStew.getInstance().getShow().getDuration() == 0) 
@@ -291,6 +294,12 @@ public class TrackView {
 		if (!canvas.isVisible()) 
 			canvas.setVisible(true);
 
+		// Scroll automatically
+		double x = getXFromTime(HueStew.getInstance().getCursor());
+		double edgeX = canvas.getWidth() - 300;
+		if (HueStew.getInstance().getPlayer().isPlaying() && x > edgeX) {
+			setOffset(offsetX + x - edgeX);
+		}
 
 		// Perform drawing on javafx main thread
 		Platform.runLater(new Runnable() {
