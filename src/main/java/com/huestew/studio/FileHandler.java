@@ -157,11 +157,12 @@ public class FileHandler {
 			everything = sb.toString();
 
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			// There is no saved data
+			return;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return;
 		}
 
 		JSONObject obj = new JSONObject(everything);
