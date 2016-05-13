@@ -52,6 +52,7 @@ public class TrackView {
 
 		// Register mouse event handlers
 		canvas.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+			canvas.requestFocus();
 			isMouseDown = false;
 			
 			if (event.getButton() == MouseButton.SECONDARY && hoveringKeyFrame != null) {
@@ -70,10 +71,12 @@ public class TrackView {
 			}
 		});
 		canvas.addEventHandler(MouseEvent.MOUSE_PRESSED, event -> {
+			canvas.requestFocus();
+			
 			isMouseDown = true;
 			
 			if (event.getButton() == MouseButton.PRIMARY && event.getY() >= 20 
-					&& getTrackFromY(event.getY()) == null) {
+					&& getTrackFromY(event.getY()) == null || event.getButton() == MouseButton.MIDDLE) {
 				// Scroll
 				scrollOriginX = event.getX();
 			} else {
@@ -107,17 +110,7 @@ public class TrackView {
 				canvas.setCursor(Toolbox.getCursor(hoveringKeyFrame != null, isMouseDown));
 			}
 		});
-
-		// Register key event handlers (after the scene has been created)
-		Platform.runLater(new Runnable() {
-			public void run() {
-				canvas.getScene().addEventHandler(KeyEvent.KEY_PRESSED, event -> Toolbox.getTool().doAction(event));
-				canvas.getScene().addEventHandler(KeyEvent.KEY_RELEASED, event -> {
-					keyDownEvent(event);
-					Toolbox.getTool().doAction(event);
-				});
-			}
-		});
+		
 	}
 
 	public void loadWaves(List<String> filePaths, int totalWidth) {
@@ -138,16 +131,16 @@ public class TrackView {
 		}
 	}
 
-	private void keyDownEvent(KeyEvent event) {
-
+	public void keyboardEvent(KeyEvent event) {
 		switch (event.getCode()) {
 		case SPACE:
 			HueStew.getInstance().getPlayer().toggle();
 			break;
 		default:
-			break;
+			return;
 		}
-
+		event.consume();
+		
 	}
 
 	private void updateHoveringKeyFrame(LightTrack track, MouseEvent event) {

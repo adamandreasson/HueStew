@@ -5,13 +5,14 @@ import com.huestew.studio.util.Util;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 
 public class Main extends Application {
-	
+
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		
+
 		MainViewController controller = (MainViewController) Util.loadFxml("main.fxml");
 		HueStew.getInstance().setMainViewController(controller);
 		primaryStage.setTitle("HueStew Studio");
@@ -19,9 +20,18 @@ public class Main extends Application {
 		primaryStage.setScene(scene);
 		primaryStage.getIcons().add(new Image("/icon_256x256.png"));
 		primaryStage.show();
-		
-		
-		
+
+		primaryStage.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+			HueStew.getInstance().getView().handleKeyboardEvent(event);
+			Toolbox.getTool().doAction(event);
+		});
+		primaryStage.addEventFilter(KeyEvent.KEY_RELEASED, event -> {
+			Toolbox.getTool().doAction(event);
+		});
+
+
+
+
 	}
 
 	public static void main(String[] args) {

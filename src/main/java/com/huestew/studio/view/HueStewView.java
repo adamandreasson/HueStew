@@ -5,6 +5,8 @@ package com.huestew.studio.view;
 
 import java.util.List;
 
+import javafx.scene.input.KeyEvent;
+
 /**
  * @author Adam Andreasson
  *
@@ -40,5 +42,9 @@ public class HueStewView {
 
 	public void updateWaveImage(List<String> filePaths, int totalWidth) {
 		trackView.loadWaves(filePaths, totalWidth);
+	}
+
+	public void handleKeyboardEvent(KeyEvent event) {
+		trackView.keyboardEvent(event);
 	}
 }
