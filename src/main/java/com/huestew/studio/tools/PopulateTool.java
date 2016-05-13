@@ -37,7 +37,7 @@ public class PopulateTool implements Tool {
 	@Override
 	public Cursor getCursor(boolean hoveringKeyFrame, boolean isMouseDown) {
 		if(hoveringKeyFrame)
-			return Cursor.DEFAULT;
+			return Cursor.HAND;
 		else
 			return cursor;
 	}
