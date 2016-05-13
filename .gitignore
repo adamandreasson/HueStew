@@ -5,3 +5,6 @@ bin/
 .classpath
 wave.png
 HueStew.jar
+plugins/HueStewHuePlugin/libs/huelocalsdk.jar
+plugins/HueStewHuePlugin/libs/huesdkresources.jar
+plugins/HueStewHuePlugin/libs/tablelayout.jar
