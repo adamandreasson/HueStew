@@ -42,6 +42,9 @@ public class FileHandler {
 		if (!appDirFile.exists() && !appDirFile.mkdir()) {
 			throw new AccessDeniedException("Could not initialize app directory in " + appDir);
 		}
+		File pluginFile = new File(appDirFile.toString() + System.getProperty("file.separator") + "plugins");
+		pluginFile.mkdir();
+
 	}
 
 	public String getTempFilePath(String file) {
@@ -137,7 +140,7 @@ public class FileHandler {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	
+
 	}
 
 	public void loadTrackData(Show show) {
@@ -158,6 +161,7 @@ public class FileHandler {
 
 		} catch (FileNotFoundException e) {
 			// There is no saved data
+			System.out.println("autosave file not found");
 			return;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -169,10 +173,10 @@ public class FileHandler {
 
 		JSONArray tracks = obj.getJSONArray("tracks");
 		for (int i = 0; i < tracks.length(); i++) {
-			
+
 			JSONArray frames = (JSONArray)tracks.get(i);
 			LightTrack track = new LightTrack();
-			
+
 			for (int j = 0; j < frames.length(); j++) {
 				JSONObject frameObj = (JSONObject)frames.get(j);
 				JSONObject stateObj = frameObj.getJSONObject("state");
@@ -182,9 +186,9 @@ public class FileHandler {
 				KeyFrame frame = new KeyFrame(frameObj.getInt("timestamp"), state, track);
 				track.addKeyFrame(frame);
 			}
-			
+
 			show.addLightTrack(track);
-			
+
 		}
 
 	}

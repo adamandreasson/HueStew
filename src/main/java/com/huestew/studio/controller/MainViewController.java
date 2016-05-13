@@ -199,6 +199,8 @@ public class MainViewController extends ViewController {
 		System.out.println("saving");
 
 		HueStew.getInstance().save();
+		
+		HueStew.getInstance().getView().updateFooterStatus("Saved.");
 		/*
 		 * FileChooser fileChooser = new FileChooser();
 		 * fileChooser.setInitialDirectory(new
