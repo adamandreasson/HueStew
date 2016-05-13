@@ -7,7 +7,6 @@ import javafx.scene.paint.Color;
 
 import java.io.File;
 import java.nio.file.AccessDeniedException;
-import com.huestew.studio.controller.MainViewController;
 import com.huestew.studio.controller.Player;
 import com.huestew.studio.model.Audio;
 import com.huestew.studio.model.LightBank;
@@ -37,7 +36,6 @@ public class HueStew {
 	private Player player;
 	private int cursor;
 	private int tickDuration;
-	private MainViewController mvc;
 	private FileHandler fileHandler;
 	private HueStewConfig config;
 
@@ -65,7 +63,7 @@ public class HueStew {
 		if (!musicFile.exists())
 			return;
 
-		updateFooterStatus("Loading last session...");
+		view.updateFooterStatus("Loading last session...");
 		initShow(musicFile);
 
 	}
@@ -115,6 +113,8 @@ public class HueStew {
 		show.setAudio(new Audio(audioFile));
 		player = new Player(show);
 		player.setVolume(config.getVolume());
+		
+		view.updateTitle(audioFile + " - HueStew Studio");
 
 	}
 
@@ -125,19 +125,9 @@ public class HueStew {
 		System.out.println("wave width " + width);
 		getView().updateTrackView();
 
-		updateFooterStatus("Generating waveform...");
+		view.updateFooterStatus("Generating waveform...");
 		createWave(width);
 
-	}
-
-	/**
-	 * Update the footer status text
-	 * @param msg
-	 */
-	public void updateFooterStatus(String msg){
-		if(mvc == null)
-			return;
-		mvc.updateFooterStatus(msg);
 	}
 
 	private void createWave(int width) {
@@ -158,7 +148,7 @@ public class HueStew {
 				WaveBuilder builder = new WaveBuilder(tmpSongFile, tmpWaveFile, width, 400);
 
 				HueStew.getInstance().getView().updateWaveImage(builder.getImagePaths());
-				updateFooterStatus("Ready");
+				view.updateFooterStatus("Ready");
 			}
 
 		});
@@ -214,17 +204,6 @@ public class HueStew {
 
 		// TODO this should probably not be here
 		getView().getVirtualRoom().redraw();
-	}
-
-	public void setMainViewController(MainViewController mvc) {
-		this.mvc = mvc;
-
-		mvc.setVolume(config.getVolume());
-	}
-
-	public MainViewController getMainViewController() {
-		return mvc;
-
 	}
 
 	public int getTickDuration() {

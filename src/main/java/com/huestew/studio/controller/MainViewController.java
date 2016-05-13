@@ -16,6 +16,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 
 /**
  * Controller class for the Main JavaFX view
@@ -53,6 +54,8 @@ public class MainViewController extends ViewController {
 
 	@FXML
 	private Label footerStatus;
+
+	private Stage stage;
 
 	@Override
 	public void init() {
@@ -189,6 +192,25 @@ public class MainViewController extends ViewController {
 				footerStatus.setText(label);
 			}
 		});
+	}
+
+	/**
+	 * Update the window title. Uses Platform.runLater to avoid multithread
+	 * issues
+	 * 
+	 * @param title
+	 *            New title
+	 */
+	public void updateTitle(String title) {
+		stage.setTitle(title);
+	}
+
+	/**
+	 * @param stage
+	 *            the stage to set
+	 */
+	public void setStage(Stage stage) {
+		this.stage = stage;
 	}
 
 }

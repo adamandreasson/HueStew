@@ -53,7 +53,7 @@ public class TrackView {
 			isMouseDown = false;
 
 			if (event.getButton() == MouseButton.SECONDARY && hoveringKeyFrame != null) {
-				HueStew.getInstance().getMainViewController().openColorPickerPane(hoveringKeyFrame);
+				HueStew.getInstance().getView().openColorPickerPane(hoveringKeyFrame);
 			}
 
 			if (scrollOriginX != -1) {
