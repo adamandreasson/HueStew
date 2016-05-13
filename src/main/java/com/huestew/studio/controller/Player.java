@@ -22,38 +22,38 @@ public class Player {
 	private MediaPlayer mediaPlayer;
 
 	private Thread playingThread;
-	
+
 	private int pauseTime;
 
 	public Player(Show show) {
 
 		this.show = show;
-		
+
 		try {
 
 			Media media = show.getAudio().getFxMedia();
 			mediaPlayer = new MediaPlayer(media);
 			mediaPlayer.setAutoPlay(false);
 
-			 mediaPlayer.setOnReady(new Runnable() {
+			mediaPlayer.setOnReady(new Runnable() {
 
-			        @Override
-			        public void run() {
-						show.setDuration((int)media.getDuration().toMillis());
-						
-						HueStew.getInstance().playerReady();
-			        }
-			    });
-			
-			
+				@Override
+				public void run() {
+					show.setDuration((int) media.getDuration().toMillis());
+
+					HueStew.getInstance().playerReady();
+				}
+			});
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
 	/**
-	 * Starts the player unless it's already playing.
-	 * Creates a new playingThread which handles updating logic and visuals in sync with the media file.
+	 * Starts the player unless it's already playing. Creates a new
+	 * playingThread which handles updating logic and visuals in sync with the
+	 * media file.
 	 */
 	public void play() {
 		if (mediaPlayer.getStatus() == Status.PLAYING)
@@ -68,7 +68,7 @@ public class Player {
 			public void run() {
 				boolean keepRunning = true;
 
-				//Keep updating unless the thread is interrupted
+				// Keep updating unless the thread is interrupted
 				while (keepRunning) {
 
 					HueStew.getInstance().tick();
@@ -77,7 +77,8 @@ public class Player {
 						// Sleep for 33 ms (Run at 30 fps)
 						Thread.sleep(HueStew.getInstance().getTickDuration());
 					} catch (InterruptedException e) {
-						// If the thread is interrupted, stop the loop and kill it safely
+						// If the thread is interrupted, stop the loop and kill
+						// it safely
 						keepRunning = false;
 					}
 				}
@@ -106,7 +107,7 @@ public class Player {
 	}
 
 	public int getCurrentTime() {
-		if(pauseTime > 0)
+		if (pauseTime > 0)
 			return pauseTime;
 		return (int) mediaPlayer.getCurrentTime().toMillis();
 	}
@@ -117,17 +118,21 @@ public class Player {
 	}
 
 	public void seek(int time) {
-		mediaPlayer.seek(Duration.millis(time));	
+		mediaPlayer.seek(Duration.millis(time));
 
-		if(!isPlaying()){
+		if (!isPlaying()) {
 			HueStew.getInstance().tick();
 		}
 	}
 
 	public void toggle() {
-		if(!isPlaying())
+		if (!isPlaying())
 			play();
 		else
 			pause();
+	}
+	
+	public void setVolume(double volume) {
+		mediaPlayer.setVolume(volume);
 	}
 }

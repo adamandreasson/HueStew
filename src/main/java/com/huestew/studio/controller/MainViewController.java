@@ -81,7 +81,9 @@ public class MainViewController extends ViewController {
 
 
 		volumeSlider.valueProperty().addListener((observableValue, oldValue, newValue) -> {
-			System.out.println(newValue);
+			double normalizedVolume = newValue.doubleValue()/100;
+			HueStew.getInstance().getPlayer().setVolume(normalizedVolume);
+			HueStew.getInstance().getConfig().setVolume(normalizedVolume);
 		});
 
 	}
@@ -159,6 +161,10 @@ public class MainViewController extends ViewController {
 		colorPickerPane.getChildren().clear();
 		colorPickerPane.getChildren().add(cpc.getView());
 
+	}
+
+	public void setVolume(double volume) {
+		volumeSlider.setValue(volume*100);
 	}
 
 }

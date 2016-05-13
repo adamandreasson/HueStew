@@ -26,7 +26,7 @@ public class FileHandler {
 		}
 		appDir = System.getProperty("user.home") + System.getProperty("file.separator") + "HueStew";
 		File appDirFile = new File(appDir);
-		if(!appDirFile.exists() && !appDirFile.mkdir()){
+		if (!appDirFile.exists() && !appDirFile.mkdir()) {
 			throw new AccessDeniedException("Could not initialize app directory in " + appDir);
 		}
 	}
@@ -39,7 +39,7 @@ public class FileHandler {
 		return appDir + System.getProperty("file.separator") + file;
 	}
 
-	public void saveConfig(HueStewConfig config){
+	public void saveConfig(HueStewConfig config) {
 
 		Properties prop = new Properties();
 		OutputStream output = null;
@@ -51,6 +51,7 @@ public class FileHandler {
 			prop.setProperty("saveDir", config.getSaveDirectory());
 			prop.setProperty("musicDir", config.getMusicDirectory());
 			prop.setProperty("musicFilePath", config.getMusicFilePath());
+			prop.setProperty("volume", String.valueOf(config.getVolume()));
 
 			prop.store(output, null);
 
@@ -71,7 +72,7 @@ public class FileHandler {
 
 	public HueStewConfig loadConfig() {
 
-		if(new File(getAppFilePath("config.properties")).exists()){
+		if (new File(getAppFilePath("config.properties")).exists()) {
 
 			Properties prop = new Properties();
 			InputStream input = null;
@@ -81,7 +82,8 @@ public class FileHandler {
 				input = new FileInputStream(getAppFilePath("config.properties"));
 				prop.load(input);
 
-				return new HueStewConfig(prop.getProperty("saveDir"), prop.getProperty("musicDir"), prop.getProperty("musicFilePath"));
+				return new HueStewConfig(prop.getProperty("saveDir", appDir), prop.getProperty("musicDir", System.getProperty("user.home")),
+						prop.getProperty("musicFilePath", ""), Double.parseDouble(prop.getProperty("volume", "1.0")));
 
 			} catch (IOException ex) {
 				ex.printStackTrace();
@@ -95,8 +97,8 @@ public class FileHandler {
 				}
 			}
 		}
-		
-		return new HueStewConfig(appDir, System.getProperty("user.home"), "");
+
+		return new HueStewConfig(appDir, System.getProperty("user.home"), "", 1.0);
 
 	}
 

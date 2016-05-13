@@ -54,7 +54,6 @@ public class HueStew {
 		this.config = fileHandler.loadConfig();
 
 		loadAutoSave();
-
 	}
 
 	private void loadAutoSave() {
@@ -111,6 +110,8 @@ public class HueStew {
 
 	public void setMainViewController(MainViewController mvc) {
 		this.mvc = mvc;
+
+		mvc.setVolume(config.getVolume());
 	}
 
 	public MainViewController getMainViewController() {
@@ -176,6 +177,7 @@ public class HueStew {
 
 		show.setAudio(new Audio(audioFile));
 		player = new Player(show);
+		player.setVolume(config.getVolume());
 
 	}
 
@@ -218,6 +220,7 @@ public class HueStew {
 	}
 
 	public void autoSave() {
+		fileHandler.saveConfig(config);
 		save();
 	}
 

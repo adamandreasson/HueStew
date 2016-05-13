@@ -12,11 +12,13 @@ public class HueStewConfig {
 	private String saveDirectory;
 	private String musicDirectory;
 	private String musicFilePath;
+	private double volume;
 	
-	public HueStewConfig(String saveDirectory, String musicDirectory, String musicFilePath){
+	public HueStewConfig(String saveDirectory, String musicDirectory, String musicFilePath, double volume){
 		this.saveDirectory = saveDirectory;
 		this.musicDirectory = musicDirectory;
 		this.musicFilePath = musicFilePath;
+		this.volume = volume;
 	}
 	
 	/**
@@ -54,6 +56,20 @@ public class HueStewConfig {
 	 */
 	public void setMusicFilePath(String musicFilePath) {
 		this.musicFilePath = musicFilePath;
+	}
+
+	/**
+	 * @return the volume
+	 */
+	public double getVolume() {
+		return volume;
+	}
+
+	/**
+	 * @param volume the volume to set
+	 */
+	public void setVolume(double volume) {
+		this.volume = volume;
 	}
 	
 }
