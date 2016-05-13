@@ -14,6 +14,8 @@ import com.huestew.studio.model.LightState;
 import com.huestew.studio.model.LightTrack;
 import com.huestew.studio.model.Show;
 import com.huestew.studio.model.VirtualBulb;
+import com.huestew.studio.plugin.PluginHandler;
+import com.huestew.studio.plugin.PluginLoader;
 import com.huestew.studio.util.FileUtil;
 import com.huestew.studio.util.WaveBuilder;
 import com.huestew.studio.view.HueStewView;
@@ -38,13 +40,21 @@ public class HueStew {
 	private int tickDuration;
 	private FileHandler fileHandler;
 	private HueStewConfig config;
+	private PluginHandler pluginHandler;
 
 	private HueStew() {
+		
 		try {
 			this.fileHandler = new FileHandler();
 		} catch (AccessDeniedException e) {
 			handleError(e);
 		}
+		
+		pluginHandler = new PluginHandler();
+		File pluginFolder = new File(fileHandler.getAppFilePath("plugins/"));
+		System.out.println(pluginFolder);
+		new PluginLoader(pluginFolder, pluginHandler);
+		
 		this.view = new HueStewView();
 		this.lightBank = new LightBank();
 		this.tickDuration = 33;
@@ -52,6 +62,13 @@ public class HueStew {
 		this.config = fileHandler.loadConfig();
 
 		loadAutoSave();
+	}
+
+	public static HueStew getInstance() {
+		if (instance == null) {
+			instance = new HueStew();
+		}
+		return instance;
 	}
 
 	private void loadAutoSave() {
@@ -72,13 +89,6 @@ public class HueStew {
 		// TODO
 		System.out.println("ERROR: " + e.getMessage());
 		e.printStackTrace();
-	}
-
-	public static HueStew getInstance() {
-		if (instance == null) {
-			instance = new HueStew();
-		}
-		return instance;
 	}
 
 	public void tick() {
@@ -179,6 +189,7 @@ public class HueStew {
 
 	public void save() {
 
+		pluginHandler.sendLightState();
 		fileHandler.saveTrackData();
 
 	}
@@ -234,6 +245,13 @@ public class HueStew {
 		}
 
 		this.tickDuration = tickDuration;
+	}
+
+	/**
+	 * @return the pluginHandler
+	 */
+	public PluginHandler getPluginHandler() {
+		return pluginHandler;
 	}
 
 	/**
