@@ -25,7 +25,7 @@ public class PopulateTool implements Tool {
 
 		if (event.getEventType() == MouseEvent.MOUSE_CLICKED) {
 
-			lightTrack.addKeyFrame(new KeyFrame(timestamp, new LightState(Color.WHITE, (int) (255 * normalizedY), 0)));
+			lightTrack.addKeyFrame(new KeyFrame(timestamp, new LightState(Color.WHITE, (int) (255 * normalizedY), 0), lightTrack));
 		}
 	}
 

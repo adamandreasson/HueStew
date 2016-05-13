@@ -33,7 +33,14 @@ import javafx.scene.shape.Rectangle;
  */
 public class TrackView {
 	private static final int KEY_FRAME_SIZE = 5;
+	private static final int TRACK_SPACER = 10;
+	
 	public static final int PIXELS_PER_SECOND = 100;
+
+	public static final Color TIMELINE_COLOR = new Color(0.3, 0.3, 0.3, 1);
+	public static final Color TIMELINE_TICK_COLOR = new Color(0.5, 0.5, 0.5, 1);
+	public static final Color BACKGROUND_COLOR = new Color(0.4, 0.4, 0.4, 1);
+	public static final Color TRACK_COLOR = new Color(0.0, 0.0, 0.0, 0.2);
 
 	private Canvas canvas;
 	private List<Image> backgroundWaveImages;
@@ -170,6 +177,10 @@ public class TrackView {
 		// Get normalized y coordinate
 		double inverseTrackY = getTrackHeight() - getRelativeTrackY(track, event.getY());
 		double normalizedY = inverseTrackY / getTrackHeight();
+		if (normalizedY > 1)
+			normalizedY = 1;
+		if (normalizedY < 0)
+			normalizedY = 0;
 
 		// Pass event to current tool
 		Toolbox.getActiveTool().doAction(event, track, hoveringKeyFrame, getTimeFromX(event.getX()), normalizedY);
@@ -245,7 +256,6 @@ public class TrackView {
 				if (frameX > minX && frameX < maxX) {
 					if (localFrameY > trackMinY && localFrameY < trackMaxY) {
 						selection.add(keyFrame);
-						System.out.println("frame " + keyFrame.toString() + " in selciton");
 					}
 				}
 			}
@@ -279,7 +289,7 @@ public class TrackView {
 			public void run() {
 
 				GraphicsContext gc = canvas.getGraphicsContext2D();
-				gc.setFill(Color.LIGHTGRAY);
+				gc.setFill(BACKGROUND_COLOR);
 				gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
 				drawTimeline(gc);
@@ -291,16 +301,17 @@ public class TrackView {
 	}
 
 	private void drawTimeline(GraphicsContext gc) {
-		gc.setFill(Color.WHITESMOKE);
+		gc.setFill(TIMELINE_COLOR);
 		gc.fillRect(0, 0, canvas.getWidth(), 40);
 
 		drawWave(gc);
 
-		gc.setStroke(Color.GRAY);
+		gc.setStroke(TIMELINE_TICK_COLOR);
 		gc.setLineWidth(1);
 		gc.strokeLine(0, 20.5, canvas.getWidth(), 20.5);
-
-		gc.setFill(Color.BLACK);
+		gc.strokeLine(0, 40.5, canvas.getWidth(), 40.5);
+		
+		gc.setFill(Color.WHITE);
 
 		int firstTick = getTimeFromX(0) / 1000;
 		int lastTick = getTimeFromX(canvas.getWidth()) / 1000;
@@ -341,12 +352,11 @@ public class TrackView {
 	private void drawLightTracks(GraphicsContext gc) {
 		int i = 0;
 		for (LightTrack track : HueStew.getInstance().getShow().getLightTracks()) {
+			gc.setFill(TRACK_COLOR);
+			gc.fillRect(0, getTrackPositionY(i), canvas.getWidth(), getTrackHeight());
+			
 			drawTrackPolygon(gc, track, getTrackPositionY(i));
 			drawKeyFrames(gc, track, getTrackPositionY(i));
-
-			gc.setStroke(Color.GRAY);
-			gc.setLineWidth(1);
-			gc.strokeLine(0, getTrackPositionY(i), canvas.getWidth(), getTrackPositionY(i));
 			i++;
 		}
 	}
@@ -425,7 +435,7 @@ public class TrackView {
 
 	private LightTrack getTrackFromY(double y) {
 		double adjustedY = y - getTotalTrackPositionY();
-		int trackNumber = (int) Math.floor(adjustedY / getTrackHeight());
+		int trackNumber = (int) Math.floor(adjustedY / (getTrackHeight() + TRACK_SPACER));
 		List<LightTrack> tracks = HueStew.getInstance().getShow().getLightTracks();
 		if (trackNumber >= 0 && trackNumber < tracks.size()) {
 			return tracks.get(trackNumber);
@@ -435,7 +445,7 @@ public class TrackView {
 
 	private KeyFrame getKeyFrame(LightTrack track, double x, double y) {
 		TreeSet<KeyFrame> keyFrames = track.getKeyFrames();
-		KeyFrame target = new KeyFrame(getTimeFromX(x), null);
+		KeyFrame target = new KeyFrame(getTimeFromX(x));
 
 		KeyFrame left = keyFrames.floor(target);
 		KeyFrame right = keyFrames.ceiling(target);
@@ -480,7 +490,7 @@ public class TrackView {
 	}
 
 	private double getTrackHeight() {
-		return getTotalTrackHeight() / HueStew.getInstance().getShow().getLightTracks().size();
+		return getTotalTrackHeight() / HueStew.getInstance().getShow().getLightTracks().size() - TRACK_SPACER;
 	}
 
 	private double getTotalTrackHeight() {
@@ -488,7 +498,7 @@ public class TrackView {
 	}
 
 	private double getTrackPositionY(int i) {
-		return getTotalTrackPositionY() + getTrackHeight() * i;
+		return getTotalTrackPositionY() + (getTrackHeight() + TRACK_SPACER) * i;
 	}
 
 	private double getTotalTrackPositionY() {

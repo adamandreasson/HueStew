@@ -12,6 +12,8 @@ public class KeyFrame implements Comparable<KeyFrame> {
 	private int timestamp;
 
 	private LightState state;
+	
+	private LightTrack track;
 
 	/**
 	 * Creates a new KeyFrame object with the specified values.
@@ -19,9 +21,14 @@ public class KeyFrame implements Comparable<KeyFrame> {
 	 * @param timestamp
 	 * @param lightState
 	 */
-	public KeyFrame(int timestamp, LightState state) {
+	public KeyFrame(int timestamp, LightState state, LightTrack track) {
 		this.setTimestamp(timestamp);
 		this.setState(state);
+		this.track = track;
+	}
+
+	public KeyFrame(int timestamp) {
+		this.setTimestamp(timestamp);
 	}
 
 	/**
@@ -97,6 +104,8 @@ public class KeyFrame implements Comparable<KeyFrame> {
 			return false;
 		KeyFrame other = (KeyFrame) obj;
 		if (timestamp != other.timestamp)
+			return false;
+		if (track != other.track)
 			return false;
 		return true;
 	}

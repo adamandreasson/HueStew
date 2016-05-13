@@ -15,7 +15,7 @@ public class LightTrackTest {
 	@Before
 	public void before() {
 		track = new LightTrack();
-		keyFrame = new KeyFrame(0, null);
+		keyFrame = new KeyFrame(0, null, null);
 	}
 
 	@Test

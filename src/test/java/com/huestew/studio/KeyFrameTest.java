@@ -15,7 +15,7 @@ public class KeyFrameTest {
 
 	@Before
 	public void before() {
-		keyFrame = new KeyFrame(0, null);
+		keyFrame = new KeyFrame(0, null, null);
 	}
 	
 	@Test
