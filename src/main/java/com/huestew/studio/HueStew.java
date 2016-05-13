@@ -94,9 +94,11 @@ public class HueStew {
 		this.show = new Show();
 
 		// TEST CODE PLS REMOVE LATER
-		for (int i = 0; i < 3; i++) {
+		int numLights = 5;
+		for (int i = 0; i < numLights; i++) {
 			VirtualBulb bulb = new VirtualBulb();
-			bulb.setPosition(i * (1.0 / 3), 1.0 / 2);
+			double x = (i+1) * (1.0 / (numLights+1));
+			bulb.setPosition(x, 1.0 / 2);
 
 			Light light = new VirtualLight(bulb);
 			LightState state = new LightState(Color.WHITE, 255, 255);
