@@ -9,7 +9,9 @@ import com.huestew.studio.HueStew;
 import com.huestew.studio.Toolbox;
 import com.huestew.studio.model.KeyFrame;
 import com.huestew.studio.model.LightTrack;
+import com.huestew.studio.tools.SelectTool;
 import com.huestew.studio.util.GraphicsUtil;
+
 import javafx.application.Platform;
 import javafx.scene.Cursor;
 import javafx.scene.canvas.Canvas;
@@ -19,6 +21,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 
 /**
  * @author Adam
@@ -33,6 +36,7 @@ public class TrackView {
 
 	private double offsetX = 0;
 	private double scrollOriginX = -1;
+	private Rectangle selectRectangle;
 
 	private KeyFrame hoveringKeyFrame = null;
 	private boolean isMouseDown = false;
@@ -67,8 +71,8 @@ public class TrackView {
 
 			isMouseDown = true;
 
-			if (event.getButton() == MouseButton.PRIMARY && event.getY() >= 20 
-					&& getTrackFromY(event.getY()) == null || event.getButton() == MouseButton.MIDDLE) {
+			if (event.getButton() == MouseButton.PRIMARY && event.getY() >= 20 && getTrackFromY(event.getY()) == null
+					|| event.getButton() == MouseButton.MIDDLE) {
 				// Scroll
 				scrollOriginX = event.getX();
 			} else {
@@ -78,7 +82,8 @@ public class TrackView {
 		canvas.addEventHandler(MouseEvent.MOUSE_DRAGGED, event -> {
 			if (scrollOriginX != -1) {
 				double offset = offsetX + scrollOriginX - event.getX();
-				double maxOffset = getXFromTime(HueStew.getInstance().getShow().getDuration()) + offsetX - canvas.getWidth();
+				double maxOffset = getXFromTime(HueStew.getInstance().getShow().getDuration()) + offsetX
+						- canvas.getWidth();
 				offsetX = Math.max(0, Math.min(maxOffset, offset));
 				scrollOriginX = event.getX();
 				redraw();
@@ -110,11 +115,11 @@ public class TrackView {
 		this.backgroundWaveImages = new ArrayList<Image>();
 
 		try {
-			for(String path : filePaths){
+			for (String path : filePaths) {
 				System.out.println(path);
 				this.backgroundWaveImages.add(new Image(path));
 			}
-			
+
 			redraw();
 
 		} catch (IllegalArgumentException e) {
@@ -147,9 +152,14 @@ public class TrackView {
 			return;
 		}
 
-		if(hoveringKeyFrame != null)
+		// TODO what's that smell?
+		if (Toolbox.getActiveTool() instanceof SelectTool) {
+			updateSelectRectangle(event);
+		}
+
+		if (hoveringKeyFrame != null)
 			Toolbox.SELECT.setActive();
-		if(event.getEventType() == MouseEvent.MOUSE_CLICKED)
+		if (event.getEventType() == MouseEvent.MOUSE_CLICKED)
 			Toolbox.reset();
 
 		// Get normalized y coordinate
@@ -161,6 +171,30 @@ public class TrackView {
 
 		// Redraw canvas
 		redraw();
+	}
+
+	private void updateSelectRectangle(MouseEvent event) {
+		
+		if (event.getEventType() == MouseEvent.MOUSE_PRESSED && hoveringKeyFrame == null) {
+			
+			selectRectangle = new Rectangle(0, 0);
+			selectRectangle.setX(event.getX());
+			selectRectangle.setY(event.getY());
+			
+		} else if (event.getEventType() == MouseEvent.MOUSE_DRAGGED) {
+			
+			if(selectRectangle == null)
+				return;
+			
+			selectRectangle.setWidth(event.getX() - selectRectangle.getX());
+			selectRectangle.setHeight(event.getY() - selectRectangle.getY());
+			
+		} else if (event.getEventType() == MouseEvent.MOUSE_CLICKED) {
+			
+			selectRectangle = null;
+			
+		}
+		
 	}
 
 	private void parseTrackEvent(MouseEvent event) {
@@ -193,6 +227,7 @@ public class TrackView {
 
 				drawTimeline(gc);
 				drawLightTracks(gc);
+				drawSelection(gc);
 				drawCursor(gc);
 			}
 		});
@@ -227,7 +262,7 @@ public class TrackView {
 	}
 
 	private void drawWave(GraphicsContext gc) {
-		if (backgroundWaveImages == null) 
+		if (backgroundWaveImages == null)
 			return;
 
 		for (int i = 0; i < backgroundWaveImages.size(); i++) {
@@ -309,6 +344,19 @@ public class TrackView {
 				new double[] { y, y + KEY_FRAME_SIZE, y, y - KEY_FRAME_SIZE }, 4);
 	}
 
+	private void drawSelection(GraphicsContext gc) {
+
+		if (selectRectangle != null) {
+			gc.rect(selectRectangle.getX(), selectRectangle.getY(), selectRectangle.getWidth(),
+					selectRectangle.getHeight());
+			gc.setFill(new Color(0.2, 0.0, 1.0, 0.1));
+			gc.setStroke(new Color(0.2, 0.0, 1.0, 0.9));
+			gc.setLineWidth(0.5);
+			gc.fill();
+			gc.stroke();
+		}
+	}
+	
 	private LightTrack getTrackFromY(double y) {
 		double adjustedY = y - getTotalTrackPositionY();
 		int trackNumber = (int) Math.floor(adjustedY / getTrackHeight());
