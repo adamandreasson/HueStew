@@ -4,6 +4,7 @@ import java.io.File;
 
 import com.huestew.studio.HueStew;
 import com.huestew.studio.Toolbox;
+import com.huestew.studio.model.KeyFrame;
 import com.huestew.studio.util.Util;
 import com.huestew.studio.view.TrackView;
 
@@ -11,7 +12,7 @@ import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
-import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Slider;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 
@@ -45,6 +46,9 @@ public class MainViewController extends ViewController {
 
 	@FXML
 	private Button moveToolButton;
+	
+    @FXML
+    private Slider volumeSlider;
 
 	@Override
 	public void init() {
@@ -75,11 +79,12 @@ public class MainViewController extends ViewController {
 		});
 		
 		HueStew.getInstance().getView().setTrackView(trackView);
-	}
+	
 
-	public void setColorPickerPane(Parent colorPickerPane) {
-		this.colorPickerPane.getChildren().add(colorPickerPane);
-
+		volumeSlider.valueProperty().addListener((observableValue, oldValue, newValue) -> {
+			System.out.println(newValue);
+		});
+		
 	}
 
 	@FXML
@@ -134,4 +139,16 @@ public class MainViewController extends ViewController {
 		}
 
 	}
+
+	public void openColorPickerPane(KeyFrame hoveringKeyFrame) {
+
+		ColorPickerController cpc = (ColorPickerController) Util.loadFxml("/com/huestew/studio/colorpicker.fxml");
+
+		cpc.setKeyFrame(hoveringKeyFrame);
+
+		colorPickerPane.getChildren().clear();
+		colorPickerPane.getChildren().add(cpc.getView());
+		
+	}
+	
 }

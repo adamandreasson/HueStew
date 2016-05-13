@@ -1,9 +1,8 @@
 package com.huestew.studio.controller;
 
+import com.huestew.studio.HueStew;
 import com.huestew.studio.model.KeyFrame;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 
 import javafx.scene.control.ColorPicker;
@@ -36,16 +35,14 @@ public class ColorPickerController extends ViewController {
 		brightnessSlider.setMinorTickCount(0);
 		brightnessSlider.setSnapToTicks(true);
 		*/
-		brightnessSlider.valueProperty().addListener(new ChangeListener<Object>(){
+		
 
-			@Override
-			public void changed(ObservableValue<?> arg0, Object arg1, Object arg2) {
-				brightnessLabel.textProperty().setValue(String.valueOf((int)brightnessSlider.getValue()));
-				keyframe.getState().setBrightness((int)(brightnessSlider.getValue()));
-			}
-			          
+		brightnessSlider.valueProperty().addListener((observableValue, oldValue, newValue) -> {
+			brightnessLabel.textProperty().setValue(String.valueOf(newValue.intValue()));
+			keyframe.getState().setBrightness(newValue.intValue());
+			HueStew.getInstance().getView().updateTrackView();
 		});
-
+		
 	}
 	
 	

@@ -56,12 +56,7 @@ public class TrackView {
 			isMouseDown = false;
 
 			if (event.getButton() == MouseButton.SECONDARY && hoveringKeyFrame != null) {
-
-				ColorPickerController cpc = (ColorPickerController) Util.loadFxml("/com/huestew/studio/colorpicker.fxml");
-
-				cpc.setKeyFrame(hoveringKeyFrame);
-
-				HueStew.getInstance().getMainViewController().setColorPickerPane(cpc.getView());
+				HueStew.getInstance().getMainViewController().openColorPickerPane(hoveringKeyFrame);
 			}
 
 			if (scrollOriginX != -1) {
