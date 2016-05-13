@@ -6,10 +6,7 @@ package com.huestew.studio;
 import javafx.scene.paint.Color;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-
+import java.nio.file.AccessDeniedException;
 import com.huestew.studio.controller.MainViewController;
 import com.huestew.studio.controller.Player;
 import com.huestew.studio.model.Audio;
@@ -41,32 +38,42 @@ public class HueStew {
 	private int cursor;
 	private int tickDuration;
 	private MainViewController mvc;
+	private FileHandler fileHandler;
+	private HueStewConfig config;
 
 	private HueStew() {
+		try {
+			this.fileHandler = new FileHandler();
+		} catch (AccessDeniedException e) {
+			handleError(e);
+		}
 		this.view = new HueStewView();
 		this.lightBank = new LightBank();
-		this.show = new Show();
 		this.tickDuration = 33;
-		
-		
-		// TEST CODE PLS REMOVE LATER
-		for (int i = 0; i < 3; i++) {
-			VirtualBulb bulb = new VirtualBulb();
-			bulb.setPosition(i*(1.0/3), 1.0/2);
 
-			Light light = new VirtualLight(bulb);
-			LightState state = new LightState(Color.WHITE, 255, 255);
-			light.setState(state);
-			lightBank.getLights().add(light);
+		this.config = fileHandler.loadConfig();
 
-			view.getVirtualRoom().addBulb(bulb);
+		loadAutoSave();
 
-			LightTrack track = new LightTrack();
-			track.addListener(light);
-			show.addLightTrack(track);
-		}
+	}
 
+	private void loadAutoSave() {
 
+		if (config.getMusicFilePath().isEmpty())
+			return;
+
+		File musicFile = new File(config.getMusicFilePath());
+		if (!musicFile.exists())
+			return;
+
+		initShow(musicFile);
+
+	}
+
+	private void handleError(Exception e) {
+		// TODO
+		System.out.println("ERROR: " + e.getMessage());
+		e.printStackTrace();
 	}
 
 	public static HueStew getInstance() {
@@ -101,17 +108,16 @@ public class HueStew {
 		// TODO this should probably not be here
 		getView().getVirtualRoom().redraw();
 	}
-	
-	public void setMainViewController(MainViewController mvc){
+
+	public void setMainViewController(MainViewController mvc) {
 		this.mvc = mvc;
 	}
-	
-	public MainViewController getMainViewController(){
+
+	public MainViewController getMainViewController() {
 		return mvc;
-		
+
 	}
-	
-	
+
 	public int getTickDuration() {
 		return tickDuration;
 	}
@@ -124,7 +130,7 @@ public class HueStew {
 		this.tickDuration = tickDuration;
 	}
 
-	public void tick(){
+	public void tick() {
 		// Update model logics
 		setCursor(player.getCurrentTime());
 
@@ -147,42 +153,83 @@ public class HueStew {
 		this.view = view;
 	}
 
-	public void openAudio(File file) {
-		show.setAudio(new Audio(file));
-		player = new Player(show);
-	}
-	
-	public void loadWave(){
+	public void initShow(File audioFile) {
 
+		this.show = new Show();
+
+		// TEST CODE PLS REMOVE LATER
+		for (int i = 0; i < 3; i++) {
+			VirtualBulb bulb = new VirtualBulb();
+			bulb.setPosition(i * (1.0 / 3), 1.0 / 2);
+
+			Light light = new VirtualLight(bulb);
+			LightState state = new LightState(Color.WHITE, 255, 255);
+			light.setState(state);
+			lightBank.getLights().add(light);
+
+			view.getVirtualRoom().addBulb(bulb);
+
+			LightTrack track = new LightTrack();
+			track.addListener(light);
+			show.addLightTrack(track);
+		}
+
+		show.setAudio(new Audio(audioFile));
+		player = new Player(show);
+
+	}
+
+	public void playerReady() {
+
+		System.out.println("SHOW DURACTION " + show.getDuration());
+		int width = (int) ((show.getDuration() / 1000.0) * TrackView.PIXELS_PER_SECOND);
+		System.out.println("wave width " + width);
+		getView().updateTrackView();
+		
+		createWave(width);
+
+	}
+
+	private void createWave(int width) {
+
+		String tmpSongFile = fileHandler.getTempFilePath("song.wav");
+		System.out.println(tmpSongFile);
+
+		System.out.println(" eh " + show.getAudio().getFile().getPath());
 		// THIS SHOULD ALL BE ELSEWHERE
-		Thread thread = new Thread(new Runnable(){
+		Thread thread = new Thread(new Runnable() {
 
 			@Override
 			public void run() {
-				try {
-					Path tmp = Files.createTempDirectory("HueStew_");
-					String tmpSongFile = tmp.toString()+System.getProperty("file.separator")+"/song.wav";
-					System.out.println(" eh "+show.getAudio().getFile().getPath());
-					FileUtil.convertAudioFile(show.getAudio().getFile().getPath(), tmpSongFile);
 
-					System.out.println("SHOW DURACTION " + show.getDuration());
-					int width = (int) ((show.getDuration()/1000.0) * TrackView.PIXELS_PER_SECOND);
-					System.out.println("wave width " + width);
-					
-					String tmpWaveFile = tmp.toString()+System.getProperty("file.separator")+"wave";
-					WaveBuilder builder = new WaveBuilder(tmpSongFile, tmpWaveFile, width, 400);
+				FileUtil.convertAudioFile(show.getAudio().getFile().getPath(), tmpSongFile);
 
-					System.out.println("WAVE GENERATED DONE");
-					
-					HueStew.getInstance().getView().updateWaveImage(builder.getImagePaths(), width);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+				String tmpWaveFile = fileHandler.getTempFilePath("wave");
+				WaveBuilder builder = new WaveBuilder(tmpSongFile, tmpWaveFile, width, 400);
+
+				System.out.println("WAVE GENERATED DONE");
+
+				HueStew.getInstance().getView().updateWaveImage(builder.getImagePaths());
 			}
 
 		});
 		thread.start();
-		
+
+	}
+
+	public void autoSave() {
+		save();
+	}
+
+	public void save() {
+		fileHandler.saveConfig(config);
+	}
+
+	/**
+	 * @return the config
+	 */
+	public HueStewConfig getConfig() {
+		return config;
 	}
 
 }

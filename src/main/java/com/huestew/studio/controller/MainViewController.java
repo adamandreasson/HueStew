@@ -9,7 +9,6 @@ import com.huestew.studio.util.Util;
 import com.huestew.studio.view.TrackView;
 
 import javafx.fxml.FXML;
-import javafx.scene.Parent;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
 import javafx.scene.control.Slider;
@@ -46,9 +45,9 @@ public class MainViewController extends ViewController {
 
 	@FXML
 	private Button moveToolButton;
-	
-    @FXML
-    private Slider volumeSlider;
+
+	@FXML
+	private Slider volumeSlider;
 
 	@Override
 	public void init() {
@@ -77,14 +76,14 @@ public class MainViewController extends ViewController {
 			trackCanvas.setHeight(newHeight.doubleValue());
 			trackView.redraw();
 		});
-		
+
 		HueStew.getInstance().getView().setTrackView(trackView);
-	
+
 
 		volumeSlider.valueProperty().addListener((observableValue, oldValue, newValue) -> {
 			System.out.println(newValue);
 		});
-		
+
 	}
 
 	@FXML
@@ -114,21 +113,32 @@ public class MainViewController extends ViewController {
 
 	@FXML
 	private void newButtonPressed() {
-		System.out.println("new");
 		FileChooser fileChooser = new FileChooser();
-		fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
+		
+		File initialDir = new File(HueStew.getInstance().getConfig().getMusicDirectory());
+		if(!initialDir.exists())
+			initialDir = new File(System.getProperty("user.home"));
+		
+		fileChooser.setInitialDirectory(initialDir);
 		fileChooser.setTitle("Open music file");
 		fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("mp3", "*.mp3"));
+
 		File file = fileChooser.showOpenDialog(Util.createStage());
+
 		if (file != null) {
-			System.out.println("OPENING " + file.getAbsolutePath());
+			HueStew.getInstance().getConfig().setMusicDirectory(file.getParent().toString());
+			HueStew.getInstance().getConfig().setMusicFilePath(file.toString());
+			HueStew.getInstance().initShow(file);
 		}
-		HueStew.getInstance().openAudio(file);
+
 	}
 
 	@FXML
 	private void saveButtonPressed() {
 		System.out.println("saving");
+
+		HueStew.getInstance().save();
+		/*
 		FileChooser fileChooser = new FileChooser();
 		fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
 		fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("JSON", "*.json"));
@@ -137,7 +147,7 @@ public class MainViewController extends ViewController {
 		if (file != null) {
 			System.out.println("SAVING TO " + file.getAbsolutePath());
 		}
-
+		 */
 	}
 
 	public void openColorPickerPane(KeyFrame hoveringKeyFrame) {
@@ -148,7 +158,7 @@ public class MainViewController extends ViewController {
 
 		colorPickerPane.getChildren().clear();
 		colorPickerPane.getChildren().add(cpc.getView());
-		
+
 	}
-	
+
 }

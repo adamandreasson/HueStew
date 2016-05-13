@@ -203,8 +203,6 @@ public class WaveBuilder {
 					// Save as PNG
 					File file = new File(fileName + "_" + i + ".png");
 					ImageIO.write(crop, "png", file);
-
-					System.out.println("SAVED CROP TO " + file.getPath());
 					
 					imagePaths.add(file.toURI().toString());
 

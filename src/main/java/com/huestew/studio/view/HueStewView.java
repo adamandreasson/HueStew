@@ -40,8 +40,8 @@ public class HueStewView {
 		this.trackView = trackView;
 	}
 
-	public void updateWaveImage(List<String> filePaths, int totalWidth) {
-		trackView.loadWaves(filePaths, totalWidth);
+	public void updateWaveImage(List<String> filePaths) {
+		trackView.loadWaves(filePaths);
 	}
 
 	public void handleKeyboardEvent(KeyEvent event) {

@@ -7,12 +7,9 @@ import java.util.TreeSet;
 
 import com.huestew.studio.HueStew;
 import com.huestew.studio.Toolbox;
-import com.huestew.studio.controller.ColorPickerController;
 import com.huestew.studio.model.KeyFrame;
 import com.huestew.studio.model.LightTrack;
 import com.huestew.studio.util.GraphicsUtil;
-import com.huestew.studio.util.Util;
-
 import javafx.application.Platform;
 import javafx.scene.Cursor;
 import javafx.scene.canvas.Canvas;
@@ -108,7 +105,7 @@ public class TrackView {
 
 	}
 
-	public void loadWaves(List<String> filePaths, int totalWidth) {
+	public void loadWaves(List<String> filePaths) {
 
 		this.backgroundWaveImages = new ArrayList<Image>();
 
@@ -117,8 +114,7 @@ public class TrackView {
 				System.out.println(path);
 				this.backgroundWaveImages.add(new Image(path));
 			}
-			System.out.println("setting canvas wirdth to " + totalWidth);
-			//canvas.setWidth(totalWidth);
+			
 			redraw();
 
 		} catch (IllegalArgumentException e) {
@@ -177,7 +173,7 @@ public class TrackView {
 	}
 
 	public void redraw() {
-		if (HueStew.getInstance().getShow().getAudio() == null || backgroundWaveImages == null) {
+		if (HueStew.getInstance().getShow().getDuration() == 0) {
 			System.out.println("Missing audio or waveform image");
 			return;
 		}

@@ -41,7 +41,7 @@ public class Player {
 			        public void run() {
 						show.setDuration((int)media.getDuration().toMillis());
 						
-						HueStew.getInstance().loadWave();
+						HueStew.getInstance().playerReady();
 			        }
 			    });
 			

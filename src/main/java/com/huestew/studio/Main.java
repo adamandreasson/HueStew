@@ -3,10 +3,12 @@ package com.huestew.studio;
 import com.huestew.studio.controller.MainViewController;
 import com.huestew.studio.util.Util;
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 public class Main extends Application {
 
@@ -29,7 +31,11 @@ public class Main extends Application {
 			Toolbox.getSelectedTool().doAction(event);
 		});
 
-
+        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            public void handle(WindowEvent we) {
+            	HueStew.getInstance().autoSave();
+            }
+        });     
 
 
 	}
