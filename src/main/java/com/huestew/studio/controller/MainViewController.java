@@ -14,6 +14,9 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
+import javafx.scene.control.Tooltip;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -52,6 +55,15 @@ public class MainViewController extends ViewController {
 	@FXML
 	private Label footerStatus;
 
+    @FXML
+    private Button playStartButton;
+
+    @FXML
+    private Button playButton;
+
+    @FXML
+    private Button pauseButton;
+    
 	private Stage stage;
 
 	@Override
@@ -94,6 +106,21 @@ public class MainViewController extends ViewController {
 
 		footerStatus.setText("");
 
+		playStartButton.setGraphic(new ImageView(new Image("icon_play_start.png")));
+		playStartButton.setTooltip(new Tooltip("Play from the beginning"));
+		
+		playButton.setGraphic(new ImageView(new Image("icon_play.png")));
+		playButton.setTooltip(new Tooltip("Play"));
+		
+		pauseButton.setGraphic(new ImageView(new Image("icon_pause.png")));
+		pauseButton.setTooltip(new Tooltip("Pause playback"));
+		
+		populateToolButton.setGraphic(new ImageView(new Image("icon_pencil.png")));
+		populateToolButton.setTooltip(new Tooltip("Populate tool"));
+		
+		selectToolButton.setGraphic(new ImageView(new Image("icon_cursor.png")));
+		selectToolButton.setTooltip(new Tooltip("Select tool"));
+		
 	}
 
 	@FXML
@@ -104,6 +131,12 @@ public class MainViewController extends ViewController {
 	@FXML
 	private void selectToolPressed() {
 		Toolbox.SELECT.select();
+	}
+
+	@FXML
+	private void playStartButtonPressed() {
+		HueStew.getInstance().getPlayer().seek(0);
+		HueStew.getInstance().getPlayer().play();
 	}
 
 	@FXML

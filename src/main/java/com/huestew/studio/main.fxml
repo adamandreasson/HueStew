@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.image.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.canvas.*?>
 <?import javafx.scene.control.*?>
@@ -30,30 +31,37 @@
                             <AnchorPane fx:id="colorPickerPane" minHeight="0.0" minWidth="0.0" />
                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                                  <children>
-                                    <AnchorPane prefHeight="32.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                                    <AnchorPane fx:id="previewCanvasPane" AnchorPane.bottomAnchor="32.0" AnchorPane.leftAnchor="32.0" AnchorPane.rightAnchor="32.0" AnchorPane.topAnchor="32.0">
+                                       <children>
+                                          <Canvas fx:id="previewCanvas" height="133.0" width="250.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                       </children>
+                                    </AnchorPane>
+                                    <AnchorPane prefHeight="32.0" prefWidth="315.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                                        <children>
                                           <HBox prefHeight="100.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="32.0" AnchorPane.rightAnchor="32.0" AnchorPane.topAnchor="0.0">
                                              <children>
-                                                <Button mnemonicParsing="false" onAction="#playButtonPressed" text="Play">
+                                                <Button fx:id="playStartButton" mnemonicParsing="false" onAction="#playStartButtonPressed">
                                                    <HBox.margin>
-                                                      <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
-                                                   </HBox.margin></Button>
-                                                <Button mnemonicParsing="false" onAction="#pauseButtonPressed" text="Pause">
+                                                      <Insets left="3.0" right="3.0" top="3.0" />
+                                                   </HBox.margin>
+                                                </Button>
+                                                <Button fx:id="playButton" mnemonicParsing="false" onAction="#playButtonPressed">
                                                    <HBox.margin>
-                                                      <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
-                                                   </HBox.margin></Button>
+                                                      <Insets left="3.0" right="3.0" top="3.0" />
+                                                   </HBox.margin>
+                                                </Button>
+                                                <Button fx:id="pauseButton" mnemonicParsing="false" onAction="#pauseButtonPressed">
+                                                   <HBox.margin>
+                                                      <Insets left="3.0" right="3.0" top="3.0" />
+                                                   </HBox.margin>
+                                                </Button>
                                                 <Slider fx:id="volumeSlider" blockIncrement="1.0" majorTickUnit="50.0" prefHeight="20.0" prefWidth="66.0" showTickMarks="true">
                                                    <HBox.margin>
-                                                      <Insets bottom="6.0" left="6.0" right="6.0" top="6.0" />
+                                                      <Insets left="6.0" right="6.0" top="6.0" />
                                                    </HBox.margin>
                                                 </Slider>
                                              </children>
                                           </HBox>
-                                       </children>
-                                    </AnchorPane>
-                                    <AnchorPane fx:id="previewCanvasPane" AnchorPane.bottomAnchor="32.0" AnchorPane.leftAnchor="32.0" AnchorPane.rightAnchor="32.0" AnchorPane.topAnchor="32.0">
-                                       <children>
-                                          <Canvas fx:id="previewCanvas" height="133.0" width="250.0" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="1.0" AnchorPane.topAnchor="0.0" />
                                        </children>
                                     </AnchorPane>
                                  </children>
@@ -66,8 +74,20 @@
                      <children>
                         <AnchorPane prefHeight="34.0" prefWidth="638.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                            <children>
-                              <Button fx:id="populateToolButton" layoutY="6.0" mnemonicParsing="false" onAction="#populateToolPressed" prefHeight="31.0" prefWidth="92.0" text="populate" />
-                              <Button fx:id="selectToolButton" layoutX="92.0" layoutY="6.0" mnemonicParsing="false" onAction="#selectToolPressed" prefHeight="31.0" prefWidth="70.0" text="select" />
+                              <HBox prefHeight="28.0" prefWidth="638.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                 <children>
+                                    <Button fx:id="populateToolButton" mnemonicParsing="false" onAction="#populateToolPressed">
+                                       <HBox.margin>
+                                          <Insets bottom="1.0" left="1.0" right="1.0" top="1.0" />
+                                       </HBox.margin>
+                                    </Button>
+                                    <Button fx:id="selectToolButton" mnemonicParsing="false" onAction="#selectToolPressed">
+                                       <HBox.margin>
+                                          <Insets bottom="1.0" left="1.0" right="1.0" top="1.0" />
+                                       </HBox.margin>
+                                    </Button>
+                                 </children>
+                              </HBox>
                            </children>
                         </AnchorPane>
                         <AnchorPane fx:id="trackCanvasPane" minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="32.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
