@@ -34,6 +34,7 @@ public class HueStew {
 
 	private HueStewView view;
 	private LightBank lightBank;
+	private Toolbox toolbox;
 	private Show show;
 	private Player player;
 	private int cursor;
@@ -57,6 +58,7 @@ public class HueStew {
 		
 		this.view = new HueStewView();
 		this.lightBank = new LightBank();
+		this.toolbox = new Toolbox();
 		this.tickDuration = 33;
 
 		this.config = fileHandler.loadConfig();
@@ -211,6 +213,10 @@ public class HueStew {
 
 	public LightBank getLightBank() {
 		return lightBank;
+	}
+	
+	public Toolbox getToolbox() {
+		return toolbox;
 	}
 
 	public Show getShow() {

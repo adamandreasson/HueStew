@@ -1,5 +1,6 @@
 package com.huestew.studio.tools;
 
+import com.huestew.studio.Toolbox;
 import com.huestew.studio.model.KeyFrame;
 import com.huestew.studio.model.LightTrack;
 
@@ -16,7 +17,20 @@ import javafx.scene.input.MouseEvent;
  * @author Adam Andreasson
  */
 
-public interface Tool {
+public abstract class Tool {
+	private Toolbox toolbox;
+	
+	public Tool(Toolbox toolbox) {
+		this.toolbox = toolbox;
+	}
+	
+	public void select() {
+		toolbox.setSelectedTool(this);
+	}
+	
+	public void setActive() {
+		toolbox.setActiveTool(this);
+	}
 
 	/**
 	 * Manipulates a light track based on a mouse event.
@@ -34,7 +48,7 @@ public interface Tool {
 	 *            The normalized y coordinate of where the interaction occurred.
 	 *
 	 */
-	void doAction(MouseEvent event, LightTrack lightTrack, KeyFrame keyFrame, int timestamp, double normalizedY);
+	public abstract void doAction(MouseEvent event, LightTrack lightTrack, KeyFrame keyFrame, int timestamp, double normalizedY);
 
 	/**
 	 * Changes the behavior of the tool based on a key event.
@@ -42,7 +56,7 @@ public interface Tool {
 	 * @param event
 	 *            The key event that was called.
 	 */
-	void doAction(KeyEvent event);
+	public abstract void doAction(KeyEvent event);
 
 	/**
 	 * Returns the desired cursor depending on mouse position and state.
@@ -53,5 +67,5 @@ public interface Tool {
 	 *            Is the left mouse button down?
 	 * 
 	 */
-	Cursor getCursor(boolean hoveringKeyFrame, boolean isMouseDown);
+	public abstract Cursor getCursor(boolean hoveringKeyFrame, boolean isMouseDown);
 }

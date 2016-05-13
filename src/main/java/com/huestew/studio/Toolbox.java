@@ -2,8 +2,6 @@ package com.huestew.studio;
 
 import com.huestew.studio.tools.*;
 
-import javafx.scene.Cursor;
-
 /**
  * A toolbox containing a set of tools.
  * 
@@ -12,71 +10,48 @@ import javafx.scene.Cursor;
  * @author Marcus Randevik
  * @author Adam Andreasson
  */
+public class Toolbox {
+	private final PopulateTool populateTool = new PopulateTool(this);
+	private final SelectTool selectTool = new SelectTool(this);
 
-public enum Toolbox {
-	POPULATE(new PopulateTool()),
-	SELECT(new SelectTool());
-	
+	private Tool selectedTool;
+	private Tool activeTool;
 
-	private Tool tool;
-
-	Toolbox(Tool tool) {
-		this.tool = tool;
+	public Toolbox() {
+		selectedTool = activeTool = selectTool;
 	}
 
-	/**
-	 * Select this tool.
-	 */
-	public void select() {
-		selected = this;
-		active = this;
+	public PopulateTool getPopulateTool() {
+		return populateTool;
 	}
 
-	/**
-	 * Make this tool active.
-	 */
-	public void setActive() {
-		active = this;
-	}
-	
-	private static Toolbox selected = SELECT;
-	private static Toolbox active = SELECT;
-
-	/**
-	 * Returns the currently selected tool
-	 * @return 
-	 * 			the currently selected tool
-	 */
-	public static Tool getSelectedTool() {
-		return selected.tool;
+	public SelectTool getSelectTool() {
+		return selectTool;
 	}
 
-	/**
-	 * Returns the currently active tool
-	 * @return 
-	 * 			the currently active tool
-	 */
-	public static Tool getActiveTool() {
-		return active.tool;
+	public void reset() {
+		activeTool = selectedTool;
+	}
+
+	public Tool getSelectedTool() {
+		return selectedTool;
 	}
 	
-	/**
-	 * Returns the currently active tool
-	 * @return 
-	 * 			the currently active tool
-	 */
-	public static void reset() {
-		active = selected;
+	public void setSelectedTool(Tool tool) {
+		if (tool == null) {
+			throw new IllegalArgumentException("Tool may not be null");
+		}
+		selectedTool = tool;
 	}
 
-	/**
-	 * Returns the current cursor based on the tool being used 
-	 * @param isMouseDown 
-	 * @param hoveringCursor 
-	 * @return
-	 * 			the cursor corresponding to the currently selected tool
-	 */
-	public static Cursor getCursor(boolean hoveringCursor, boolean isMouseDown) {
-		return selected.tool.getCursor(hoveringCursor, isMouseDown);
+	public Tool getActiveTool() {
+		return activeTool;
+	}
+	
+	public void setActiveTool(Tool tool) {
+		if (tool == null) {
+			throw new IllegalArgumentException("Tool may not be null");
+		}
+		activeTool = tool;
 	}
 }

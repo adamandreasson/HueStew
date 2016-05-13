@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.TreeSet;
 
 import com.huestew.studio.HueStew;
+import com.huestew.studio.Toolbox;
 import com.huestew.studio.model.KeyFrame;
 import com.huestew.studio.model.LightState;
 import com.huestew.studio.model.LightTrack;
@@ -14,11 +15,12 @@ import javafx.scene.input.MouseEvent;
 
 /**
  * A combined to for selecting, moving and deleting keyframes.
+ * 
  * @author Marcus
  *
  */
-public class SelectTool implements Tool {
-	
+public class SelectTool extends Tool {
+
 	private KeyFrame selectedKeyFrame;
 	private LightTrack selectedLightTrack;
 	private int floor;
@@ -26,9 +28,12 @@ public class SelectTool implements Tool {
 	private boolean moveHorizontally = true;
 	private boolean moveVertically = true;
 
+	public SelectTool(Toolbox toolbox) {
+		super(toolbox);
+	}
+
 	@Override
-	public void doAction(MouseEvent event, LightTrack lightTrack, KeyFrame keyFrame, int timestamp,
-			double normalizedY) {
+	public void doAction(MouseEvent event, LightTrack lightTrack, KeyFrame keyFrame, int timestamp, double normalizedY) {
 		if (event.getEventType() == MouseEvent.MOUSE_PRESSED) {
 			// Store selected key frame and light track
 			selectedKeyFrame = keyFrame;
@@ -48,7 +53,7 @@ public class SelectTool implements Tool {
 			KeyFrame higher = keyFrames.higher(keyFrame);
 			ceiling = higher == null ? Integer.MAX_VALUE : higher.getTimestamp() - HueStew.getInstance().getTickDuration();
 		} else if (event.getEventType() == MouseEvent.MOUSE_DRAGGED && selectedKeyFrame != null) {
-			
+
 			if (moveHorizontally) {
 				// Update timestamp
 				selectedKeyFrame.setTimestamp(Math.max(floor, Math.min(ceiling, timestamp)));
@@ -73,7 +78,6 @@ public class SelectTool implements Tool {
 		}
 	}
 
-
 	@Override
 	public void doAction(KeyEvent event) {
 		boolean pressed = event.getEventType() == KeyEvent.KEY_PRESSED;
@@ -86,7 +90,7 @@ public class SelectTool implements Tool {
 			moveHorizontally = !pressed;
 			break;
 		case DELETE:
-			if(selectedKeyFrame != null) {
+			if (selectedKeyFrame != null) {
 				selectedLightTrack.removeKeyFrame(selectedKeyFrame);
 				selectedKeyFrame = null;
 				HueStew.getInstance().getView().updateTrackView();
@@ -100,7 +104,7 @@ public class SelectTool implements Tool {
 
 	@Override
 	public Cursor getCursor(boolean hoveringKeyFrame, boolean isMouseDown) {
-		if(hoveringKeyFrame)
+		if (hoveringKeyFrame)
 			return Cursor.HAND;
 		else
 			return Cursor.DEFAULT;

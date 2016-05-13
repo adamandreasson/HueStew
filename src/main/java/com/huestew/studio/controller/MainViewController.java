@@ -3,7 +3,6 @@ package com.huestew.studio.controller;
 import java.io.File;
 
 import com.huestew.studio.HueStew;
-import com.huestew.studio.Toolbox;
 import com.huestew.studio.model.KeyFrame;
 import com.huestew.studio.util.Util;
 import com.huestew.studio.view.TrackView;
@@ -44,9 +43,6 @@ public class MainViewController extends ViewController {
 
 	@FXML
 	public AnchorPane colorPickerPane;
-	
-	@FXML
-	public AnchorPane drumKitPane;
 
 	@FXML
 	private Button populateToolButton;
@@ -139,7 +135,7 @@ public class MainViewController extends ViewController {
 	private void populateToolPressed() {
 		resetToolButtons();
 		
-		Toolbox.POPULATE.select();
+		HueStew.getInstance().getToolbox().getPopulateTool().select();
 		populateToolButton.setStyle(ACTIVE_BUTTON_STYLE);
 	}
 
@@ -147,7 +143,7 @@ public class MainViewController extends ViewController {
 	private void selectToolPressed() {
 		resetToolButtons();
 		
-		Toolbox.SELECT.select();
+		HueStew.getInstance().getToolbox().getSelectTool().select();
 		selectToolButton.setStyle(ACTIVE_BUTTON_STYLE);
 	}
 	
@@ -199,8 +195,6 @@ public class MainViewController extends ViewController {
 		System.out.println("saving");
 
 		HueStew.getInstance().save();
-		
-		HueStew.getInstance().getView().updateFooterStatus("Saved.");
 		/*
 		 * FileChooser fileChooser = new FileChooser();
 		 * fileChooser.setInitialDirectory(new

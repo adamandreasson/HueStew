@@ -8,7 +8,6 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import com.huestew.studio.HueStew;
-import com.huestew.studio.Toolbox;
 import com.huestew.studio.model.KeyFrame;
 import com.huestew.studio.model.LightTrack;
 import com.huestew.studio.tools.SelectTool;
@@ -121,7 +120,7 @@ public class TrackView {
 					canvas.setCursor(Cursor.E_RESIZE);
 			} else {
 				updateHoveringKeyFrame(track, event);
-				canvas.setCursor(Toolbox.getCursor(hoveringKeyFrame != null, isMouseDown));
+				canvas.setCursor(HueStew.getInstance().getToolbox().getSelectedTool().getCursor(hoveringKeyFrame != null, isMouseDown));
 			}
 		});
 
@@ -170,14 +169,14 @@ public class TrackView {
 		}
 
 		// TODO what's that smell?
-		if (Toolbox.getActiveTool() instanceof SelectTool) {
+		if (HueStew.getInstance().getToolbox().getActiveTool() instanceof SelectTool) {
 			updateSelectRectangle(event);
 		}
 
 		if (hoveringKeyFrame != null)
-			Toolbox.SELECT.setActive();
+			HueStew.getInstance().getToolbox().getSelectTool().setActive();
 		if (event.getEventType() == MouseEvent.MOUSE_CLICKED)
-			Toolbox.reset();
+			HueStew.getInstance().getToolbox().reset();
 
 		// Get normalized y coordinate
 		double inverseTrackY = getTrackHeight() - getRelativeTrackY(track, event.getY());
@@ -188,7 +187,7 @@ public class TrackView {
 			normalizedY = 0;
 
 		// Pass event to current tool
-		Toolbox.getActiveTool().doAction(event, track, hoveringKeyFrame, getTimeFromX(event.getX()), normalizedY);
+		HueStew.getInstance().getToolbox().getActiveTool().doAction(event, track, hoveringKeyFrame, getTimeFromX(event.getX()), normalizedY);
 
 		// Redraw canvas
 		redraw();

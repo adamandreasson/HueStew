@@ -7,14 +7,10 @@ import com.huestew.studio.model.Color;
 import com.huestew.studio.model.KeyFrame;
 
 import javafx.fxml.FXML;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.paint.Paint;
-import javafx.scene.shape.Rectangle;
 
 /**
  * A controller classed used to controll the colorpicker element in the gui. 
