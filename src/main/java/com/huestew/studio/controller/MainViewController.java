@@ -28,6 +28,8 @@ import javafx.stage.Stage;
  */
 public class MainViewController extends ViewController {
 
+	private final static String ACTIVE_BUTTON_STYLE = "-fx-base: #FFCD8C;";
+	
 	@FXML
 	private Canvas previewCanvas;
 
@@ -126,17 +128,29 @@ public class MainViewController extends ViewController {
 		
 		selectToolButton.setGraphic(new ImageView(new Image("icon_cursor.png")));
 		selectToolButton.setTooltip(new Tooltip("Select tool"));
-		
+
+		selectToolButton.setStyle(ACTIVE_BUTTON_STYLE);
 	}
 
 	@FXML
 	private void populateToolPressed() {
+		resetToolButtons();
+		
 		Toolbox.POPULATE.select();
+		populateToolButton.setStyle(ACTIVE_BUTTON_STYLE);
 	}
 
 	@FXML
 	private void selectToolPressed() {
+		resetToolButtons();
+		
 		Toolbox.SELECT.select();
+		selectToolButton.setStyle(ACTIVE_BUTTON_STYLE);
+	}
+	
+	private void resetToolButtons(){
+		selectToolButton.setStyle("");
+		populateToolButton.setStyle("");
 	}
 
 	@FXML

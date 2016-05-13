@@ -39,8 +39,8 @@ public enum Toolbox {
 		active = this;
 	}
 	
-	private static Toolbox selected = POPULATE;
-	private static Toolbox active = POPULATE;
+	private static Toolbox selected = SELECT;
+	private static Toolbox active = SELECT;
 
 	/**
 	 * Returns the currently selected tool
