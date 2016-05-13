@@ -8,9 +8,11 @@ import com.huestew.studio.model.KeyFrame;
 import com.huestew.studio.util.Util;
 import com.huestew.studio.view.TrackView;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
@@ -49,6 +51,9 @@ public class MainViewController extends ViewController {
 	@FXML
 	private Slider volumeSlider;
 
+	@FXML
+	private Label footerStatus;
+
 	@Override
 	public void init() {
 
@@ -79,14 +84,15 @@ public class MainViewController extends ViewController {
 
 		HueStew.getInstance().getView().setTrackView(trackView);
 
-
 		volumeSlider.valueProperty().addListener((observableValue, oldValue, newValue) -> {
-			double normalizedVolume = newValue.doubleValue()/100;
-			if(HueStew.getInstance().getPlayer() != null){
+			double normalizedVolume = newValue.doubleValue() / 100;
+			if (HueStew.getInstance().getPlayer() != null) {
 				HueStew.getInstance().getPlayer().setVolume(normalizedVolume);
 			}
 			HueStew.getInstance().getConfig().setVolume(normalizedVolume);
 		});
+
+		footerStatus.setText("");
 
 	}
 
@@ -120,7 +126,7 @@ public class MainViewController extends ViewController {
 		FileChooser fileChooser = new FileChooser();
 
 		File initialDir = new File(HueStew.getInstance().getConfig().getMusicDirectory());
-		if(!initialDir.exists())
+		if (!initialDir.exists())
 			initialDir = new File(System.getProperty("user.home"));
 
 		fileChooser.setInitialDirectory(initialDir);
@@ -143,14 +149,14 @@ public class MainViewController extends ViewController {
 
 		HueStew.getInstance().save();
 		/*
-		FileChooser fileChooser = new FileChooser();
-		fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
-		fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("JSON", "*.json"));
-		fileChooser.setTitle("Choose save location");
-		File file = fileChooser.showSaveDialog(Util.createStage());
-		if (file != null) {
-			System.out.println("SAVING TO " + file.getAbsolutePath());
-		}
+		 * FileChooser fileChooser = new FileChooser();
+		 * fileChooser.setInitialDirectory(new
+		 * File(System.getProperty("user.home")));
+		 * fileChooser.getExtensionFilters().addAll(new
+		 * FileChooser.ExtensionFilter("JSON", "*.json")); fileChooser.setTitle(
+		 * "Choose save location"); File file =
+		 * fileChooser.showSaveDialog(Util.createStage()); if (file != null) {
+		 * System.out.println("SAVING TO " + file.getAbsolutePath()); }
 		 */
 	}
 
@@ -166,7 +172,23 @@ public class MainViewController extends ViewController {
 	}
 
 	public void setVolume(double volume) {
-		volumeSlider.setValue(volume*100);
+		volumeSlider.setValue(volume * 100);
+	}
+
+	/**
+	 * Update the footer status text. Uses Platform.runLater to avoid
+	 * multithread issues
+	 * 
+	 * @param label
+	 *            New status
+	 */
+	public void updateFooterStatus(String label) {
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				footerStatus.setText(label);
+			}
+		});
 	}
 
 }

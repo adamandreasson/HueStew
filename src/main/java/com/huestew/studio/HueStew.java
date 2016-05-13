@@ -65,6 +65,7 @@ public class HueStew {
 		if (!musicFile.exists())
 			return;
 
+		updateFooterStatus("Loading last session...");
 		initShow(musicFile);
 
 	}
@@ -80,6 +81,113 @@ public class HueStew {
 			instance = new HueStew();
 		}
 		return instance;
+	}
+
+	public void tick() {
+		// Update model logics
+		setCursor(player.getCurrentTime());
+
+		// Update track view canvas
+		getView().updateTrackView();
+	}
+
+	public void initShow(File audioFile) {
+
+		this.show = new Show();
+
+		// TEST CODE PLS REMOVE LATER
+		for (int i = 0; i < 3; i++) {
+			VirtualBulb bulb = new VirtualBulb();
+			bulb.setPosition(i * (1.0 / 3), 1.0 / 2);
+
+			Light light = new VirtualLight(bulb);
+			LightState state = new LightState(Color.WHITE, 255, 255);
+			light.setState(state);
+			lightBank.getLights().add(light);
+
+			view.getVirtualRoom().addBulb(bulb);
+
+			LightTrack track = new LightTrack();
+			track.addListener(light);
+			show.addLightTrack(track);
+		}
+
+		show.setAudio(new Audio(audioFile));
+		player = new Player(show);
+		player.setVolume(config.getVolume());
+
+	}
+
+	public void playerReady() {
+
+		System.out.println("SHOW DURACTION " + show.getDuration());
+		int width = (int) ((show.getDuration() / 1000.0) * TrackView.PIXELS_PER_SECOND);
+		System.out.println("wave width " + width);
+		getView().updateTrackView();
+
+		updateFooterStatus("Generating waveform...");
+		createWave(width);
+
+	}
+
+	/**
+	 * Update the footer status text
+	 * @param msg
+	 */
+	public void updateFooterStatus(String msg){
+		if(mvc == null)
+			return;
+		mvc.updateFooterStatus(msg);
+	}
+
+	private void createWave(int width) {
+
+		String tmpSongFile = fileHandler.getTempFilePath("song.wav");
+		System.out.println(tmpSongFile);
+
+		System.out.println(" eh " + show.getAudio().getFile().getPath());
+		// THIS SHOULD ALL BE ELSEWHERE
+		Thread thread = new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+
+				FileUtil.convertAudioFile(show.getAudio().getFile().getPath(), tmpSongFile);
+
+				String tmpWaveFile = fileHandler.getTempFilePath("wave");
+				WaveBuilder builder = new WaveBuilder(tmpSongFile, tmpWaveFile, width, 400);
+
+				HueStew.getInstance().getView().updateWaveImage(builder.getImagePaths());
+				updateFooterStatus("Ready");
+			}
+
+		});
+		thread.start();
+
+	}
+
+	public void autoSave() {
+		fileHandler.saveConfig(config);
+		save();
+	}
+
+	public void save() {
+		fileHandler.saveConfig(config);
+	}
+
+	/**
+	 * @return the player
+	 */
+	public Player getPlayer() {
+		return player;
+	}
+
+	public HueStewView getView() {
+		return view;
+	}
+
+	public void setView(HueStewView view) {
+		this.view = view;
 	}
 
 	public LightBank getLightBank() {
@@ -130,109 +238,12 @@ public class HueStew {
 
 		this.tickDuration = tickDuration;
 	}
-
-	public void tick() {
-		// Update model logics
-		setCursor(player.getCurrentTime());
-
-		// Update track view canvas
-		getView().updateTrackView();
-	}
-
-	/**
-	 * @return the player
-	 */
-	public Player getPlayer() {
-		return player;
-	}
-
-	public HueStewView getView() {
-		return view;
-	}
-
-	public void setView(HueStewView view) {
-		this.view = view;
-	}
-
-	public void initShow(File audioFile) {
-
-		this.show = new Show();
-
-		// TEST CODE PLS REMOVE LATER
-		for (int i = 0; i < 3; i++) {
-			VirtualBulb bulb = new VirtualBulb();
-			bulb.setPosition(i * (1.0 / 3), 1.0 / 2);
-
-			Light light = new VirtualLight(bulb);
-			LightState state = new LightState(Color.WHITE, 255, 255);
-			light.setState(state);
-			lightBank.getLights().add(light);
-
-			view.getVirtualRoom().addBulb(bulb);
-
-			LightTrack track = new LightTrack();
-			track.addListener(light);
-			show.addLightTrack(track);
-		}
-
-		show.setAudio(new Audio(audioFile));
-		player = new Player(show);
-		player.setVolume(config.getVolume());
-
-	}
-
-	public void playerReady() {
-
-		System.out.println("SHOW DURACTION " + show.getDuration());
-		int width = (int) ((show.getDuration() / 1000.0) * TrackView.PIXELS_PER_SECOND);
-		System.out.println("wave width " + width);
-		getView().updateTrackView();
-		
-		createWave(width);
-
-	}
-
-	private void createWave(int width) {
-
-		String tmpSongFile = fileHandler.getTempFilePath("song.wav");
-		System.out.println(tmpSongFile);
-
-		System.out.println(" eh " + show.getAudio().getFile().getPath());
-		// THIS SHOULD ALL BE ELSEWHERE
-		Thread thread = new Thread(new Runnable() {
-
-			@Override
-			public void run() {
-
-				FileUtil.convertAudioFile(show.getAudio().getFile().getPath(), tmpSongFile);
-
-				String tmpWaveFile = fileHandler.getTempFilePath("wave");
-				WaveBuilder builder = new WaveBuilder(tmpSongFile, tmpWaveFile, width, 400);
-
-				System.out.println("WAVE GENERATED DONE");
-
-				HueStew.getInstance().getView().updateWaveImage(builder.getImagePaths());
-			}
-
-		});
-		thread.start();
-
-	}
-
-	public void autoSave() {
-		fileHandler.saveConfig(config);
-		save();
-	}
-
-	public void save() {
-		fileHandler.saveConfig(config);
-	}
-
+	
 	/**
 	 * @return the config
 	 */
 	public HueStewConfig getConfig() {
 		return config;
 	}
-
+	
 }

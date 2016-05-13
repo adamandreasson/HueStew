@@ -11,7 +11,10 @@
       <AnchorPane BorderPane.alignment="CENTER">
          <children>
             <Separator prefWidth="200.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
-            <Label text="Footer things" />
+            <Label fx:id="footerStatus" text="Footer things">
+               <padding>
+                  <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+               </padding></Label>
          </children>
       </AnchorPane>
    </bottom>
