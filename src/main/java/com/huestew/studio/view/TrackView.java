@@ -173,7 +173,7 @@ public class TrackView {
 	}
 
 	public void redraw() {
-		if (HueStew.getInstance().getShow().getDuration() == 0) {
+		if (HueStew.getInstance().getShow() == null || HueStew.getInstance().getShow().getDuration() == 0) {
 			System.out.println("Missing audio or waveform image");
 			return;
 		}

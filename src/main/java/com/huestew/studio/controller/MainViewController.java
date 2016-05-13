@@ -82,7 +82,9 @@ public class MainViewController extends ViewController {
 
 		volumeSlider.valueProperty().addListener((observableValue, oldValue, newValue) -> {
 			double normalizedVolume = newValue.doubleValue()/100;
-			HueStew.getInstance().getPlayer().setVolume(normalizedVolume);
+			if(HueStew.getInstance().getPlayer() != null){
+				HueStew.getInstance().getPlayer().setVolume(normalizedVolume);
+			}
 			HueStew.getInstance().getConfig().setVolume(normalizedVolume);
 		});
 
@@ -116,11 +118,11 @@ public class MainViewController extends ViewController {
 	@FXML
 	private void newButtonPressed() {
 		FileChooser fileChooser = new FileChooser();
-		
+
 		File initialDir = new File(HueStew.getInstance().getConfig().getMusicDirectory());
 		if(!initialDir.exists())
 			initialDir = new File(System.getProperty("user.home"));
-		
+
 		fileChooser.setInitialDirectory(initialDir);
 		fileChooser.setTitle("Open music file");
 		fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("mp3", "*.mp3"));
