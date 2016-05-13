@@ -52,6 +52,7 @@ public class FileHandler {
 			prop.setProperty("musicDir", config.getMusicDirectory());
 			prop.setProperty("musicFilePath", config.getMusicFilePath());
 			prop.setProperty("volume", String.valueOf(config.getVolume()));
+			prop.setProperty("window", config.getWindowDimensions());
 
 			prop.store(output, null);
 
@@ -83,7 +84,7 @@ public class FileHandler {
 				prop.load(input);
 
 				return new HueStewConfig(prop.getProperty("saveDir", appDir), prop.getProperty("musicDir", System.getProperty("user.home")),
-						prop.getProperty("musicFilePath", ""), Double.parseDouble(prop.getProperty("volume", "1.0")));
+						prop.getProperty("musicFilePath", ""), Double.parseDouble(prop.getProperty("volume", "1.0")), prop.getProperty("window", ""));
 
 			} catch (IOException ex) {
 				ex.printStackTrace();
@@ -98,7 +99,7 @@ public class FileHandler {
 			}
 		}
 
-		return new HueStewConfig(appDir, System.getProperty("user.home"), "", 1.0);
+		return new HueStewConfig(appDir, System.getProperty("user.home"), "", 1.0, "");
 
 	}
 

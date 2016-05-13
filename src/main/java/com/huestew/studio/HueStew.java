@@ -157,12 +157,13 @@ public class HueStew {
 	}
 
 	public void autoSave() {
-		fileHandler.saveConfig(config);
 		save();
+		System.out.println("AUTO SAVING");
+		config.setWindowDimensions(view.getWindowDimensions());
+		fileHandler.saveConfig(config);
 	}
 
 	public void save() {
-		fileHandler.saveConfig(config);
 	}
 
 	/**

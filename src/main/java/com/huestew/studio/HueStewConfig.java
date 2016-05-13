@@ -15,6 +15,7 @@ public class HueStewConfig {
 	private String musicDirectory;
 	private String musicFilePath;
 	private double volume;
+	private String windowDimensions;
 	
 	/**
 	 * Creates a new HueStewConfig object with the specified values.
@@ -27,11 +28,12 @@ public class HueStewConfig {
 	 * @param volume
 	 * 						the volume at which the music will be played at. (double between 0 and 1)
 	 */
-	public HueStewConfig(String saveDirectory, String musicDirectory, String musicFilePath, double volume){
+	public HueStewConfig(String saveDirectory, String musicDirectory, String musicFilePath, double volume, String windowDimensions){
 		this.saveDirectory = saveDirectory;
 		this.musicDirectory = musicDirectory;
 		this.musicFilePath = musicFilePath;
 		this.volume = volume;
+		this.windowDimensions = windowDimensions;
 	}
 	
 	/**
@@ -83,6 +85,20 @@ public class HueStewConfig {
 	 */
 	public void setVolume(double volume) {
 		this.volume = volume;
+	}
+
+	/**
+	 * @return the windowDimensions
+	 */
+	public String getWindowDimensions() {
+		return windowDimensions;
+	}
+
+	/**
+	 * @param windowDimensions the windowDimensions to set
+	 */
+	public void setWindowDimensions(String windowDimensions) {
+		this.windowDimensions = windowDimensions;
 	}
 	
 }

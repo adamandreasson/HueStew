@@ -84,4 +84,12 @@ public class HueStewView {
 	public void openColorPickerPane(KeyFrame hoveringKeyFrame) {
 		mvc.openColorPickerPane(hoveringKeyFrame);
 	}
+	
+	public String getWindowDimensions(){
+		return mvc.getStageSize();
+	}
+	
+	public void setWindowDimensions(String dimensions){
+		mvc.setStageSize(dimensions);
+	}
 }

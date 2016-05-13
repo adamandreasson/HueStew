@@ -211,6 +211,30 @@ public class MainViewController extends ViewController {
 	 */
 	public void setStage(Stage stage) {
 		this.stage = stage;
+
+		setStageSize(HueStew.getInstance().getConfig().getWindowDimensions());
+	}
+
+	public String getStageSize() {
+		return stage.isMaximized() + "," + stage.getX() + "," + stage.getY() + "," + stage.getWidth() + ","
+				+ stage.getHeight();
+	}
+
+	public void setStageSize(String dimensions) {
+		if (dimensions.isEmpty())
+			return;
+
+		String[] split = dimensions.split(",");
+		boolean maximized = Boolean.parseBoolean(split[0]);
+		if (maximized) {
+			stage.setMaximized(true);
+			return;
+		}
+
+		stage.setX(Double.parseDouble(split[1]));
+		stage.setY(Double.parseDouble(split[2]));
+		stage.setWidth(Double.parseDouble(split[3]));
+		stage.setHeight(Double.parseDouble(split[4]));
 	}
 
 }
