@@ -113,8 +113,8 @@ public class HueStew {
 		show.setAudio(new Audio(audioFile));
 		player = new Player(show);
 		player.setVolume(config.getVolume());
-		
-		view.updateTitle(audioFile + " - HueStew Studio");
+
+		view.updateTitle(audioFile.getName() + " - HueStew Studio");
 
 	}
 
@@ -217,12 +217,12 @@ public class HueStew {
 
 		this.tickDuration = tickDuration;
 	}
-	
+
 	/**
 	 * @return the config
 	 */
 	public HueStewConfig getConfig() {
 		return config;
 	}
-	
+
 }

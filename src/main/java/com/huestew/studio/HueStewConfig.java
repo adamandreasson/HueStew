@@ -21,11 +21,11 @@ public class HueStewConfig {
 	 * @param saveDirectory
 	 * 						the directory used to store the show.
 	 * @param musicDirectory
-	 * 						the directory used to store the music
+	 * 						the default directory to look for music files
 	 * @param musicFilePath
-	 * 						the path for the music file used in the show
+	 * 						the path for the music file most recently used in the show
 	 * @param volume
-	 * 						the volue at which the music will be played at.
+	 * 						the volume at which the music will be played at. (double between 0 and 1)
 	 */
 	public HueStewConfig(String saveDirectory, String musicDirectory, String musicFilePath, double volume){
 		this.saveDirectory = saveDirectory;
