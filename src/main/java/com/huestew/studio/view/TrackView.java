@@ -1,8 +1,10 @@
 package com.huestew.studio.view;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.TreeSet;
 
 import com.huestew.studio.HueStew;
@@ -24,6 +26,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
 /**
+ * Class handles all interaction and drawing of TrackCanvas
+ * 
  * @author Adam
  *
  */
@@ -37,6 +41,7 @@ public class TrackView {
 	private double offsetX = 0;
 	private double scrollOriginX = -1;
 	private Rectangle selectRectangle;
+	private Set<KeyFrame> selectedKeyFrames;
 
 	private KeyFrame hoveringKeyFrame = null;
 	private boolean isMouseDown = false;
@@ -174,27 +179,79 @@ public class TrackView {
 	}
 
 	private void updateSelectRectangle(MouseEvent event) {
-		
+
 		if (event.getEventType() == MouseEvent.MOUSE_PRESSED && hoveringKeyFrame == null) {
-			
+
 			selectRectangle = new Rectangle(0, 0);
 			selectRectangle.setX(event.getX());
 			selectRectangle.setY(event.getY());
-			
+
 		} else if (event.getEventType() == MouseEvent.MOUSE_DRAGGED) {
-			
-			if(selectRectangle == null)
+
+			if (selectRectangle == null)
 				return;
-			
+
 			selectRectangle.setWidth(event.getX() - selectRectangle.getX());
 			selectRectangle.setHeight(event.getY() - selectRectangle.getY());
-			
+
 		} else if (event.getEventType() == MouseEvent.MOUSE_CLICKED) {
-			
+			if (selectRectangle == null)
+				return;
+			selectKeyFrames();
 			selectRectangle = null;
-			
+
 		}
-		
+
+	}
+
+	private void selectKeyFrames() {
+
+		Set<KeyFrame> selection = new HashSet<KeyFrame>();
+
+		double x1 = selectRectangle.getX();
+		double x2 = selectRectangle.getX() + selectRectangle.getWidth();
+		double minX = Math.min(x1, x2);
+		double maxX = Math.max(x1, x2);
+
+		double y1 = selectRectangle.getY();
+		double y2 = selectRectangle.getY() + selectRectangle.getHeight();
+		double minY = Math.min(y1, y2);
+		double maxY = Math.max(y1, y2);
+
+		int i = -1;
+		for (LightTrack track : HueStew.getInstance().getShow().getLightTracks()) {
+			i++;
+
+			if (getTrackPositionY(i) < minY - getTrackHeight())
+				continue;
+
+			if (getTrackPositionY(i) > maxY)
+				break;
+
+			double trackMinY = minY - getTrackPositionY(i);
+			double trackMaxY = maxY - getTrackPositionY(i);
+
+			/*
+			 * System.out.println("Track " + i + " position Y: " +
+			 * getTrackPositionY(i)); System.out.println("Track " + i + " min: "
+			 * + trackMinY); System.out.println("Track " + i + " max: " +
+			 * trackMaxY);
+			 */
+
+			for (KeyFrame keyFrame : track.getKeyFrames()) {
+				double localFrameY = getTrackHeight() - getRelativeYFromBrightness(keyFrame.getState().getBrightness());
+				double frameX = getXFromTime(keyFrame.getTimestamp());
+
+				if (frameX > minX && frameX < maxX) {
+					if (localFrameY > trackMinY && localFrameY < trackMaxY) {
+						selection.add(keyFrame);
+						System.out.println("frame " + keyFrame.toString() + " in selciton");
+					}
+				}
+			}
+		}
+
+		selectedKeyFrames = selection;
 	}
 
 	private void parseTrackEvent(MouseEvent event) {
@@ -319,8 +376,15 @@ public class TrackView {
 		Iterator<KeyFrame> iterator = track.getKeyFrames().iterator();
 		while (iterator.hasNext()) {
 			KeyFrame frame = iterator.next();
-			drawKeyFrame(gc, getXFromTime(frame.getTimestamp()),
-					startY + getTrackHeight() - getRelativeYFromBrightness(frame.getState().getBrightness()));
+
+			double x = getXFromTime(frame.getTimestamp());
+			double y = startY + getTrackHeight() - getRelativeYFromBrightness(frame.getState().getBrightness());
+			boolean selected = false;
+
+			if (selectedKeyFrames != null && selectedKeyFrames.contains(frame))
+				selected = true;
+
+			drawKeyFrame(gc, x, y, selected);
 		}
 
 	}
@@ -338,8 +402,10 @@ public class TrackView {
 				new double[] { y, y - KEY_FRAME_SIZE, y - KEY_FRAME_SIZE, y }, 3);
 	}
 
-	private void drawKeyFrame(GraphicsContext gc, double x, double y) {
+	private void drawKeyFrame(GraphicsContext gc, double x, double y, boolean selected) {
 		gc.setFill(Color.YELLOW);
+		if (selected)
+			gc.setFill(Color.RED);
 		gc.fillPolygon(new double[] { x - KEY_FRAME_SIZE, x, x + KEY_FRAME_SIZE, x },
 				new double[] { y, y + KEY_FRAME_SIZE, y, y - KEY_FRAME_SIZE }, 4);
 	}
@@ -356,7 +422,7 @@ public class TrackView {
 			gc.stroke();
 		}
 	}
-	
+
 	private LightTrack getTrackFromY(double y) {
 		double adjustedY = y - getTotalTrackPositionY();
 		int trackNumber = (int) Math.floor(adjustedY / getTrackHeight());
