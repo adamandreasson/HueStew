@@ -138,7 +138,6 @@ public class HueStew {
 		String tmpSongFile = fileHandler.getTempFilePath("song.wav");
 		System.out.println(tmpSongFile);
 
-		System.out.println(" eh " + show.getAudio().getFile().getPath());
 		// THIS SHOULD ALL BE ELSEWHERE
 		Thread thread = new Thread(new Runnable() {
 

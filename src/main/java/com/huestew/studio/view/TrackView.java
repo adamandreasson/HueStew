@@ -23,6 +23,9 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.CycleMethod;
+import javafx.scene.paint.LinearGradient;
+import javafx.scene.paint.Stop;
 import javafx.scene.shape.Rectangle;
 
 /**
@@ -34,16 +37,18 @@ import javafx.scene.shape.Rectangle;
 public class TrackView {
 	private static final int KEY_FRAME_SIZE = 5;
 	private static final int TRACK_SPACER = 10;
-	
+
 	public static final int PIXELS_PER_SECOND = 100;
 
 	public static final Color TIMELINE_COLOR = new Color(0.3, 0.3, 0.3, 1);
 	public static final Color TIMELINE_TICK_COLOR = new Color(0.5, 0.5, 0.5, 1);
+	public static final Color TIMELINE_TICK_SHADOW_COLOR = new Color(0.26, 0.26, 0.26, 1);
 	public static final Color BACKGROUND_COLOR = new Color(0.4, 0.4, 0.4, 1);
 	public static final Color TRACK_COLOR = new Color(0.0, 0.0, 0.0, 0.2);
 
 	private Canvas canvas;
 	private List<Image> backgroundWaveImages;
+	private long lastRedraw;
 
 	private double offsetX = 0;
 	private double scrollOriginX = -1;
@@ -275,14 +280,18 @@ public class TrackView {
 	}
 
 	public void redraw() {
-		if (HueStew.getInstance().getShow() == null || HueStew.getInstance().getShow().getDuration() == 0) {
-			System.out.println("Missing audio or waveform image");
+		if (HueStew.getInstance().getShow() == null || HueStew.getInstance().getShow().getDuration() == 0) 
 			return;
-		}
 
-		if (!canvas.isVisible()) {
+		// Don't draw too often, it's unnecessary
+		long now = System.currentTimeMillis();
+		if(now - lastRedraw < 16)
+			return;
+		lastRedraw = now;
+
+		if (!canvas.isVisible()) 
 			canvas.setVisible(true);
-		}
+
 
 		// Perform drawing on javafx main thread
 		Platform.runLater(new Runnable() {
@@ -301,16 +310,25 @@ public class TrackView {
 	}
 
 	private void drawTimeline(GraphicsContext gc) {
-		gc.setFill(TIMELINE_COLOR);
+		LinearGradient lg = new LinearGradient(0, 0, 0, 1, true,
+				CycleMethod.NO_CYCLE,
+				new Stop(1.0, new Color(0.2,0.2,0.2,1)),
+				new Stop(0.0, new Color(0.3,0.3,0.3,1)));
+		gc.setFill(lg);
 		gc.fillRect(0, 0, canvas.getWidth(), 40);
 
 		drawWave(gc);
 
-		gc.setStroke(TIMELINE_TICK_COLOR);
 		gc.setLineWidth(1);
+		gc.setStroke(TIMELINE_TICK_COLOR);
+
 		gc.strokeLine(0, 20.5, canvas.getWidth(), 20.5);
 		gc.strokeLine(0, 40.5, canvas.getWidth(), 40.5);
-		
+
+		gc.setStroke(TIMELINE_TICK_SHADOW_COLOR);
+		gc.strokeLine(0, 19.5, canvas.getWidth(), 19.5);
+		gc.strokeLine(0, 39.5, canvas.getWidth(), 39.5);
+
 		gc.setFill(Color.WHITE);
 
 		int firstTick = getTimeFromX(0) / 1000;
@@ -325,6 +343,9 @@ public class TrackView {
 			if (i % 10 == 0) {
 				gc.fillText("" + i, x, 34);
 			}
+			gc.setStroke(TIMELINE_TICK_SHADOW_COLOR);
+			GraphicsUtil.sharpLine(gc, x-1, i % 5 == 0 ? 31 : 35, x-1, 40);
+			gc.setStroke(TIMELINE_TICK_COLOR);
 			GraphicsUtil.sharpLine(gc, x, i % 5 == 0 ? 32 : 36, x, 40);
 		}
 	}
@@ -354,7 +375,7 @@ public class TrackView {
 		for (LightTrack track : HueStew.getInstance().getShow().getLightTracks()) {
 			gc.setFill(TRACK_COLOR);
 			gc.fillRect(0, getTrackPositionY(i), canvas.getWidth(), getTrackHeight());
-			
+
 			drawTrackPolygon(gc, track, getTrackPositionY(i));
 			drawKeyFrames(gc, track, getTrackPositionY(i));
 			i++;
