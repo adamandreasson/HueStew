@@ -23,10 +23,10 @@ public class Main extends Application {
 
 		primaryStage.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
 			HueStew.getInstance().getView().handleKeyboardEvent(event);
-			Toolbox.getTool().doAction(event);
+			Toolbox.getSelectedTool().doAction(event);
 		});
 		primaryStage.addEventFilter(KeyEvent.KEY_RELEASED, event -> {
-			Toolbox.getTool().doAction(event);
+			Toolbox.getSelectedTool().doAction(event);
 		});
 
 

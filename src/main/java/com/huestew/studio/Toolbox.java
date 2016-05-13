@@ -29,17 +29,44 @@ public enum Toolbox {
 	 */
 	public void select() {
 		selected = this;
+		active = this;
 	}
 
+	/**
+	 * Make this tool active.
+	 */
+	public void setActive() {
+		active = this;
+	}
+	
 	private static Toolbox selected = POPULATE;
+	private static Toolbox active = POPULATE;
 
 	/**
 	 * Returns the currently selected tool
 	 * @return 
 	 * 			the currently selected tool
 	 */
-	public static Tool getTool() {
+	public static Tool getSelectedTool() {
 		return selected.tool;
+	}
+
+	/**
+	 * Returns the currently active tool
+	 * @return 
+	 * 			the currently active tool
+	 */
+	public static Tool getActiveTool() {
+		return active.tool;
+	}
+	
+	/**
+	 * Returns the currently active tool
+	 * @return 
+	 * 			the currently active tool
+	 */
+	public static void reset() {
+		active = selected;
 	}
 
 	/**

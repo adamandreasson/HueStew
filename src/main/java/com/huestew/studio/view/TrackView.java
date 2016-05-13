@@ -33,7 +33,7 @@ public class TrackView {
 
 	private Canvas canvas;
 	private List<Image> backgroundWaveImages;
-	
+
 	private double offsetX = 0;
 	private double scrollOriginX = -1;
 
@@ -54,7 +54,7 @@ public class TrackView {
 		canvas.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
 			canvas.requestFocus();
 			isMouseDown = false;
-			
+
 			if (event.getButton() == MouseButton.SECONDARY && hoveringKeyFrame != null) {
 
 				ColorPickerController cpc = (ColorPickerController) Util.loadFxml("/com/huestew/studio/colorpicker.fxml");
@@ -72,9 +72,9 @@ public class TrackView {
 		});
 		canvas.addEventHandler(MouseEvent.MOUSE_PRESSED, event -> {
 			canvas.requestFocus();
-			
+
 			isMouseDown = true;
-			
+
 			if (event.getButton() == MouseButton.PRIMARY && event.getY() >= 20 
 					&& getTrackFromY(event.getY()) == null || event.getButton() == MouseButton.MIDDLE) {
 				// Scroll
@@ -110,13 +110,13 @@ public class TrackView {
 				canvas.setCursor(Toolbox.getCursor(hoveringKeyFrame != null, isMouseDown));
 			}
 		});
-		
+
 	}
 
 	public void loadWaves(List<String> filePaths, int totalWidth) {
 
 		this.backgroundWaveImages = new ArrayList<Image>();
-		
+
 		try {
 			for(String path : filePaths){
 				System.out.println(path);
@@ -140,7 +140,7 @@ public class TrackView {
 			return;
 		}
 		event.consume();
-		
+
 	}
 
 	private void updateHoveringKeyFrame(LightTrack track, MouseEvent event) {
@@ -154,12 +154,18 @@ public class TrackView {
 			parseTrackEvent(event);
 			return;
 		}
+
+		if(hoveringKeyFrame != null)
+			Toolbox.MOVE.setActive();
+		if(event.getEventType() == MouseEvent.MOUSE_CLICKED)
+			Toolbox.reset();
+
 		// Get normalized y coordinate
 		double inverseTrackY = getTrackHeight() - getRelativeTrackY(track, event.getY());
 		double normalizedY = inverseTrackY / getTrackHeight();
 
 		// Pass event to current tool
-		Toolbox.getTool().doAction(event, track, hoveringKeyFrame, getTimeFromX(event.getX()), normalizedY);
+		Toolbox.getActiveTool().doAction(event, track, hoveringKeyFrame, getTimeFromX(event.getX()), normalizedY);
 
 		// Redraw canvas
 		redraw();
@@ -231,19 +237,19 @@ public class TrackView {
 	private void drawWave(GraphicsContext gc) {
 		if (backgroundWaveImages == null) 
 			return;
-		
+
 		for (int i = 0; i < backgroundWaveImages.size(); i++) {
 			int startX = 1024 * i;
 			Image image = backgroundWaveImages.get(i);
-			
+
 			// Skip if image is to the left of the canvas
 			if (startX + image.getWidth() < offsetX)
 				continue;
-			
+
 			// Skip the rest if image is to the right of the canvas
 			if (startX > canvas.getWidth() + offsetX)
 				return;
-			
+
 			gc.drawImage(image, startX - offsetX, 40, image.getWidth(), canvas.getHeight() - 40);
 		}
 	}

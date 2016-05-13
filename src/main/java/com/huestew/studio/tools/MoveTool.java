@@ -41,6 +41,7 @@ public class MoveTool implements Tool {
 			KeyFrame higher = keyFrames.higher(keyFrame);
 			ceiling = higher == null ? Integer.MAX_VALUE : higher.getTimestamp() - HueStew.getInstance().getTickDuration();
 		} else if (event.getEventType() == MouseEvent.MOUSE_DRAGGED && selectedKeyFrame != null) {
+			
 			if (moveHorizontally) {
 				// Update timestamp
 				selectedKeyFrame.setTimestamp(Math.max(floor, Math.min(ceiling, timestamp)));
