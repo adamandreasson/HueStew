@@ -29,8 +29,6 @@ public class ColorPickerController extends ViewController {
 	
 	@FXML AnchorPane colorPickerPane;
 	
-	@FXML Label brightnessLabel;
-	
 	private KeyFrame keyframe; 
 			
 	@Override
@@ -44,7 +42,6 @@ public class ColorPickerController extends ViewController {
 		
 
 		brightnessSlider.valueProperty().addListener((observableValue, oldValue, newValue) -> {
-			brightnessLabel.textProperty().setValue(String.valueOf(newValue.intValue()));
 			keyframe.getState().setBrightness(newValue.intValue());
 			HueStew.getInstance().getView().updateTrackView();
 		});
@@ -83,7 +80,6 @@ public class ColorPickerController extends ViewController {
 		colorPicker.setValue(keyframe.getState().getColor());
 		newTimestamp.setText(keyframe.getTimestamp() + "");
 		brightnessSlider.setValue(keyframe.getState().getBrightness());
-		brightnessLabel.textProperty().setValue(keyframe.getState().getBrightness() + "");
 	}
 	
 	
