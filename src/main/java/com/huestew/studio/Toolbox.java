@@ -15,8 +15,8 @@ import javafx.scene.Cursor;
 
 public enum Toolbox {
 	POPULATE(new PopulateTool()),
-	MOVE(new MoveTool()),
-	REMOVE(new RemoveTool());
+	SELECT(new SelectTool());
+	
 
 	private Tool tool;
 

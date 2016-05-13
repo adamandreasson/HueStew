@@ -41,13 +41,10 @@ public class MainViewController extends ViewController {
 	public AnchorPane colorPickerPane;
 
 	@FXML
-	private Button removeToolButton;
-
-	@FXML
 	private Button populateToolButton;
 
 	@FXML
-	private Button moveToolButton;
+	private Button selectToolButton;
 
 	@FXML
 	private Slider volumeSlider;
@@ -100,18 +97,13 @@ public class MainViewController extends ViewController {
 	}
 
 	@FXML
-	private void removeToolPressed() {
-		Toolbox.REMOVE.select();
-	}
-
-	@FXML
 	private void populateToolPressed() {
 		Toolbox.POPULATE.select();
 	}
 
 	@FXML
-	private void moveToolPressed() {
-		Toolbox.MOVE.select();
+	private void selectToolPressed() {
+		Toolbox.SELECT.select();
 	}
 
 	@FXML

@@ -130,6 +130,7 @@ public class TrackView {
 		default:
 			return;
 		}
+		redraw();
 		event.consume();
 
 	}
@@ -147,7 +148,7 @@ public class TrackView {
 		}
 
 		if(hoveringKeyFrame != null)
-			Toolbox.MOVE.setActive();
+			Toolbox.SELECT.setActive();
 		if(event.getEventType() == MouseEvent.MOUSE_CLICKED)
 			Toolbox.reset();
 
