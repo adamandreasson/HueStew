@@ -3,12 +3,15 @@
  */
 package com.huestew.studio;
 
-import javafx.scene.paint.Color;
-
 import java.io.File;
 import java.nio.file.AccessDeniedException;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import com.huestew.studio.controller.Player;
 import com.huestew.studio.model.Audio;
+import com.huestew.studio.model.Color;
 import com.huestew.studio.model.LightBank;
 import com.huestew.studio.model.LightState;
 import com.huestew.studio.model.LightTrack;
@@ -97,11 +100,11 @@ public class HueStew {
 		int numLights = 5;
 		for (int i = 0; i < numLights; i++) {
 			VirtualBulb bulb = new VirtualBulb();
-			double x = (i+1) * (1.0 / (numLights+1));
+			double x = (i + 1) * (1.0 / (numLights + 1));
 			bulb.setPosition(x, 1.0 / 2);
 
 			Light light = new VirtualLight(bulb);
-			LightState state = new LightState(Color.WHITE, 255, 255);
+			LightState state = new LightState(new Color(1,1,1), 255, 255);
 			light.setState(state);
 			lightBank.getLights().add(light);
 
@@ -123,9 +126,7 @@ public class HueStew {
 
 	public void playerReady() {
 
-		System.out.println("SHOW DURACTION " + show.getDuration());
 		int width = (int) ((show.getDuration() / 1000.0) * TrackView.PIXELS_PER_SECOND);
-		System.out.println("wave width " + width);
 		getView().updateTrackView();
 
 		view.updateFooterStatus("Generating waveform...");
@@ -166,6 +167,21 @@ public class HueStew {
 	}
 
 	public void save() {
+		JSONObject obj = new JSONObject();
+		
+		JSONArray tracks = new JSONArray();
+
+		for (LightTrack track : show.getLightTracks()) {
+
+			JSONArray trackArr = new JSONArray(track.getKeyFrames());
+			
+			tracks.put(trackArr);
+		}
+		
+		obj.put("tracks", tracks);
+		
+		System.out.print(obj.toString(2));
+
 	}
 
 	/**

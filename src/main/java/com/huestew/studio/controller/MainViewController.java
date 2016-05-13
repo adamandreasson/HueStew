@@ -44,6 +44,9 @@ public class MainViewController extends ViewController {
 
 	@FXML
 	public AnchorPane colorPickerPane;
+	
+	@FXML
+	public AnchorPane drumKitPane;
 
 	@FXML
 	private Button populateToolButton;

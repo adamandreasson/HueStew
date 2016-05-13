@@ -1,16 +1,15 @@
 package com.huestew.studio.controller;
 
 import com.huestew.studio.HueStew;
+import com.huestew.studio.model.Color;
 import com.huestew.studio.model.KeyFrame;
 
 import javafx.fxml.FXML;
 
 import javafx.scene.control.ColorPicker;
-import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.paint.Color;
 
 /**
  * A controller classed used to controll the colorpicker element in the gui. 
@@ -51,8 +50,7 @@ public class ColorPickerController extends ViewController {
 	
 	@FXML
 	private void colorPickerOnAction() {
-		Color c = colorPicker.getValue();
-		keyframe.getState().setColor(c);
+		keyframe.getState().setColor(new Color(colorPicker.getValue()));
 	
 	}
 /*
@@ -77,7 +75,7 @@ public class ColorPickerController extends ViewController {
 	public void setKeyFrame(KeyFrame keyframe){
 		this.keyframe = keyframe;
 		
-		colorPicker.setValue(keyframe.getState().getColor());
+		colorPicker.setValue(keyframe.getState().getColor().toFxColor());
 		newTimestamp.setText(keyframe.getTimestamp() + "");
 		brightnessSlider.setValue(keyframe.getState().getBrightness());
 	}

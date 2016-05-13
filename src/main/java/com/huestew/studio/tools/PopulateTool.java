@@ -3,6 +3,7 @@ package com.huestew.studio.tools;
 
 
 
+import com.huestew.studio.model.Color;
 import com.huestew.studio.model.KeyFrame;
 import com.huestew.studio.model.LightState;
 import com.huestew.studio.model.LightTrack;
@@ -12,7 +13,6 @@ import javafx.scene.ImageCursor;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.paint.Color;
 
 public class PopulateTool implements Tool {
 
@@ -25,7 +25,7 @@ public class PopulateTool implements Tool {
 
 		if (event.getEventType() == MouseEvent.MOUSE_CLICKED) {
 
-			lightTrack.addKeyFrame(new KeyFrame(timestamp, new LightState(Color.WHITE, (int) (255 * normalizedY), 0), lightTrack));
+			lightTrack.addKeyFrame(new KeyFrame(timestamp, new LightState(new Color(1,1,1), (int) (255 * normalizedY), 0), lightTrack));
 		}
 	}
 

@@ -6,7 +6,7 @@
 
 <AnchorPane fx:id="colorPickerPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="188.0" prefWidth="324.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.huestew.studio.controller.ColorPickerController">
    <children>
-      <ColorPicker fx:id="colorPicker" layoutX="31.0" layoutY="24.0" onAction="#colorPickerOnAction" prefHeight="38.0" prefWidth="222.0" />
+      <ColorPicker fx:id="colorPicker" editable="true" layoutX="31.0" layoutY="24.0" onAction="#colorPickerOnAction" prefHeight="38.0" prefWidth="222.0" />
       <TextField fx:id="newTimestamp" layoutX="114.0" layoutY="82.0" onAction="#newTimestampOnAction" prefHeight="31.0" prefWidth="138.0" />
       <Label layoutX="31.0" layoutY="87.0" text="Timestamp:" />
       <Slider fx:id="brightnessSlider" layoutX="109.0" layoutY="135.0" max="255.0" minorTickCount="0" prefHeight="18.0" prefWidth="148.0" />

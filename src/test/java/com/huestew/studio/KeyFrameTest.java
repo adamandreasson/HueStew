@@ -2,11 +2,10 @@ package com.huestew.studio;
 
 import static org.junit.Assert.*;
 
-import javafx.scene.paint.Color;
-
 import org.junit.Before;
 import org.junit.Test;
 
+import com.huestew.studio.model.Color;
 import com.huestew.studio.model.KeyFrame;
 import com.huestew.studio.model.LightState;
 
@@ -27,7 +26,7 @@ public class KeyFrameTest {
 
 	@Test
 	public void setState() {
-		LightState state = new LightState(Color.BLACK, 0, 0);
+		LightState state = new LightState(new Color(0,0,0), 0, 0);
 		keyFrame.setState(state);
 		
 		assertTrue(keyFrame.getState() == state);

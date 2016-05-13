@@ -3,11 +3,10 @@ package com.huestew.studio.view;
 import java.beans.PropertyChangeEvent;
 
 import com.huestew.studio.HueStew;
+import com.huestew.studio.model.Color;
 import com.huestew.studio.model.KeyFrameTransition;
 import com.huestew.studio.model.LightState;
 import com.huestew.studio.model.VirtualBulb;
-
-import javafx.scene.paint.Color;
 
 /**
  * Controller for a virtual light
@@ -56,8 +55,7 @@ public class VirtualLight implements Light {
 		int saturation = (int) blend(from.getSaturation(), to.getSaturation(), transitionProgress);
 		Color color = new Color(blend(from.getColor().getRed(), to.getColor().getRed(), transitionProgress), 
 				blend(from.getColor().getGreen(), to.getColor().getGreen(), transitionProgress),
-				blend(from.getColor().getBlue(), to.getColor().getBlue(), transitionProgress),
-				1);
+				blend(from.getColor().getBlue(), to.getColor().getBlue(), transitionProgress));
 		
 		return new LightState(color, brightness, saturation);
 	}
