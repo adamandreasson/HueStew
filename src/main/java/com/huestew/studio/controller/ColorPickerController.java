@@ -12,6 +12,12 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 
+/**
+ * A controller classed used to controll the colorpicker element in the gui. 
+ * Uses the javafx colorpicker as well as a textfield for timestamp and a slider for birghtness.
+ * @author Daniel
+ *
+ */
 public class ColorPickerController extends ViewController {
 			
 	
@@ -66,7 +72,11 @@ public class ColorPickerController extends ViewController {
 		keyframe.setTimestamp(Integer.parseInt(newTimestamp.getText()));
 	}
 	
-		
+	/**
+	 * Sets the keyframe to be changed based on user input.
+	 * @param keyframe
+	 * 					the keyframe to be changed.
+	 */
 	public void setKeyFrame(KeyFrame keyframe){
 		this.keyframe = keyframe;
 		

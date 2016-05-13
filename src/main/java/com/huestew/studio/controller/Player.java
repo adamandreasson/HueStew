@@ -25,6 +25,11 @@ public class Player {
 
 	private int pauseTime;
 
+	/**
+	 * Creates a new player object with a specified show to play.
+	 * @param show
+	 * 				the show to be played.
+	 */
 	public Player(Show show) {
 
 		this.show = show;
@@ -106,6 +111,10 @@ public class Player {
 		mediaPlayer.stop();
 	}
 
+	/**
+	 * returns the time at which the player is at, if it's paused the pausetime is returned.
+	 * @return
+	 */
 	public int getCurrentTime() {
 		if (pauseTime > 0)
 			return pauseTime;
