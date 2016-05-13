@@ -6,9 +6,6 @@ package com.huestew.studio;
 import java.io.File;
 import java.nio.file.AccessDeniedException;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import com.huestew.studio.controller.Player;
 import com.huestew.studio.model.Audio;
 import com.huestew.studio.model.Color;
@@ -95,12 +92,19 @@ public class HueStew {
 	public void initShow(File audioFile) {
 
 		this.show = new Show();
+		
+		fileHandler.loadTrackData(show);
 
 		// TEST CODE PLS REMOVE LATER
-		int numLights = 5;
-		for (int i = 0; i < numLights; i++) {
+		
+		if(show.getLightTracks().size() < 1){
+			createEmptyTracks();
+		}
+		
+		int i = 0;
+		for (LightTrack track : show.getLightTracks()) {
 			VirtualBulb bulb = new VirtualBulb();
-			double x = (i + 1) * (1.0 / (numLights + 1));
+			double x = (i + 1) * (1.0 / (show.getLightTracks().size() + 1));
 			bulb.setPosition(x, 1.0 / 2);
 
 			Light light = new VirtualLight(bulb);
@@ -110,9 +114,9 @@ public class HueStew {
 
 			view.getVirtualRoom().addBulb(bulb);
 
-			LightTrack track = new LightTrack();
 			track.addListener(light);
-			show.addLightTrack(track);
+			
+			i++;
 		}
 
 		show.setAudio(new Audio(audioFile));
@@ -122,6 +126,13 @@ public class HueStew {
 		view.updateTitle(audioFile.getName() + " - HueStew Studio");
 		view.enableControls();
 
+	}
+
+	private void createEmptyTracks() {
+		for (int i = 0; i < 3; i++) {
+			LightTrack track = new LightTrack();
+			show.addLightTrack(track);
+		}
 	}
 
 	public void playerReady() {
@@ -167,20 +178,8 @@ public class HueStew {
 	}
 
 	public void save() {
-		JSONObject obj = new JSONObject();
-		
-		JSONArray tracks = new JSONArray();
 
-		for (LightTrack track : show.getLightTracks()) {
-
-			JSONArray trackArr = new JSONArray(track.getKeyFrames());
-			
-			tracks.put(trackArr);
-		}
-		
-		obj.put("tracks", tracks);
-		
-		System.out.print(obj.toString(2));
+		fileHandler.saveTrackData();
 
 	}
 

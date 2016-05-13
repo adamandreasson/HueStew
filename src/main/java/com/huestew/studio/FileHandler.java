@@ -1,15 +1,28 @@
 package com.huestew.studio;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.nio.file.AccessDeniedException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Properties;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import com.huestew.studio.model.Color;
+import com.huestew.studio.model.KeyFrame;
+import com.huestew.studio.model.LightState;
+import com.huestew.studio.model.LightTrack;
+import com.huestew.studio.model.Show;
 
 public class FileHandler {
 
@@ -100,6 +113,78 @@ public class FileHandler {
 		}
 
 		return new HueStewConfig(appDir, System.getProperty("user.home"), "", 1.0, "");
+
+	}
+
+	public void saveTrackData() {
+
+		JSONObject obj = new JSONObject();
+
+		JSONArray tracks = new JSONArray();
+
+		for (LightTrack track : HueStew.getInstance().getShow().getLightTracks()) {
+
+			JSONArray trackArr = new JSONArray(track.getKeyFrames());
+
+			tracks.put(trackArr);
+		}
+
+		obj.put("tracks", tracks);
+
+		try(  PrintWriter out = new PrintWriter(getAppFilePath("autosave.json"))  ){
+			out.println( obj.toString(2) );
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	
+	}
+
+	public void loadTrackData(Show show) {
+
+		String everything = "";
+
+		try(BufferedReader br = new BufferedReader(new FileReader(getAppFilePath("autosave.json")))) {
+
+			StringBuilder sb = new StringBuilder();
+			String line = br.readLine();
+
+			while (line != null) {
+				sb.append(line);
+				sb.append(System.lineSeparator());
+				line = br.readLine();
+			}
+			everything = sb.toString();
+
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		JSONObject obj = new JSONObject(everything);
+
+		JSONArray tracks = obj.getJSONArray("tracks");
+		for (int i = 0; i < tracks.length(); i++) {
+			
+			JSONArray frames = (JSONArray)tracks.get(i);
+			LightTrack track = new LightTrack();
+			
+			for (int j = 0; j < frames.length(); j++) {
+				JSONObject frameObj = (JSONObject)frames.get(j);
+				JSONObject stateObj = frameObj.getJSONObject("state");
+				JSONObject colorObj = stateObj.getJSONObject("color");
+				Color color = new Color(colorObj.getDouble("red"), colorObj.getDouble("blue"), colorObj.getDouble("green"));
+				LightState state = new LightState(color, stateObj.getInt("brightness"), stateObj.getInt("saturation"));
+				KeyFrame frame = new KeyFrame(frameObj.getInt("timestamp"), state, track);
+				track.addKeyFrame(frame);
+			}
+			
+			show.addLightTrack(track);
+			
+		}
 
 	}
 

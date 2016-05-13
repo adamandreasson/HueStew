@@ -11,11 +11,15 @@ import java.util.List;
 public class Show {
 
 	/** The collection of lighttracks in this show */
-	private List<LightTrack> lightTracks = new ArrayList<>();
+	private List<LightTrack> lightTracks;
 
 	private int duration;
-	
+
 	private Audio audio;
+
+	public Show(){
+		this.lightTracks = new ArrayList<LightTrack>();
+	}
 
 	/**
 	 * Add a new lighttrack to the show.
