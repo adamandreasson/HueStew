@@ -1,15 +1,20 @@
 package com.huestew.studio.controller;
 
+import java.util.TreeSet;
+
 import com.huestew.studio.HueStew;
 import com.huestew.studio.model.Color;
 import com.huestew.studio.model.KeyFrame;
 
 import javafx.fxml.FXML;
-
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.paint.Paint;
+import javafx.scene.shape.Rectangle;
 
 /**
  * A controller classed used to controll the colorpicker element in the gui. 
@@ -19,7 +24,7 @@ import javafx.scene.layout.AnchorPane;
  */
 public class ColorPickerController extends ViewController {
 			
-	
+
 	@FXML ColorPicker colorPicker;
 		
 	@FXML TextField newTimestamp;
@@ -28,43 +33,42 @@ public class ColorPickerController extends ViewController {
 	
 	@FXML AnchorPane colorPickerPane;
 	
-	private KeyFrame keyframe; 
-			
+	@FXML TextField brightnessTextField;
+	
+	@FXML TextField timestampTextField;
+	
+	private KeyFrame keyFrame;
+	
+	// I need this
+	private TreeSet<KeyFrame> selectedKeyFrames;
+		
 	@Override
 	public void init() {
-		
-		/*
-		brightnessSlider.setMajorTickUnit(1);
-		brightnessSlider.setMinorTickCount(0);
-		brightnessSlider.setSnapToTicks(true);
-		*/
-		
-
-		brightnessSlider.valueProperty().addListener((observableValue, oldValue, newValue) -> {
-			keyframe.getState().setBrightness(newValue.intValue());
+			
+			brightnessSlider.valueProperty().addListener((observableValue, oldValue, newValue) -> {
+			keyFrame.getState().setBrightness(newValue.intValue());
+			brightnessTextField.setText(keyFrame.getState().getBrightness() + "");
 			HueStew.getInstance().getView().updateTrackView();
 		});
 		
 	}
 	
-	
 	@FXML
 	private void colorPickerOnAction() {
-		keyframe.getState().setColor(new Color(colorPicker.getValue()));
+		keyFrame.getState().setColor(new Color(colorPicker.getValue()));
 	
 	}
-/*
-	/*so fakkin laggy
+
 	@FXML
-	private void brightnessSliderOnDragDetected() {
-		keyframe.getState().setBrightness((int)(brightnessSlider.getValue()));
-		
-		
+	private void timestampTextFieldOnAction(){
+		keyFrame.setTimestamp(Integer.parseInt(timestampTextField.getText()));
+		HueStew.getInstance().getView().updateTrackView();
 	}
-	*/
 	@FXML
-	private void newTimestampOnAction(){
-		keyframe.setTimestamp(Integer.parseInt(newTimestamp.getText()));
+	private void brightnessTextFieldOnAction(){
+		keyFrame.getState().setBrightness(Integer.parseInt(brightnessTextField.getText()));
+		brightnessSlider.setValue(Integer.parseInt(brightnessTextField.getText()));
+		HueStew.getInstance().getView().updateTrackView();
 	}
 	
 	/**
@@ -73,12 +77,16 @@ public class ColorPickerController extends ViewController {
 	 * 					the keyframe to be changed.
 	 */
 	public void setKeyFrame(KeyFrame keyframe){
-		this.keyframe = keyframe;
+		this.keyFrame = keyframe;
 		
 		colorPicker.setValue(keyframe.getState().getColor().toFxColor());
-		newTimestamp.setText(keyframe.getTimestamp() + "");
+		timestampTextField.setText(keyframe.getTimestamp() + "");
 		brightnessSlider.setValue(keyframe.getState().getBrightness());
+		brightnessTextField.setText(keyframe.getState().getBrightness() + "");
 	}
+	
+
+	
 	
 	
 }
