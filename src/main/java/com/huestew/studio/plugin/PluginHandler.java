@@ -28,5 +28,11 @@ public class PluginHandler {
 			plugin.sendLightState();
 		}
 	}
+
+	public void sendDisable() {
+		for(Plugin plugin : plugins){
+			plugin.onDisable();
+		}
+	}
 	
 }

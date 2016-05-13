@@ -9,8 +9,9 @@ package com.huestew.studio.plugin;
  */
 public abstract class Plugin {
 
-	public abstract void init();
+	public abstract void onEnable();
 
 	public abstract void sendLightState();
-	
+
+	public abstract void onDisable();
 }

@@ -115,7 +115,7 @@ public class PluginLoader {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		plugin.init();
+		plugin.onEnable();
 		return plugin;
 	}
 

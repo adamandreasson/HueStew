@@ -191,7 +191,7 @@ public class HueStew {
 
 	public void save() {
 
-		pluginHandler.sendLightState();
+		pluginHandler.sendDisable();
 		fileHandler.saveTrackData();
 
 	}
@@ -253,6 +253,13 @@ public class HueStew {
 		this.tickDuration = tickDuration;
 	}
 
+	/**
+	 * @return the fileHandler
+	 */
+	public FileHandler getFileHandler() {
+		return fileHandler;
+	}
+	
 	/**
 	 * @return the pluginHandler
 	 */
