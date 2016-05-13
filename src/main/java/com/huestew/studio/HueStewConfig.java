@@ -4,6 +4,8 @@
 package com.huestew.studio;
 
 /**
+ * The config class used to store information regarding how to set up the studio 
+ * as well as the show.
  * @author Adam
  *
  */
@@ -14,6 +16,17 @@ public class HueStewConfig {
 	private String musicFilePath;
 	private double volume;
 	
+	/**
+	 * Creates a new HueStewConfig object with the specified values.
+	 * @param saveDirectory
+	 * 						the directory used to store the show.
+	 * @param musicDirectory
+	 * 						the directory used to store the music
+	 * @param musicFilePath
+	 * 						the path for the music file used in the show
+	 * @param volume
+	 * 						the volue at which the music will be played at.
+	 */
 	public HueStewConfig(String saveDirectory, String musicDirectory, String musicFilePath, double volume){
 		this.saveDirectory = saveDirectory;
 		this.musicDirectory = musicDirectory;
