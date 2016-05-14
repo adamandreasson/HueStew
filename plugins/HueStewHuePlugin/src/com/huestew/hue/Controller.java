@@ -6,13 +6,14 @@ package com.huestew.hue;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.huestew.studio.HueStew;
 import com.philips.lighting.hue.sdk.PHAccessPoint;
 import com.philips.lighting.hue.sdk.PHBridgeSearchManager;
 import com.philips.lighting.hue.sdk.PHHueSDK;
 import com.philips.lighting.hue.sdk.PHSDKListener;
 import com.philips.lighting.model.PHBridge;
 import com.philips.lighting.model.PHHueParsingError;
-
+import com.philips.lighting.model.PHLight;
 import javafx.collections.FXCollections;
 
 /**
@@ -68,11 +69,11 @@ public class Controller {
 				PHAccessPoint point = accessPointsList.get(newValue.intValue());
 				phHueSDK.connect(point);
 				plugin.bridgeChoiceBox.setDisable(true);
-				
+
 				plugin.updateStatus("Connecting....");
 
 			});
-			
+
 			plugin.updateStatus("Pick an access point.");
 		}
 
@@ -81,22 +82,26 @@ public class Controller {
 
 			System.out.println(accessPoint.getIpAddress() + " requires auth");
 			phHueSDK.startPushlinkAuthentication(accessPoint);
-			
+
 			plugin.updateStatus("Access point requires authentication. Press the button on the unit. You have 30 seconds.");
 
 		}
 
 		@Override
 		public void onBridgeConnected(PHBridge bridge, String username) {
-			
-            String lastIpAddress = bridge.getResourceCache().getBridgeConfiguration().getIpAddress();
-            
+
+			System.out.println("CONNCETD!");
+
+			String lastIpAddress = bridge.getResourceCache().getBridgeConfiguration().getIpAddress();
+
 			plugin.getProperties().setProperty("username", username);
 			plugin.getProperties().setProperty("lastIp", lastIpAddress);
-			
+
 			phHueSDK.setSelectedBridge(bridge);
 
 			plugin.updateStatus("Connected.");
+
+			loadLights();
 
 		}
 
@@ -145,6 +150,18 @@ public class Controller {
 		accessPoint.setUsername(username);
 		phHueSDK.connect(accessPoint);
 		return true;
+	}
+
+	public void loadLights() {
+		PHBridge bridge = phHueSDK.getSelectedBridge(); 
+		List<PHLight> allLights = bridge.getResourceCache().getAllLights();
+		for(PHLight phLight : allLights){
+			System.out.println(phLight.getName());
+			HueLight light = new HueLight(phLight);
+			if(phLight.getIdentifier().equals("1"))
+				HueStew.getInstance().getShow().getLightTracks().get(0).addListener(light);
+		}
+
 	}
 
 }

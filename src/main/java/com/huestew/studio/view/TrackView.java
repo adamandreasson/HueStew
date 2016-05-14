@@ -128,10 +128,9 @@ public class TrackView {
 		this.backgroundWaveImages = new ArrayList<Image>();
 
 		try {
-			for (String path : filePaths) {
-				System.out.println(path);
+			for (String path : filePaths) 
 				this.backgroundWaveImages.add(new Image(path));
-			}
+			
 
 			redraw();
 

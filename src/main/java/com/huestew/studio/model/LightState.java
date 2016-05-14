@@ -16,7 +16,7 @@ public class LightState {
 
 	/** the saturation of the keyframe **/
 	private short saturation;
-	
+
 	/**
 	 * Copies the values of a LightState
 	 * @param state values which is to be copied.
@@ -102,5 +102,49 @@ public class LightState {
 			throw new IllegalArgumentException("Saturation must be greater than -1 and less than 256");
 		}
 	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + brightness;
+		result = prime * result + ((color == null) ? 0 : color.hashCode());
+		result = prime * result + saturation;
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		LightState other = (LightState) obj;
+		if (brightness != other.brightness)
+			return false;
+		else{
+			// Here we make a difference. Two states are equal if they are both brightness 0.
+			if(brightness < 1)
+				return true;
+		}
+		if (color == null) {
+			if (other.color != null)
+				return false;
+		} else if (!color.equals(other.color))
+			return false;
+		if (saturation != other.saturation)
+			return false;
+		return true;
+	}
+
+
 
 }

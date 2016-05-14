@@ -178,12 +178,12 @@ public class HuePlugin extends Plugin {
 		phHueSDK.getNotificationManager().registerSDKListener(controller.getListener());
 		
 		if(properties.getProperty("username") != null){
-			System.out.println("wow username existys");
 			
 			boolean success = controller.connectToLastKnownAccessPoint();
 			
 			if(success)
 				return;
+			
 		}
 
 		initView();
