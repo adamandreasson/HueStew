@@ -78,7 +78,7 @@ public class HueLight implements Light {
 			if(transition.getFrom() != null){
 				int timeDiff = transition.getTo().getTimestamp() - transition.getFrom().getTimestamp();
 				int transitionTime = (int)Math.ceil(timeDiff/100.0);
-				lightState.setTransitionTime(transitionTime);					
+				lightState.setTransitionTime(transitionTime);
 			}
 			
 			System.out.println(System.currentTimeMillis() + " Seinding update!");

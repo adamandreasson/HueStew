@@ -1,0 +1,15 @@
+.split-pane *.split-pane-divider {
+	-fx-padding: 0 1 0 1;
+	-fx-background-color: #3a3a3a;
+	-fx-border-color: #282828;
+}
+
+.darkpane {
+    -fx-background-color: #282828;
+	-fx-border-color: transparent;
+}
+
+.brighterpane{
+	-fx-background-color: #535353;
+	-fx-border-color: transparent;
+}

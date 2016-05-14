@@ -43,4 +43,8 @@ public class Util {
 		stage.getIcons().add(new Image("icon_256x256.png"));
 		return stage;
 	}
+
+	public static String formatTimestamp(int i) {
+		return ""+i;
+	}
 }

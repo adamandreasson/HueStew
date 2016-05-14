@@ -20,6 +20,8 @@ public class Main extends Application {
 		primaryStage.setTitle("HueStew Studio");
 		controller.setStage(primaryStage);
 		Scene scene = new Scene(controller.getView(),1280,720);
+		System.out.println(getClass().getResource("style.css").toExternalForm());
+        scene.getStylesheets().add(getClass().getResource("style.css").toExternalForm());
 		primaryStage.setScene(scene);
 		primaryStage.getIcons().add(new Image("/icon_256x256.png"));
 		primaryStage.show();

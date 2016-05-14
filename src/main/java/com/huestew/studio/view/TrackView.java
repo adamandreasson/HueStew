@@ -12,6 +12,7 @@ import com.huestew.studio.model.KeyFrame;
 import com.huestew.studio.model.LightTrack;
 import com.huestew.studio.tools.SelectTool;
 import com.huestew.studio.util.GraphicsUtil;
+import com.huestew.studio.util.Util;
 
 import javafx.application.Platform;
 import javafx.scene.Cursor;
@@ -26,6 +27,7 @@ import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.TextAlignment;
 
 /**
  * Class handles all interaction and drawing of TrackCanvas
@@ -39,11 +41,12 @@ public class TrackView {
 
 	public static final int PIXELS_PER_SECOND = 100;
 
-	public static final Color TIMELINE_COLOR = new Color(0.3, 0.3, 0.3, 1);
-	public static final Color TIMELINE_TICK_COLOR = new Color(0.5, 0.5, 0.5, 1);
-	public static final Color TIMELINE_TICK_SHADOW_COLOR = new Color(0.26, 0.26, 0.26, 1);
-	public static final Color BACKGROUND_COLOR = new Color(0.4, 0.4, 0.4, 1);
-	public static final Color TRACK_COLOR = new Color(0.0, 0.0, 0.0, 0.2);
+	public static final Color TIMELINE_COLOR = Color.web("#303030");
+	public static final Color TIMELINE_TICK_COLOR = Color.web("#616161");
+	public static final Color TIMELINE_TICK_SHADOW_COLOR = new Color(0.26, 0.26, 0.26, 0);
+	public static final Color TIMELINE_TEXT_COLOR = Color.web("#a5a5a5");
+	public static final Color BACKGROUND_COLOR = Color.web("#3b393a");
+	public static final Color TRACK_COLOR = new Color(0.5, 0.5, 0.5, 0.04);
 
 	private Canvas canvas;
 	private List<Image> backgroundWaveImages;
@@ -130,7 +133,7 @@ public class TrackView {
 		try {
 			for (String path : filePaths) 
 				this.backgroundWaveImages.add(new Image(path));
-			
+
 
 			redraw();
 
@@ -273,7 +276,7 @@ public class TrackView {
 			redraw();
 		}
 	}
-	
+
 	private void setOffset(double offset) {
 		double maxOffset = getXFromTime(HueStew.getInstance().getShow().getDuration()) + offsetX
 				- canvas.getWidth();
@@ -298,7 +301,7 @@ public class TrackView {
 			double x = getXFromTime(HueStew.getInstance().getCursor());
 			double leftEdge = 10;
 			double rightEdge = canvas.getWidth() - 300;
-			
+
 			if (x > rightEdge) {
 				setOffset(offsetX + x - rightEdge);
 			} else if (x < leftEdge) {
@@ -330,36 +333,36 @@ public class TrackView {
 		gc.setFill(lg);
 		gc.fillRect(0, 0, canvas.getWidth(), 40);
 
+		gc.setFill(TIMELINE_COLOR);
+		gc.fillRect(0, 20, canvas.getWidth(), 20);
+
 		drawWave(gc);
 
 		gc.setLineWidth(1);
-		gc.setStroke(TIMELINE_TICK_COLOR);
+		gc.setStroke(Color.web("#222222"));
 
 		gc.strokeLine(0, 20.5, canvas.getWidth(), 20.5);
-		gc.strokeLine(0, 40.5, canvas.getWidth(), 40.5);
+		
+		gc.setStroke(TIMELINE_TICK_COLOR);
 
-		gc.setStroke(TIMELINE_TICK_SHADOW_COLOR);
-		gc.strokeLine(0, 19.5, canvas.getWidth(), 19.5);
-		gc.strokeLine(0, 39.5, canvas.getWidth(), 39.5);
+		gc.setFill(TIMELINE_TEXT_COLOR);
 
-		gc.setFill(Color.WHITE);
-
-		int firstTick = getTimeFromX(0) / 1000;
-		int lastTick = getTimeFromX(canvas.getWidth()) / 1000;
+		int firstTick = getTimeFromX(0);
+		int lastTick = getTimeFromX(canvas.getWidth());
 
 		// Draw out the ticks on the timeline
-		for (int i = firstTick; i <= lastTick; i++) {
-			int time = i * 1000;
+		for (int time = firstTick; time <= lastTick; time++) {
+			if(time%100 != 0)
+				continue;
 			double x = getXFromTime(time);
 			// If the timestamp is divisible by 10, we will draw a longer tick
 			// and display the time.
-			if (i % 10 == 0) {
-				gc.fillText("" + i, x, 34);
+			if (time % 1000 == 0) {
+				gc.setTextAlign(TextAlignment.CENTER);
+				gc.fillText(Util.formatTimestamp(time), x, 33);
 			}
-			gc.setStroke(TIMELINE_TICK_SHADOW_COLOR);
-			GraphicsUtil.sharpLine(gc, x-1, i % 5 == 0 ? 31 : 35, x-1, 40);
 			gc.setStroke(TIMELINE_TICK_COLOR);
-			GraphicsUtil.sharpLine(gc, x, i % 5 == 0 ? 32 : 36, x, 40);
+			GraphicsUtil.sharpLine(gc, x, time % 500 == 0 ? 32 : 36, x, 40);
 		}
 	}
 

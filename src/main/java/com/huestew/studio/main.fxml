@@ -10,7 +10,7 @@
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.huestew.studio.controller.MainViewController">
    <bottom>
-      <AnchorPane BorderPane.alignment="CENTER">
+      <AnchorPane styleClass="brighterpane" BorderPane.alignment="CENTER">
          <children>
             <Label fx:id="footerStatus" text="Footer things">
                <padding>
@@ -30,11 +30,11 @@
                           <items>
                               <SplitPane dividerPositions="0.4" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #505050;">
                                  <items>
-                                    <AnchorPane fx:id="drumKitPane" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #505050;" />
-                                  <AnchorPane fx:id="colorPickerPane" minHeight="0.0" minWidth="0.0" style="-fx-background-color: #505050;" />
+                                    <AnchorPane fx:id="drumKitPane" prefHeight="200.0" prefWidth="200.0" styleClass="darkpane" />
+                                  <AnchorPane fx:id="colorPickerPane" minHeight="0.0" minWidth="0.0" styleClass="darkpane" />
                                  </items>
                               </SplitPane>
-                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0" styleClass="darkpane">
                                  <children>
                                     <AnchorPane fx:id="previewCanvasPane" AnchorPane.bottomAnchor="32.0" AnchorPane.leftAnchor="32.0" AnchorPane.rightAnchor="32.0" AnchorPane.topAnchor="32.0">
                                        <children>
@@ -79,7 +79,7 @@
                      <children>
                         <AnchorPane prefHeight="34.0" prefWidth="638.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                            <children>
-                              <HBox prefHeight="28.0" prefWidth="638.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                              <HBox layoutY="3.0" prefHeight="28.0" prefWidth="638.0" styleClass="darkpane" AnchorPane.bottomAnchor="-3.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="3.0">
                                  <children>
                                     <Button fx:id="populateToolButton" mnemonicParsing="false" onAction="#populateToolPressed">
                                        <HBox.margin>
@@ -160,7 +160,7 @@
                 </Menu>
               </menus>
             </MenuBar>
-            <FlowPane>
+            <FlowPane styleClass="brighterpane">
                <children>
                   <Button mnemonicParsing="false" onAction="#newButtonPressed" text="New">
                      <FlowPane.margin>
