@@ -293,11 +293,17 @@ public class TrackView {
 		if (!canvas.isVisible()) 
 			canvas.setVisible(true);
 
-		// Scroll automatically
-		double x = getXFromTime(HueStew.getInstance().getCursor());
-		double edgeX = canvas.getWidth() - 300;
-		if (HueStew.getInstance().getPlayer().isPlaying() && x > edgeX) {
-			setOffset(offsetX + x - edgeX);
+		// Scroll automatically while playing the show
+		if (HueStew.getInstance().getPlayer().isPlaying()) {
+			double x = getXFromTime(HueStew.getInstance().getCursor());
+			double leftEdge = 10;
+			double rightEdge = canvas.getWidth() - 300;
+			
+			if (x > rightEdge) {
+				setOffset(offsetX + x - rightEdge);
+			} else if (x < leftEdge) {
+				setOffset(offsetX + x - leftEdge);
+			}
 		}
 
 		// Perform drawing on javafx main thread
