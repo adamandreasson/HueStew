@@ -73,6 +73,11 @@ public class Color {
 	}
 
 	@Override
+	public String toString() {
+		return "Color [red=" + red + ", green=" + green + ", blue=" + blue + "]";
+	}
+
+	@Override
 	/**
 	 * @super
 	 */

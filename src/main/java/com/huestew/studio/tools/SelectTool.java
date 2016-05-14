@@ -36,7 +36,22 @@ public class SelectTool extends Tool {
 	}
 
 	
-	
+	private void deleteSelectedKeyFrames(){
+		if (!selectedKeyFrames.isEmpty()) {
+			Iterator<KeyFrame> deleter = selectedKeyFrames.iterator();
+			
+			while(deleter.hasNext()){
+				KeyFrame temp = deleter.next();
+				selectedLightTrack.removeKeyFrame(temp);
+				temp = null;
+				HueStew.getInstance().getView().updateTrackView();
+			}
+			
+			//selectedLightTrack.removeKeyFrame(selectedKeyFrame);
+			//selectedKeyFrame = null;
+			
+		}
+	}
 	
 	@Override
 	public void doAction(MouseEvent event, LightTrack lightTrack, KeyFrame keyFrame, Set<KeyFrame> keyFramesSelected, int timestamp, double normalizedY) {
@@ -122,20 +137,7 @@ public class SelectTool extends Tool {
 			moveHorizontally = !pressed;
 			break;
 		case DELETE:
-			if (!selectedKeyFrames.isEmpty()) {
-				Iterator<KeyFrame> deleter = selectedKeyFrames.iterator();
-				
-				while(deleter.hasNext()){
-					KeyFrame temp = deleter.next();
-					selectedLightTrack.removeKeyFrame(temp);
-					temp = null;
-					HueStew.getInstance().getView().updateTrackView();
-				}
-				
-				//selectedLightTrack.removeKeyFrame(selectedKeyFrame);
-				//selectedKeyFrame = null;
-				
-			}
+			deleteSelectedKeyFrames();
 			break;
 		default:
 			break;

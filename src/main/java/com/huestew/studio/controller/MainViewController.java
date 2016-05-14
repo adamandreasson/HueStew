@@ -1,14 +1,17 @@
 package com.huestew.studio.controller;
 
 import java.io.File;
+import java.util.Set;
 
 import com.huestew.studio.HueStew;
+import com.huestew.studio.model.Color;
 import com.huestew.studio.model.KeyFrame;
 import com.huestew.studio.util.Util;
 import com.huestew.studio.view.TrackView;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.Cursor;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -28,7 +31,7 @@ import javafx.stage.Stage;
 public class MainViewController extends ViewController {
 
 	private final static String ACTIVE_BUTTON_STYLE = "-fx-base: #FFCD8C;";
-	
+
 	@FXML
 	private Canvas previewCanvas;
 
@@ -56,21 +59,21 @@ public class MainViewController extends ViewController {
 	@FXML
 	private Label footerStatus;
 
-    @FXML
-    private Button playStartButton;
+	@FXML
+	private Button playStartButton;
 
-    @FXML
-    private Button playButton;
+	@FXML
+	private Button playButton;
 
-    @FXML
-    private Button pauseButton;
-    
-    @FXML
-    private Button saveButton;
-    
-    @FXML
-    private Button saveAsButton;
-    
+	@FXML
+	private Button pauseButton;
+
+	@FXML
+	private Button saveButton;
+
+	@FXML
+	private Button saveAsButton;
+
 	private Stage stage;
 
 	@Override
@@ -115,16 +118,16 @@ public class MainViewController extends ViewController {
 
 		playStartButton.setGraphic(new ImageView(new Image("icon_play_start.png")));
 		playStartButton.setTooltip(new Tooltip("Play from the beginning"));
-		
+
 		playButton.setGraphic(new ImageView(new Image("icon_play.png")));
 		playButton.setTooltip(new Tooltip("Play"));
-		
+
 		pauseButton.setGraphic(new ImageView(new Image("icon_pause.png")));
 		pauseButton.setTooltip(new Tooltip("Pause playback"));
-		
+
 		populateToolButton.setGraphic(new ImageView(new Image("icon_pencil.png")));
 		populateToolButton.setTooltip(new Tooltip("Populate tool"));
-		
+
 		selectToolButton.setGraphic(new ImageView(new Image("icon_cursor.png")));
 		selectToolButton.setTooltip(new Tooltip("Select tool"));
 
@@ -134,7 +137,7 @@ public class MainViewController extends ViewController {
 	@FXML
 	private void populateToolPressed() {
 		resetToolButtons();
-		
+
 		HueStew.getInstance().getToolbox().getPopulateTool().select();
 		populateToolButton.setStyle(ACTIVE_BUTTON_STYLE);
 	}
@@ -142,11 +145,11 @@ public class MainViewController extends ViewController {
 	@FXML
 	private void selectToolPressed() {
 		resetToolButtons();
-		
+
 		HueStew.getInstance().getToolbox().getSelectTool().select();
 		selectToolButton.setStyle(ACTIVE_BUTTON_STYLE);
 	}
-	
+
 	private void resetToolButtons(){
 		selectToolButton.setStyle("");
 		populateToolButton.setStyle("");
@@ -248,7 +251,7 @@ public class MainViewController extends ViewController {
 	public void updateTitle(String title) {
 		stage.setTitle(title);
 	}
-	
+
 	public void enableControls(){
 		saveButton.setDisable(false);
 		saveAsButton.setDisable(false);
@@ -288,6 +291,39 @@ public class MainViewController extends ViewController {
 		stage.setY(Double.parseDouble(split[2]));
 		stage.setWidth(Double.parseDouble(split[3]));
 		stage.setHeight(Double.parseDouble(split[4]));
+	}
+
+	public void openColorPickerPane(Set<KeyFrame> selectedKeyFrames) {
+
+		double maxDimension = colorPickerPane.getWidth();
+		if(colorPickerPane.getHeight() > colorPickerPane.getWidth())
+			maxDimension = colorPickerPane.getHeight();
+
+		maxDimension -= 20;
+
+		Image img = new Image("color_circle.png");
+		ImageView imgView = new ImageView(img);
+
+		double imgScale = img.getWidth()/maxDimension;
+		imgView.setFitWidth(maxDimension);
+		imgView.setFitHeight(maxDimension);
+		imgView.setCursor(Cursor.CROSSHAIR);
+
+		imgView.setOnMouseClicked(event -> {
+			int imgX = (int)(event.getX()*imgScale);
+			int imgY = (int)(event.getY()*imgScale);
+			System.out.println("MOUSE DONW");
+			Color c = new Color(img.getPixelReader().getColor(imgX, imgY));
+			System.out.println(c);
+			
+			for(KeyFrame frame : selectedKeyFrames){
+				frame.getState().setColor(c);
+			}
+			
+		});
+
+		colorPickerPane.getChildren().clear();
+		colorPickerPane.getChildren().add(imgView);
 	}
 
 }

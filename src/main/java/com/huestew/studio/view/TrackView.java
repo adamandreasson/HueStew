@@ -72,21 +72,24 @@ public class TrackView {
 	public TrackView(Canvas canvas) {
 		this.canvas = canvas;
 		canvas.setVisible(false);
+		this.selectedKeyFrames = new HashSet<KeyFrame>();
 
 		// Register mouse event handlers
 		canvas.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
 			canvas.requestFocus();
 			isMouseDown = false;
 
-			if (event.getButton() == MouseButton.SECONDARY && hoveringKeyFrame != null) {
-				HueStew.getInstance().getView().openColorPickerPane(hoveringKeyFrame);
-			}
-
 			if (scrollOriginX != -1) {
 				scrollOriginX = -1;
 			} else {
 				sendMouseEventToTool(event);
 			}
+
+			if (event.getButton() == MouseButton.SECONDARY && hoveringKeyFrame != null) {
+				//HueStew.getInstance().getView().openColorPickerPane(hoveringKeyFrame);
+				HueStew.getInstance().getView().openColorPickerPane(selectedKeyFrames);
+			}
+			
 		});
 		canvas.addEventHandler(MouseEvent.MOUSE_PRESSED, event -> {
 			canvas.requestFocus();
