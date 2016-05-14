@@ -27,6 +27,7 @@ import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 
 /**
@@ -45,8 +46,10 @@ public class TrackView {
 	public static final Color TIMELINE_TICK_COLOR = Color.web("#616161");
 	public static final Color TIMELINE_TICK_SHADOW_COLOR = new Color(0.26, 0.26, 0.26, 0);
 	public static final Color TIMELINE_TEXT_COLOR = Color.web("#a5a5a5");
-	public static final Color BACKGROUND_COLOR = Color.web("#3b393a");
-	public static final Color TRACK_COLOR = new Color(0.5, 0.5, 0.5, 0.04);
+	public static final Color BACKGROUND_COLOR = Color.web("#535353");
+	public static final Color TRACK_COLOR = new Color(0.06, 0.06, 0.06, 0.2);
+	public static final Color TRACK_BORDER_COLOR = Color.web("#383838");
+	
 
 	private Canvas canvas;
 	private List<Image> backgroundWaveImages;
@@ -314,6 +317,7 @@ public class TrackView {
 			public void run() {
 
 				GraphicsContext gc = canvas.getGraphicsContext2D();
+				gc.setFont(new Font(11.0));
 				gc.setFill(BACKGROUND_COLOR);
 				gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
@@ -359,7 +363,7 @@ public class TrackView {
 			// and display the time.
 			if (time % 1000 == 0) {
 				gc.setTextAlign(TextAlignment.CENTER);
-				gc.fillText(Util.formatTimestamp(time), x, 33);
+				gc.fillText(Util.formatTimestamp(time), x, 31);
 			}
 			gc.setStroke(TIMELINE_TICK_COLOR);
 			GraphicsUtil.sharpLine(gc, x, time % 500 == 0 ? 32 : 36, x, 40);
@@ -391,6 +395,9 @@ public class TrackView {
 		for (LightTrack track : HueStew.getInstance().getShow().getLightTracks()) {
 			gc.setFill(TRACK_COLOR);
 			gc.fillRect(0, getTrackPositionY(i), canvas.getWidth(), getTrackHeight());
+			
+			gc.setStroke(TRACK_BORDER_COLOR);
+			gc.strokeLine(0, getTrackPositionY(i), canvas.getWidth(), getTrackPositionY(i));
 
 			drawTrackPolygon(gc, track, getTrackPositionY(i));
 			drawKeyFrames(gc, track, getTrackPositionY(i));
