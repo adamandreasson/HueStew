@@ -1,5 +1,7 @@
 package com.huestew.studio.tools;
 
+import java.util.Set;
+
 import com.huestew.studio.Toolbox;
 import com.huestew.studio.model.Color;
 import com.huestew.studio.model.KeyFrame;
@@ -21,7 +23,7 @@ public class PopulateTool extends Tool {
 	}
 
 	@Override
-	public void doAction(MouseEvent event, LightTrack lightTrack, KeyFrame keyFrame, int timestamp, double normalizedY) {
+	public void doAction(MouseEvent event, LightTrack lightTrack, KeyFrame keyFrame, Set<KeyFrame> selectedKeyFrames, int timestamp, double normalizedY) {
 		if (keyFrame != null)
 			return;
 

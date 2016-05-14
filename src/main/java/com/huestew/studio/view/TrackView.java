@@ -189,7 +189,7 @@ public class TrackView {
 			normalizedY = 0;
 
 		// Pass event to current tool
-		HueStew.getInstance().getToolbox().getActiveTool().doAction(event, track, hoveringKeyFrame, getTimeFromX(event.getX()), normalizedY);
+		HueStew.getInstance().getToolbox().getActiveTool().doAction(event, track, hoveringKeyFrame, selectedKeyFrames, getTimeFromX(event.getX()), normalizedY);
 
 		// Redraw canvas
 		redraw();

@@ -1,6 +1,8 @@
 package com.huestew.studio.tools;
 
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.TreeSet;
 
 import com.huestew.studio.HueStew;
@@ -23,6 +25,7 @@ public class SelectTool extends Tool {
 
 	private KeyFrame selectedKeyFrame;
 	private LightTrack selectedLightTrack;
+	private Set<KeyFrame> selectedKeyFrames;
 	private int floor;
 	private int ceiling;
 	private boolean moveHorizontally = true;
@@ -32,13 +35,42 @@ public class SelectTool extends Tool {
 		super(toolbox);
 	}
 
+	
+	
+	
 	@Override
-	public void doAction(MouseEvent event, LightTrack lightTrack, KeyFrame keyFrame, int timestamp, double normalizedY) {
-		if (event.getEventType() == MouseEvent.MOUSE_PRESSED) {
-			// Store selected key frame and light track
+	public void doAction(MouseEvent event, LightTrack lightTrack, KeyFrame keyFrame, Set<KeyFrame> keyFramesSelected, int timestamp, double normalizedY) {
+			// Store selected key frame/s and light track
+			selectedKeyFrames = keyFramesSelected;
 			selectedKeyFrame = keyFrame;
 			selectedLightTrack = lightTrack;
+		
+		if (event.getEventType() == MouseEvent.MOUSE_CLICKED && keyFrame != null){
+			if(!selectedKeyFrames.contains(keyFrame)){
+			selectedKeyFrames.add(keyFrame);
+			System.out.println("Selected a keyframe");
+			}
 
+		else{
+			selectedKeyFrames.remove(keyFrame);
+			System.out.println("Deselected a keyframe");
+		}
+			
+		}
+		
+		if (event.getEventType() == MouseEvent.MOUSE_CLICKED && keyFrame == null){
+			if(!selectedKeyFrames.isEmpty()){
+				return;
+			}else{
+				selectedKeyFrames.clear();
+			System.out.println("All keyframes deselected");
+			}
+			
+		}
+		
+
+		if (event.getEventType() == MouseEvent.MOUSE_PRESSED) {
+			
 			if (keyFrame == null) {
 				return;
 			}
@@ -90,10 +122,19 @@ public class SelectTool extends Tool {
 			moveHorizontally = !pressed;
 			break;
 		case DELETE:
-			if (selectedKeyFrame != null) {
-				selectedLightTrack.removeKeyFrame(selectedKeyFrame);
-				selectedKeyFrame = null;
-				HueStew.getInstance().getView().updateTrackView();
+			if (!selectedKeyFrames.isEmpty()) {
+				Iterator<KeyFrame> deleter = selectedKeyFrames.iterator();
+				
+				while(deleter.hasNext()){
+					KeyFrame temp = deleter.next();
+					selectedLightTrack.removeKeyFrame(temp);
+					temp = null;
+					HueStew.getInstance().getView().updateTrackView();
+				}
+				
+				//selectedLightTrack.removeKeyFrame(selectedKeyFrame);
+				//selectedKeyFrame = null;
+				
 			}
 			break;
 		default:

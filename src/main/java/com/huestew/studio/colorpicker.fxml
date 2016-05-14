@@ -1,28 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.*?>
 <?import javafx.scene.shape.*?>
 <?import javafx.scene.canvas.*?>
 <?import javafx.scene.control.*?>
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane fx:id="colorPickerPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="243.0" prefWidth="289.0" style="-fx-background-color: #505050;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.huestew.studio.controller.ColorPickerController">
+<AnchorPane fx:id="colorPickerPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="243.0" prefWidth="289.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.huestew.studio.controller.ColorPickerController">
    <children>
       <Region layoutX="21.0" layoutY="177.0" prefHeight="51.0" prefWidth="256.0" style="-fx-border-color: #000000; -fx-border-radius: 8; -fx-border-width: 0.5;" />
       <Region layoutX="21.0" layoutY="94.0" prefHeight="68.0" prefWidth="256.0" style="-fx-border-color: #000000; -fx-border-radius: 8; -fx-border-width: 0.5;" />
       <Region layoutX="21.0" layoutY="26.0" prefHeight="51.0" prefWidth="256.0" style="-fx-border-color: #000000; -fx-border-radius: 8; -fx-border-width: 0.5;" />
-      <Region layoutX="40.0" layoutY="12.0" prefHeight="27.0" prefWidth="35.0" style="-fx-background-color: #505050;" />
+      <Region layoutX="40.0" layoutY="12.0" prefHeight="27.0" prefWidth="35.0" styleClass="darkpane" />
       
-      <Region layoutX="40.0" layoutY="169.0" prefHeight="17.0" prefWidth="63.0" style="-fx-background-color: #505050;" />
-      <Region layoutX="39.0" layoutY="86.0" prefHeight="17.0" prefWidth="60.0" style="-fx-background-color: #505050;" />
-      <ColorPicker fx:id="colorPicker" editable="true" layoutX="27.0" layoutY="30.0" onAction="#colorPickerOnAction" prefHeight="43.0" prefWidth="245.0" style="-fx-background-color: #505050;" styleClass="button" />
+      <Region layoutX="40.0" layoutY="169.0" prefHeight="17.0" prefWidth="63.0" styleClass="darkpane" />
+      <Region layoutX="39.0" layoutY="86.0" prefHeight="17.0" prefWidth="60.0" styleClass="darkpane" />
+      <ColorPicker fx:id="colorPicker" editable="true" layoutX="27.0" layoutY="30.0" onAction="#colorPickerOnAction" prefHeight="43.0" prefWidth="245.0">
+         <styleClass>
+            <String fx:value="button" />
+            <String fx:value="darkpane" />
+         </styleClass>
+         <cursor>
+            <Cursor fx:constant="DEFAULT" />
+         </cursor></ColorPicker>
       <Label layoutX="42.0" layoutY="169.0" text="Timestamp" textFill="WHITE" />
-      <Slider fx:id="brightnessSlider" layoutX="40.0" layoutY="119.0" majorTickUnit="51.0" max="255.0" minorTickCount="0" prefHeight="18.0" prefWidth="148.0" showTickMarks="true" snapToTicks="true" style="-fx-minor-tick-count: 3; -fx-snap-to-ticks: true;" />
+      <Slider fx:id="brightnessSlider" layoutX="37.0" layoutY="120.0" majorTickUnit="51.0" max="255.0" minorTickCount="0" prefHeight="18.0" prefWidth="148.0" showTickMarks="true" snapToTicks="true" style="-fx-minor-tick-count: 3; -fx-snap-to-ticks: true;" />
       <Label layoutX="40.0" layoutY="85.0" prefHeight="18.0" prefWidth="62.0" text="Brightness" textFill="WHITE" />
-      <Label layoutX="33.0" layoutY="132.0" text="0" textFill="WHITE" />
-      <Label layoutX="178.0" layoutY="132.0" text="255" textFill="WHITE" />
-      <TextField fx:id="brightnessTextField" layoutX="204.0" layoutY="115.0" onAction="#brightnessTextFieldOnAction" prefHeight="25.0" prefWidth="62.0" style="-fx-border-color: #000000; -fx-background-color: #505050; -fx-border-radius: 4; -fx-border-width: 0.5; -fx-text-fill: #FFFFFF;" />
-      <TextField fx:id="timestampTextField" layoutX="42.0" layoutY="192.0" onAction="#timestampTextFieldOnAction" prefHeight="25.0" prefWidth="80.0" style="-fx-background-color: #505050; -fx-border-color: #000000; -fx-border-radius: 4; -fx-text-fill: #FFFFFF; -fx-border-width: 0.5;" />
+      <Label layoutX="34.0" layoutY="130.0" text="0" textFill="WHITE" />
+      <Label layoutX="181.0" layoutY="130.0" text="255" textFill="WHITE" />
+      <TextField fx:id="brightnessTextField" layoutX="210.0" layoutY="116.0" onAction="#brightnessTextFieldOnAction" prefHeight="25.0" prefWidth="62.0" style="-fx-border-radius: 4; -fx-border-color: #000000; -fx-border-width: 0.5; -fx-text-fill: #FFFFFF;" styleClass="darkpane" />
+      <TextField fx:id="timestampTextField" layoutX="42.0" layoutY="192.0" onAction="#timestampTextFieldOnAction" prefHeight="25.0" prefWidth="80.0" style="-fx-border-radius: 4; -fx-text-fill: #FFFFFF; -fx-border-width: 0.5; -fx-border-color: #000000;" styleClass="darkpane" />
       <Label layoutX="42.0" layoutY="17.0" prefHeight="18.0" prefWidth="34.0" text="Color" textFill="WHITE" />
    </children>
 </AnchorPane>
