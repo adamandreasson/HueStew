@@ -32,16 +32,18 @@ public class KeyFrame implements Comparable<KeyFrame> {
 	}
 	
 	
-	public LightTrack getLightTrack(){
-		return track;
-	}
 	
-
 	/**
 	 * Method for getting the timestamp of the keyframe, will be zero or greater
 	 * 
 	 * @return the timestamp of the keyframe
 	 */
+	
+	public void remove(){
+		track.removeKeyFrame(this);
+	}
+	
+	
 	public int getTimestamp() {
 		return this.timestamp;
 	}
