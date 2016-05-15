@@ -38,8 +38,12 @@ public class LightBank {
 		return new ArrayList<Light>(lights);
 	}
 	
-	public void Update() {
-		//TODO update all the avaible 
+	public void addLight(Light light) {
+		lights.add(light);
+	}
+	
+	public void update() {
+		//TODO update all the available
 	}
 
 }

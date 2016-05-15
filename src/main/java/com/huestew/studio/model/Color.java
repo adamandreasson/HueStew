@@ -73,7 +73,7 @@ public class Color {
 	 * @param red the red to set
 	 */
 	public void setRed(double red) {
-		if (red < 0 || red > 255) {
+		if (!(red < 0 || red > 1)) {
 			this.red = red;
 		} else {
 			throw new IllegalArgumentException("Red must be between 0-255");
@@ -91,7 +91,7 @@ public class Color {
 	 * @param green the green to set
 	 */
 	public void setGreen(double green) {
-		if (green < 0 || green > 255) {
+		if (!(green < 0 || green > 1)) {
 			this.green = green;	
 		} else {
 			throw new IllegalArgumentException("Green must be between 0-255");
@@ -109,7 +109,7 @@ public class Color {
 	 * @param blue the blue to set
 	 */
 	public void setBlue(double blue) {
-		if (blue < 0 || blue > 255) {
+		if (!(blue < 0 || blue > 1)) {
 			this.blue = blue;	
 		} else {
 			throw new IllegalArgumentException("Blue must be between 0-255");

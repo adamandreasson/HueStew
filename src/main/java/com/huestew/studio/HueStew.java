@@ -122,7 +122,7 @@ public class HueStew {
 			Light light = new VirtualLight(bulb);
 			LightState state = new LightState(new Color(1,1,1), 255, 255);
 			light.setState(state);
-			lightBank.getLights().add(light);
+			lightBank.addLight(light);
 
 			view.getVirtualRoom().addBulb(bulb);
 
