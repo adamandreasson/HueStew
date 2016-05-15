@@ -14,3 +14,9 @@
 	-fx-background-color: #535353;
 	-fx-border-color: transparent;
 }
+
+.menubar{
+ 	-fx-background-color: #535353;
+ 	-fx-border-color: #282828;
+ 	-fx-border-width: 0 0 3 0;
+}

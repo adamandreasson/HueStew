@@ -110,7 +110,7 @@
    <top>
       <VBox BorderPane.alignment="CENTER">
          <children>
-            <MenuBar>
+            <MenuBar styleClass="menubar">
               <menus>
                 <Menu mnemonicParsing="false" text="File">
                   <items>
