@@ -30,6 +30,12 @@ public class KeyFrame implements Comparable<KeyFrame> {
 	public KeyFrame(int timestamp) {
 		this.setTimestamp(timestamp);
 	}
+	
+	
+	public LightTrack getLightTrack(){
+		return track;
+	}
+	
 
 	/**
 	 * Method for getting the timestamp of the keyframe, will be zero or greater

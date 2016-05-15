@@ -42,7 +42,7 @@ public class SelectTool extends Tool {
 			
 			while(deleter.hasNext()){
 				KeyFrame temp = deleter.next();
-				selectedLightTrack.removeKeyFrame(temp);
+				temp.getLightTrack().removeKeyFrame(temp);
 				temp = null;
 				HueStew.getInstance().getView().updateTrackView();
 			}
