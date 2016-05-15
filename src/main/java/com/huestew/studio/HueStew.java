@@ -57,7 +57,7 @@ public class HueStew {
 		new PluginLoader(pluginFolder, pluginHandler);
 		
 		this.view = new HueStewView();
-		this.lightBank = new LightBank();
+		this.lightBank = LightBank.getInstance();
 		this.toolbox = new Toolbox();
 		this.tickDuration = 33;
 
