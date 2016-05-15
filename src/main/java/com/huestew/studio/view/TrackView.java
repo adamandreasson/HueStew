@@ -87,6 +87,7 @@ public class TrackView {
 	private long lastRedraw;
 
 	private Section clickedSection = Section.NONE;
+	private LightTrack clickedTrack;
 
 	private double offsetX = 0;
 	private double scrollOriginX = -1;
@@ -126,6 +127,7 @@ public class TrackView {
 		canvas.addEventHandler(MouseEvent.MOUSE_PRESSED, event -> {
 			canvas.requestFocus();
 			clickedSection = Section.fromY(event.getY());
+			clickedTrack = getTrackFromY(event.getY());
 
 			if (event.getButton() == MouseButton.PRIMARY && clickedSection == Section.TIMELINE
 					|| event.getButton() == MouseButton.MIDDLE) {
@@ -204,9 +206,6 @@ public class TrackView {
 			return;
 		}
 		
-		// Get light track and timestamp from mouse coordinates
-		LightTrack track = getTrackFromY(event.getY());
-
 		// TODO what's that smell?
 		if (HueStew.getInstance().getToolbox().getActiveTool() instanceof SelectTool) {
 			updateSelectRectangle(event);
@@ -218,7 +217,7 @@ public class TrackView {
 			HueStew.getInstance().getToolbox().reset();
 
 		// Get normalized y coordinate
-		double inverseTrackY = getTrackHeight() - getRelativeTrackY(track, event.getY());
+		double inverseTrackY = getTrackHeight() - getRelativeTrackY(clickedTrack, event.getY());
 		double normalizedY = inverseTrackY / getTrackHeight();
 		if (normalizedY > 1)
 			normalizedY = 1;
@@ -226,7 +225,7 @@ public class TrackView {
 			normalizedY = 0;
 
 		// Pass event to current tool
-		HueStew.getInstance().getToolbox().getActiveTool().doAction(event, track, hoveringKeyFrame, selectedKeyFrames, getTimeFromX(event.getX()), normalizedY);
+		HueStew.getInstance().getToolbox().getActiveTool().doAction(event, clickedTrack, hoveringKeyFrame, selectedKeyFrames, getTimeFromX(event.getX()), normalizedY);
 
 		// Redraw canvas
 		redraw();
