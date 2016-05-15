@@ -132,6 +132,8 @@ public class HueStew {
 		}
 
 		show.setAudio(new Audio(audioFile));
+		if (player != null)
+			player.stop();
 		player = new Player(show);
 		player.setVolume(config.getVolume());
 
