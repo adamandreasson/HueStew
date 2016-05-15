@@ -37,6 +37,37 @@ import javafx.scene.text.TextAlignment;
  *
  */
 public class TrackView {
+	private enum Section {
+		CURSOR(Cursor.E_RESIZE),
+		TIMELINE(Cursor.OPEN_HAND),
+		TRACKS(null),
+		NONE(null);
+		
+		private Cursor cursor;
+		
+		private Section(Cursor cursor) {
+			this.cursor = cursor;
+		}
+		
+		boolean hasCursor() {
+			return cursor != null;
+		}
+		
+		Cursor getCursor() {
+			return cursor;
+		}
+		
+		static Section fromY(double y) {
+			if (y <= 20) {
+				return CURSOR;
+			} else if (y <= 40) {
+				return TIMELINE;
+			} else {
+				return TRACKS;
+			}
+		}
+	}
+	
 	private static final int KEY_FRAME_SIZE = 5;
 	private static final int TRACK_SPACER = 10;
 
@@ -55,13 +86,14 @@ public class TrackView {
 	private List<Image> backgroundWaveImages;
 	private long lastRedraw;
 
+	private Section clickedSection = Section.NONE;
+
 	private double offsetX = 0;
 	private double scrollOriginX = -1;
 	private Rectangle selectRectangle;
 	private Set<KeyFrame> selectedKeyFrames;
 
 	private KeyFrame hoveringKeyFrame = null;
-	private boolean isMouseDown = false;
 
 	/**
 	 * Create a new track view with an associated canvas
@@ -77,7 +109,6 @@ public class TrackView {
 		// Register mouse event handlers
 		canvas.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
 			canvas.requestFocus();
-			isMouseDown = false;
 
 			if (scrollOriginX != -1) {
 				scrollOriginX = -1;
@@ -90,13 +121,13 @@ public class TrackView {
 				HueStew.getInstance().getView().openColorPickerPane(selectedKeyFrames);
 			}
 			
+			clickedSection = Section.NONE;
 		});
 		canvas.addEventHandler(MouseEvent.MOUSE_PRESSED, event -> {
 			canvas.requestFocus();
+			clickedSection = Section.fromY(event.getY());
 
-			isMouseDown = true;
-
-			if (event.getButton() == MouseButton.PRIMARY && event.getY() >= 20 && getTrackFromY(event.getY()) == null
+			if (event.getButton() == MouseButton.PRIMARY && clickedSection == Section.TIMELINE
 					|| event.getButton() == MouseButton.MIDDLE) {
 				// Scroll
 				scrollOriginX = event.getX();
@@ -119,17 +150,19 @@ public class TrackView {
 			LightTrack track = getTrackFromY(event.getY());
 
 			// Set cursor
-			if (track == null) {
-				if (event.getY() > 20)
-					canvas.setCursor(Cursor.OPEN_HAND);
-				else
-					canvas.setCursor(Cursor.E_RESIZE);
+			if (clickedSection.hasCursor()) {
+				canvas.setCursor(clickedSection.getCursor());
 			} else {
-				updateHoveringKeyFrame(track, event);
-				canvas.setCursor(HueStew.getInstance().getToolbox().getSelectedTool().getCursor(hoveringKeyFrame != null, isMouseDown));
+				Section section = Section.fromY(event.getY());
+				
+				if (section.hasCursor()) {
+					canvas.setCursor(section.getCursor());
+				} else {
+					updateHoveringKeyFrame(track, event);
+					canvas.setCursor(HueStew.getInstance().getToolbox().getSelectedTool().getCursor(hoveringKeyFrame != null, clickedSection != Section.NONE));
+				}
 			}
 		});
-
 	}
 
 	public void loadWaves(List<String> filePaths) {
@@ -166,12 +199,13 @@ public class TrackView {
 	}
 
 	private void sendMouseEventToTool(MouseEvent event) {
-		// Get light track and timestamp from mouse coordinates
-		LightTrack track = getTrackFromY(event.getY());
-		if (track == null) {
+		if (clickedSection != Section.TRACKS) {
 			parseTrackEvent(event);
 			return;
 		}
+		
+		// Get light track and timestamp from mouse coordinates
+		LightTrack track = getTrackFromY(event.getY());
 
 		// TODO what's that smell?
 		if (HueStew.getInstance().getToolbox().getActiveTool() instanceof SelectTool) {
@@ -274,9 +308,8 @@ public class TrackView {
 	}
 
 	private void parseTrackEvent(MouseEvent event) {
-
 		// Seeking event
-		if (event.getY() < 20) {
+		if (clickedSection == Section.CURSOR) {
 			int time = getTimeFromX(event.getX());
 			HueStew.getInstance().getPlayer().seek(time);
 			redraw();
