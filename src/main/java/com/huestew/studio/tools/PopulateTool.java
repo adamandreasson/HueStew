@@ -12,6 +12,7 @@ import javafx.scene.Cursor;
 import javafx.scene.ImageCursor;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 
 public class PopulateTool extends Tool {
@@ -27,7 +28,7 @@ public class PopulateTool extends Tool {
 		if (keyFrame != null)
 			return;
 
-		if (event.getEventType() == MouseEvent.MOUSE_CLICKED) {
+		if (event.getEventType() == MouseEvent.MOUSE_CLICKED && event.getButton() == MouseButton.PRIMARY) {
 			lightTrack.addKeyFrame(new KeyFrame(timestamp, new LightState(new Color(1, 1, 1), (int) (255 * normalizedY), 0), lightTrack));
 		}
 	}
