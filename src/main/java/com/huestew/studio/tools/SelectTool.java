@@ -16,7 +16,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 
 /**
- * A combined to for selecting, moving and deleting keyframes.
+ * A combined tool for selecting, moving and deleting keyframes.
  * 
  * @author Marcus
  *
@@ -43,7 +43,6 @@ public class SelectTool extends Tool {
 			while(deleter.hasNext()){
 				KeyFrame temp = deleter.next();
 				temp.remove();
-				temp = null;
 				HueStew.getInstance().getView().updateTrackView();
 			}
 			
@@ -63,12 +62,10 @@ public class SelectTool extends Tool {
 		if (event.getEventType() == MouseEvent.MOUSE_CLICKED && keyFrame != null){
 			if(!selectedKeyFrames.contains(keyFrame)){
 			selectedKeyFrames.add(keyFrame);
-			System.out.println("Selected a keyframe");
 			}
 
 		else{
 			selectedKeyFrames.remove(keyFrame);
-			System.out.println("Deselected a keyframe");
 		}
 			
 		}
@@ -78,7 +75,6 @@ public class SelectTool extends Tool {
 				return;
 			}else{
 				selectedKeyFrames.clear();
-			System.out.println("All keyframes deselected");
 			}
 			
 		}
