@@ -80,12 +80,11 @@ public class TrackView {
 	private Section clickedSection = Section.NONE;
 	private LightTrack clickedTrack;
 
-	private double offsetX = 0;
-	private double scrollOriginX = -1;
 	private Rectangle selectRectangle;
 	private Set<KeyFrame> selectedKeyFrames;
 
 	private Scrollbar verticalScrollbar;
+	private Scrollbar horizontalScrollbar;
 
 	private KeyFrame hoveringKeyFrame = null;
 
@@ -97,21 +96,18 @@ public class TrackView {
 	 */
 	public TrackView(Canvas canvas) {
 		this.canvas = canvas;
-		canvas.setVisible(false);
 		this.selectedKeyFrames = new HashSet<KeyFrame>();
 		this.verticalScrollbar = new Scrollbar(() -> getTotalVisibleTrackHeight(), () -> getTotalTrackHeight());
-		
-		canvas.widthProperty().addListener((a, b, c) -> {
-			System.out.println("Canvas width: " + b.doubleValue() + ", Window width: " + canvas.getScene().getWindow().getWidth());
-		});
+		this.horizontalScrollbar = new Scrollbar(() -> getVisibleTrackWidth(), () -> getTrackWidth());
 
 		// Register mouse event handlers
 		canvas.addEventHandler(MouseEvent.MOUSE_RELEASED, event -> {
 			canvas.requestFocus();
 
-			if (scrollOriginX != -1) {
-				scrollOriginX = -1;
-			} else if (clickedTrack != null) {
+			// Force redraw
+			lastRedraw = 0;
+
+			if (clickedTrack != null) {
 				sendMouseEventToTool(event);
 			}
 
@@ -130,13 +126,14 @@ public class TrackView {
 
 			if (clickedSection == Section.VERTICAL_SCROLLBAR) {
 				verticalScrollbar.setBarOrigin(event.getY());
+			} else if (clickedSection == Section.HORIZONTAL_SCROLLBAR) {
+				horizontalScrollbar.setBarOrigin(event.getX());
 			} else if (event.getButton() == MouseButton.MIDDLE) {
 				verticalScrollbar.setOrigin(event.getY());
-			} else if (event.getButton() == MouseButton.PRIMARY && clickedSection == Section.TIMELINE
-					|| event.getButton() == MouseButton.MIDDLE) {
-				// Scroll
-				scrollOriginX = event.getX();
-			} else if (clickedTrack != null) {
+				horizontalScrollbar.setOrigin(event.getX());
+			} else if (clickedSection == Section.TIMELINE) {
+				horizontalScrollbar.setOrigin(event.getX());
+			}  else if (clickedTrack != null) {
 				sendMouseEventToTool(event);
 			}
 		});
@@ -144,13 +141,15 @@ public class TrackView {
 			if (clickedSection == Section.VERTICAL_SCROLLBAR) {
 				verticalScrollbar.setBarPosition(event.getY());
 				redraw();
+			} else if (clickedSection == Section.HORIZONTAL_SCROLLBAR) {
+				horizontalScrollbar.setBarPosition(event.getX());
+				redraw();
 			} else if (event.getButton() == MouseButton.MIDDLE) {
 				verticalScrollbar.setPosition(event.getY());
+				horizontalScrollbar.setPosition(event.getX());
 				redraw();
-			} else if (scrollOriginX != -1) {
-				// TODO replace with horizontal scrollbar?
-				setOffset(offsetX + scrollOriginX - event.getX());
-				scrollOriginX = event.getX();
+			} else if (clickedSection == Section.TIMELINE) {
+				horizontalScrollbar.setPosition(event.getX());
 				redraw();
 			} else {
 				sendMouseEventToTool(event);
@@ -175,6 +174,10 @@ public class TrackView {
 				}
 			}
 		});
+
+		// Uppdate scrollbars when canvas size is changed
+		canvas.widthProperty().addListener((a, b, c) -> horizontalScrollbar.update());
+		canvas.heightProperty().addListener((a, b, c) -> verticalScrollbar.update());
 	}
 
 	public void loadWaves(List<String> filePaths) {
@@ -323,11 +326,6 @@ public class TrackView {
 		}
 	}
 
-	private void setOffset(double offset) {
-		double maxOffset = getXFromTime(HueStew.getInstance().getShow().getDuration()) + offsetX - canvas.getWidth();
-		offsetX = Math.max(0, Math.min(maxOffset, offset));
-	}
-
 	public void redraw() {
 		if (HueStew.getInstance().getShow() == null || HueStew.getInstance().getShow().getDuration() == 0)
 			return;
@@ -338,9 +336,6 @@ public class TrackView {
 			return;
 		lastRedraw = now;
 
-		if (!canvas.isVisible())
-			canvas.setVisible(true);
-
 		// Scroll automatically while playing the show
 		if (HueStew.getInstance().getPlayer().isPlaying()) {
 			double x = getXFromTime(HueStew.getInstance().getCursor());
@@ -348,9 +343,9 @@ public class TrackView {
 			double rightEdge = canvas.getWidth() - 300;
 
 			if (x > rightEdge) {
-				setOffset(offsetX + x - rightEdge);
+				horizontalScrollbar.addOffset(x - rightEdge);
 			} else if (x < leftEdge) {
-				setOffset(offsetX + x - leftEdge);
+				horizontalScrollbar.addOffset(x - leftEdge);
 			}
 		}
 
@@ -390,7 +385,7 @@ public class TrackView {
 		gc.setFill(TIMELINE_TEXT_COLOR);
 
 		int firstTick = getTimeFromX(0);
-		int lastTick = getTimeFromX(getTrackWidth());
+		int lastTick = getTimeFromX(getVisibleTrackWidth());
 
 		// Draw out the ticks on the timeline
 		for (int time = firstTick; time <= lastTick; time++) {
@@ -417,14 +412,14 @@ public class TrackView {
 			Image image = backgroundWaveImages.get(i);
 
 			// Skip if image is to the left of the canvas
-			if (startX + image.getWidth() < offsetX)
+			if (startX + image.getWidth() < horizontalScrollbar.getOffset())
 				continue;
 
 			// Skip the rest if image is to the right of the canvas
-			if (startX > canvas.getWidth() + offsetX)
+			if (startX > canvas.getWidth() + horizontalScrollbar.getOffset())
 				return;
 
-			gc.drawImage(image, startX - offsetX, 40, image.getWidth(), canvas.getHeight() - 40);
+			gc.drawImage(image, startX - horizontalScrollbar.getOffset(), 40, image.getWidth(), canvas.getHeight() - 40);
 		}
 	}
 
@@ -432,10 +427,10 @@ public class TrackView {
 		int i = 0;
 		for (LightTrack track : HueStew.getInstance().getShow().getLightTracks()) {
 			gc.setFill(TRACK_COLOR);
-			gc.fillRect(0, getTrackPositionY(i), getTrackWidth(), getTrackHeight());
+			gc.fillRect(0, getTrackPositionY(i), getVisibleTrackWidth(), getTrackHeight());
 
 			gc.setStroke(TRACK_BORDER_COLOR);
-			gc.strokeLine(0, getTrackPositionY(i), getTrackWidth(), getTrackPositionY(i));
+			gc.strokeLine(0, getTrackPositionY(i), getVisibleTrackWidth(), getTrackPositionY(i));
 
 			drawTrackPolygon(gc, track, getTrackPositionY(i));
 			drawKeyFrames(gc, track, getTrackPositionY(i));
@@ -515,7 +510,10 @@ public class TrackView {
 	private void drawScrollbars(GraphicsContext gc) {
 		// TODO
 		gc.setFill(SCROLLBAR_COLOR);
-		gc.fillRoundRect(getTrackWidth(), getTotalTrackPositionY() + verticalScrollbar.getBarPosition(), SCROLLBAR_SIZE, verticalScrollbar.getBarSize(), SCROLLBAR_SIZE, SCROLLBAR_SIZE);
+		gc.fillRoundRect(getVisibleTrackWidth(), getTotalTrackPositionY() + verticalScrollbar.getBarPosition(), 
+				SCROLLBAR_SIZE, verticalScrollbar.getBarSize(), SCROLLBAR_SIZE, SCROLLBAR_SIZE);
+		gc.fillRoundRect(horizontalScrollbar.getBarPosition(), getTotalVisibleTrackHeight() + getTotalTrackPositionY(), 
+				horizontalScrollbar.getBarSize(), SCROLLBAR_SIZE, SCROLLBAR_SIZE, SCROLLBAR_SIZE);
 	}
 
 	private LightTrack getTrackFromY(double y) {
@@ -563,19 +561,23 @@ public class TrackView {
 	}
 
 	private double getXFromTime(int time) {
-		return (time * PIXELS_PER_SECOND / 1000.0) - offsetX;
+		return (time * PIXELS_PER_SECOND / 1000.0) - horizontalScrollbar.getOffset();
 	}
 
 	private int getTimeFromX(double x) {
-		return (int) ((x + offsetX) / (PIXELS_PER_SECOND / 1000.0));
+		return (int) ((x + horizontalScrollbar.getOffset()) / (PIXELS_PER_SECOND / 1000.0));
 	}
 
 	private double getRelativeYFromBrightness(int brightness) {
 		return (brightness / 255.0) * getTrackHeight();
 	}
 
-	private double getTrackWidth() {
+	private double getVisibleTrackWidth() {
 		return canvas.getWidth() - SCROLLBAR_SIZE;
+	}
+	
+	private double getTrackWidth() {
+		return HueStew.getInstance().getShow().getDuration() / 1000D * PIXELS_PER_SECOND;
 	}
 
 	private double getTrackHeight() {
@@ -583,7 +585,7 @@ public class TrackView {
 	}
 
 	private double getTotalVisibleTrackHeight() {
-		return canvas.getHeight() - getTotalTrackPositionY();
+		return canvas.getHeight() - getTotalTrackPositionY() - SCROLLBAR_SIZE;
 	}
 
 	private double getTotalTrackHeight() {
@@ -603,8 +605,10 @@ public class TrackView {
 	}
 
 	private Section getSection(double x, double y) {
-		if (x > getTrackWidth() && y >= getTotalTrackPositionY()) {
+		if (x > getVisibleTrackWidth() && y >= getTotalTrackPositionY()) {
 			return Section.VERTICAL_SCROLLBAR;
+		} else if (y > getTotalVisibleTrackHeight() + getTotalTrackPositionY()) {
+			return Section.HORIZONTAL_SCROLLBAR;
 		} else if (y <= 20) {
 			return Section.CURSOR;
 		} else if (y <= 40) {
