@@ -38,25 +38,22 @@ import javafx.scene.text.TextAlignment;
  */
 public class TrackView {
 	private enum Section {
-		CURSOR(Cursor.E_RESIZE),
-		TIMELINE(Cursor.OPEN_HAND),
-		TRACKS(null),
-		NONE(null);
-		
+		CURSOR(Cursor.E_RESIZE), TIMELINE(Cursor.OPEN_HAND), TRACKS(null), NONE(null);
+
 		private Cursor cursor;
-		
+
 		private Section(Cursor cursor) {
 			this.cursor = cursor;
 		}
-		
+
 		boolean hasCursor() {
 			return cursor != null;
 		}
-		
+
 		Cursor getCursor() {
 			return cursor;
 		}
-		
+
 		static Section fromY(double y) {
 			if (y <= 20) {
 				return CURSOR;
@@ -67,7 +64,7 @@ public class TrackView {
 			}
 		}
 	}
-	
+
 	private static final int KEY_FRAME_SIZE = 5;
 	private static final int TRACK_SPACER = 10;
 
@@ -80,7 +77,6 @@ public class TrackView {
 	public static final Color BACKGROUND_COLOR = Color.web("#535353");
 	public static final Color TRACK_COLOR = new Color(0.06, 0.06, 0.06, 0.2);
 	public static final Color TRACK_BORDER_COLOR = Color.web("#383838");
-	
 
 	private Canvas canvas;
 	private List<Image> backgroundWaveImages;
@@ -108,7 +104,7 @@ public class TrackView {
 		this.selectedKeyFrames = new HashSet<KeyFrame>();
 
 		// Register mouse event handlers
-		canvas.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+		canvas.addEventHandler(MouseEvent.MOUSE_RELEASED, event -> {
 			canvas.requestFocus();
 
 			if (scrollOriginX != -1) {
@@ -118,10 +114,10 @@ public class TrackView {
 			}
 
 			if (event.getButton() == MouseButton.SECONDARY && hoveringKeyFrame != null) {
-				//HueStew.getInstance().getView().openColorPickerPane(hoveringKeyFrame);
+				// HueStew.getInstance().getView().openColorPickerPane(hoveringKeyFrame);
 				HueStew.getInstance().getView().openColorPickerPane(selectedKeyFrames);
 			}
-			
+
 			clickedSection = Section.NONE;
 		});
 		canvas.addEventHandler(MouseEvent.MOUSE_PRESSED, event -> {
@@ -156,12 +152,13 @@ public class TrackView {
 				canvas.setCursor(clickedSection.getCursor());
 			} else {
 				Section section = Section.fromY(event.getY());
-				
+
 				if (section.hasCursor()) {
 					canvas.setCursor(section.getCursor());
 				} else {
 					updateHoveringKeyFrame(track, event);
-					canvas.setCursor(HueStew.getInstance().getToolbox().getSelectedTool().getCursor(hoveringKeyFrame != null, clickedSection != Section.NONE));
+					canvas.setCursor(HueStew.getInstance().getToolbox().getSelectedTool()
+							.getCursor(hoveringKeyFrame != null, clickedSection != Section.NONE));
 				}
 			}
 		});
@@ -172,9 +169,8 @@ public class TrackView {
 		this.backgroundWaveImages = new ArrayList<Image>();
 
 		try {
-			for (String path : filePaths) 
+			for (String path : filePaths)
 				this.backgroundWaveImages.add(new Image(path));
-
 
 			redraw();
 
@@ -205,7 +201,7 @@ public class TrackView {
 			parseTrackEvent(event);
 			return;
 		}
-		
+
 		// TODO what's that smell?
 		if (HueStew.getInstance().getToolbox().getActiveTool() instanceof SelectTool) {
 			updateSelectRectangle(event);
@@ -225,7 +221,8 @@ public class TrackView {
 			normalizedY = 0;
 
 		// Pass event to current tool
-		HueStew.getInstance().getToolbox().getActiveTool().doAction(event, clickedTrack, hoveringKeyFrame, selectedKeyFrames, getTimeFromX(event.getX()), normalizedY);
+		HueStew.getInstance().getToolbox().getActiveTool().doAction(event, clickedTrack, hoveringKeyFrame,
+				selectedKeyFrames, getTimeFromX(event.getX()), normalizedY);
 
 		// Redraw canvas
 		redraw();
@@ -247,12 +244,12 @@ public class TrackView {
 			selectRectangle.setWidth(event.getX() - selectRectangle.getX());
 			selectRectangle.setHeight(event.getY() - selectRectangle.getY());
 
-		} else if (event.getEventType() == MouseEvent.MOUSE_CLICKED) {
+		} else if (event.getEventType() == MouseEvent.MOUSE_RELEASED) {
 			if (selectRectangle == null)
 				return;
+			
 			selectKeyFrames();
 			selectRectangle = null;
-
 		}
 
 	}
@@ -316,22 +313,21 @@ public class TrackView {
 	}
 
 	private void setOffset(double offset) {
-		double maxOffset = getXFromTime(HueStew.getInstance().getShow().getDuration()) + offsetX
-				- canvas.getWidth();
+		double maxOffset = getXFromTime(HueStew.getInstance().getShow().getDuration()) + offsetX - canvas.getWidth();
 		offsetX = Math.max(0, Math.min(maxOffset, offset));
 	}
 
 	public void redraw() {
-		if (HueStew.getInstance().getShow() == null || HueStew.getInstance().getShow().getDuration() == 0) 
+		if (HueStew.getInstance().getShow() == null || HueStew.getInstance().getShow().getDuration() == 0)
 			return;
 
 		// Don't draw too often, it's unnecessary
 		long now = System.currentTimeMillis();
-		if(now - lastRedraw < 16)
+		if (now - lastRedraw < 16)
 			return;
 		lastRedraw = now;
 
-		if (!canvas.isVisible()) 
+		if (!canvas.isVisible())
 			canvas.setVisible(true);
 
 		// Scroll automatically while playing the show
@@ -365,10 +361,8 @@ public class TrackView {
 	}
 
 	private void drawTimeline(GraphicsContext gc) {
-		LinearGradient lg = new LinearGradient(0, 0, 0, 1, true,
-				CycleMethod.NO_CYCLE,
-				new Stop(1.0, new Color(0.2,0.2,0.2,1)),
-				new Stop(0.0, new Color(0.3,0.3,0.3,1)));
+		LinearGradient lg = new LinearGradient(0, 0, 0, 1, true, CycleMethod.NO_CYCLE,
+				new Stop(1.0, new Color(0.2, 0.2, 0.2, 1)), new Stop(0.0, new Color(0.3, 0.3, 0.3, 1)));
 		gc.setFill(lg);
 		gc.fillRect(0, 0, canvas.getWidth(), 40);
 
@@ -381,7 +375,7 @@ public class TrackView {
 		gc.setStroke(Color.web("#222222"));
 
 		gc.strokeLine(0, 20.5, canvas.getWidth(), 20.5);
-		
+
 		gc.setStroke(TIMELINE_TICK_COLOR);
 
 		gc.setFill(TIMELINE_TEXT_COLOR);
@@ -391,7 +385,7 @@ public class TrackView {
 
 		// Draw out the ticks on the timeline
 		for (int time = firstTick; time <= lastTick; time++) {
-			if(time%100 != 0)
+			if (time % 100 != 0)
 				continue;
 			double x = getXFromTime(time);
 			// If the timestamp is divisible by 10, we will draw a longer tick
@@ -430,7 +424,7 @@ public class TrackView {
 		for (LightTrack track : HueStew.getInstance().getShow().getLightTracks()) {
 			gc.setFill(TRACK_COLOR);
 			gc.fillRect(0, getTrackPositionY(i), canvas.getWidth(), getTrackHeight());
-			
+
 			gc.setStroke(TRACK_BORDER_COLOR);
 			gc.strokeLine(0, getTrackPositionY(i), canvas.getWidth(), getTrackPositionY(i));
 

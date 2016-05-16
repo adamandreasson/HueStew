@@ -59,7 +59,7 @@ public class SelectTool extends Tool {
 			selectedKeyFrame = keyFrame;
 			selectedLightTrack = lightTrack;
 		
-		if (event.getEventType() == MouseEvent.MOUSE_CLICKED && keyFrame != null){
+		if (event.getEventType() == MouseEvent.MOUSE_RELEASED && keyFrame != null){
 			if(!selectedKeyFrames.contains(keyFrame)){
 			selectedKeyFrames.add(keyFrame);
 			}
@@ -70,7 +70,7 @@ public class SelectTool extends Tool {
 			
 		}
 		
-		if (event.getEventType() == MouseEvent.MOUSE_CLICKED && keyFrame == null){
+		if (event.getEventType() == MouseEvent.MOUSE_RELEASED && keyFrame == null){
 			if(!selectedKeyFrames.isEmpty()){
 				return;
 			}else{

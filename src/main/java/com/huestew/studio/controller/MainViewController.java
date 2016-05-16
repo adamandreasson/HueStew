@@ -16,6 +16,8 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -30,8 +32,6 @@ import javafx.stage.Stage;
  */
 public class MainViewController extends ViewController {
 
-	private final static String ACTIVE_BUTTON_STYLE = "-fx-base: #FFCD8C;";
-
 	@FXML
 	private Canvas previewCanvas;
 
@@ -45,13 +45,16 @@ public class MainViewController extends ViewController {
 	private AnchorPane trackCanvasPane;
 
 	@FXML
+	private AnchorPane trackActionPane;
+	
+	@FXML
 	public AnchorPane colorPickerPane;
 
 	@FXML
-	private Button populateToolButton;
+	private ToggleButton populateToolButton;
 
 	@FXML
-	private Button selectToolButton;
+	private ToggleButton selectToolButton;
 
 	@FXML
 	private Slider volumeSlider;
@@ -99,9 +102,14 @@ public class MainViewController extends ViewController {
 			trackCanvas.setWidth(newWidth.doubleValue());
 			trackView.redraw();
 		});
+		
 		trackCanvasPane.heightProperty().addListener((observableValue, oldHeight, newHeight) -> {
 			trackCanvas.setHeight(newHeight.doubleValue());
 			trackView.redraw();
+		});
+		
+		colorPickerPane.widthProperty().addListener((observableValue, oldHeight, newHeight) -> {
+			System.out.println("color picker pane resizxed to " + newHeight);
 		});
 
 		HueStew.getInstance().getView().setTrackView(trackView);
@@ -131,28 +139,20 @@ public class MainViewController extends ViewController {
 		selectToolButton.setGraphic(new ImageView(new Image("icon_cursor.png")));
 		selectToolButton.setTooltip(new Tooltip("Select tool"));
 
-		selectToolButton.setStyle(ACTIVE_BUTTON_STYLE);
+		ToggleGroup toolGroup = new ToggleGroup();
+		populateToolButton.setToggleGroup(toolGroup);
+		selectToolButton.setToggleGroup(toolGroup);
+		selectToolButton.setSelected(true);
 	}
 
 	@FXML
 	private void populateToolPressed() {
-		resetToolButtons();
-
 		HueStew.getInstance().getToolbox().getPopulateTool().select();
-		populateToolButton.setStyle(ACTIVE_BUTTON_STYLE);
 	}
 
 	@FXML
 	private void selectToolPressed() {
-		resetToolButtons();
-
 		HueStew.getInstance().getToolbox().getSelectTool().select();
-		selectToolButton.setStyle(ACTIVE_BUTTON_STYLE);
-	}
-
-	private void resetToolButtons(){
-		selectToolButton.setStyle("");
-		populateToolButton.setStyle("");
 	}
 
 	@FXML
@@ -295,9 +295,13 @@ public class MainViewController extends ViewController {
 
 	public void openColorPickerPane(Set<KeyFrame> selectedKeyFrames) {
 
+		colorPickerPane.getChildren().clear();
+		
 		double maxDimension = colorPickerPane.getWidth();
 		if(colorPickerPane.getHeight() > colorPickerPane.getWidth())
 			maxDimension = colorPickerPane.getHeight();
+		
+		System.out.println("max dimension is " + maxDimension);
 
 		maxDimension -= 20;
 
@@ -322,7 +326,6 @@ public class MainViewController extends ViewController {
 			
 		});
 
-		colorPickerPane.getChildren().clear();
 		colorPickerPane.getChildren().add(imgView);
 	}
 

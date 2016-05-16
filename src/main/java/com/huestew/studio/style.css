@@ -18,5 +18,55 @@
 .menubar{
  	-fx-background-color: #535353;
  	-fx-border-color: #282828;
- 	-fx-border-width: 0 0 3 0;
+ 	-fx-border-width: 0 0 1 0;
+ 	-fx-text-fill: #f5f5f5;
+}
+
+.menubar .label{
+ 	-fx-text-fill: #f5f5f5;
+}
+
+.context-menu {
+    -fx-skin: "com.sun.javafx.scene.control.skin.ContextMenuSkin";
+    -fx-background-color: #f0f0f0;
+ 	-fx-text-fill: #333333;
+    -fx-background-insets: 0, 1, 2;
+}
+
+.context-menu .label {
+ 	-fx-text-fill: #333333;
+}
+
+.toggle-button, .button {
+    -fx-text-fill: #f5f5f5;
+    -fx-background-color: transparent;
+    
+}
+
+.toggle-button:pressed, .toggle-button:selected, .button:pressed{
+    -fx-background-color: 
+        transparent,
+        linear-gradient(transparent, #636363),
+        linear-gradient(#272727, #393939),
+        linear-gradient(#3f3f3f, #383838);
+    -fx-background-insets: 0,1,2,3;
+    -fx-background-radius: 3,2,2,2;
+    -fx-text-fill: white;
+
+}
+
+.toggle-button:hover, .toggle-button:hover, .button:hover{
+    -fx-background-color: 
+        transparent,
+        linear-gradient(transparent, #636363),
+        linear-gradient(#272727, #393939),
+        linear-gradient(#757575, #636363);
+    -fx-background-insets: 0,1,2,3;
+    -fx-background-radius: 3,2,2,2;
+    -fx-text-fill: white;
+
+}
+
+.label{
+	-fx-text-fill: #f5f5f5;
 }
