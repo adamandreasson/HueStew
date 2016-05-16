@@ -34,3 +34,13 @@ public class MyCustomLight implements Light {
     ...
 }
 ```
+
+#### plugin.properties
+
+All plugins require a file in the root of the .jar called "plugin.properties". The main program will look for this file when loading a plugin. This file must contain a pointer to the main class in the plugin, in this example that is "MyPlugin".
+
+```
+main=com.myplugin.MyPlugin
+```
+
+The plugin will not load unless this file exists, with the correct pointer.
