@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import com.huestew.studio.HueStew;
+import com.huestew.studio.Scrollbar;
 import com.huestew.studio.model.KeyFrame;
 import com.huestew.studio.model.LightTrack;
 import com.huestew.studio.tools.SelectTool;
@@ -38,8 +39,9 @@ import javafx.scene.text.TextAlignment;
  */
 public class TrackView {
 	private enum Section {
-		CURSOR(Cursor.E_RESIZE), TIMELINE(Cursor.OPEN_HAND), TRACKS(null), NONE(null);
-
+		CURSOR(Cursor.E_RESIZE), TIMELINE(Cursor.OPEN_HAND), TRACKS(null), 
+		VERTICAL_SCROLLBAR(Cursor.DEFAULT), HORIZONTAL_SCROLLBAR(Cursor.DEFAULT), NONE(null);
+		
 		private Cursor cursor;
 
 		private Section(Cursor cursor) {
@@ -53,30 +55,23 @@ public class TrackView {
 		Cursor getCursor() {
 			return cursor;
 		}
-
-		static Section fromY(double y) {
-			if (y <= 20) {
-				return CURSOR;
-			} else if (y <= 40) {
-				return TIMELINE;
-			} else {
-				return TRACKS;
-			}
-		}
 	}
 
 	private static final int KEY_FRAME_SIZE = 5;
 	private static final int TRACK_SPACER = 10;
+	private static final int MINIMUM_TRACK_HEIGHT = 80;
+	private static final int SCROLLBAR_SIZE = 8;
 
 	public static final int PIXELS_PER_SECOND = 100;
 
-	public static final Color TIMELINE_COLOR = Color.web("#303030");
-	public static final Color TIMELINE_TICK_COLOR = Color.web("#616161");
-	public static final Color TIMELINE_TICK_SHADOW_COLOR = new Color(0.26, 0.26, 0.26, 0);
-	public static final Color TIMELINE_TEXT_COLOR = Color.web("#a5a5a5");
-	public static final Color BACKGROUND_COLOR = Color.web("#535353");
-	public static final Color TRACK_COLOR = new Color(0.06, 0.06, 0.06, 0.2);
-	public static final Color TRACK_BORDER_COLOR = Color.web("#383838");
+	private static final Color TIMELINE_COLOR = Color.web("#303030");
+	private static final Color TIMELINE_TICK_COLOR = Color.web("#616161");
+	private static final Color TIMELINE_TICK_SHADOW_COLOR = new Color(0.26, 0.26, 0.26, 0);
+	private static final Color TIMELINE_TEXT_COLOR = Color.web("#a5a5a5");
+	private static final Color BACKGROUND_COLOR = Color.web("#535353");
+	private static final Color TRACK_COLOR = new Color(0.06, 0.06, 0.06, 0.2);
+	private static final Color TRACK_BORDER_COLOR = Color.web("#383838");
+	private static final Color SCROLLBAR_COLOR = Color.web("#303030");
 
 	private Canvas canvas;
 	private List<Image> backgroundWaveImages;
@@ -90,6 +85,8 @@ public class TrackView {
 	private Rectangle selectRectangle;
 	private Set<KeyFrame> selectedKeyFrames;
 
+	private Scrollbar verticalScrollbar;
+
 	private KeyFrame hoveringKeyFrame = null;
 
 	/**
@@ -102,6 +99,11 @@ public class TrackView {
 		this.canvas = canvas;
 		canvas.setVisible(false);
 		this.selectedKeyFrames = new HashSet<KeyFrame>();
+		this.verticalScrollbar = new Scrollbar(() -> getTotalVisibleTrackHeight(), () -> getTotalTrackHeight());
+		
+		canvas.widthProperty().addListener((a, b, c) -> {
+			System.out.println("Canvas width: " + b.doubleValue() + ", Window width: " + canvas.getScene().getWindow().getWidth());
+		});
 
 		// Register mouse event handlers
 		canvas.addEventHandler(MouseEvent.MOUSE_RELEASED, event -> {
@@ -109,7 +111,7 @@ public class TrackView {
 
 			if (scrollOriginX != -1) {
 				scrollOriginX = -1;
-			} else {
+			} else if (clickedTrack != null) {
 				sendMouseEventToTool(event);
 			}
 
@@ -122,19 +124,31 @@ public class TrackView {
 		});
 		canvas.addEventHandler(MouseEvent.MOUSE_PRESSED, event -> {
 			canvas.requestFocus();
-			clickedSection = Section.fromY(event.getY());
+			clickedSection = getSection(event);
 			clickedTrack = getTrackFromY(event.getY());
+			System.out.println(clickedSection.name());
 
-			if (event.getButton() == MouseButton.PRIMARY && clickedSection == Section.TIMELINE
+			if (clickedSection == Section.VERTICAL_SCROLLBAR) {
+				verticalScrollbar.setBarOrigin(event.getY());
+			} else if (event.getButton() == MouseButton.MIDDLE) {
+				verticalScrollbar.setOrigin(event.getY());
+			} else if (event.getButton() == MouseButton.PRIMARY && clickedSection == Section.TIMELINE
 					|| event.getButton() == MouseButton.MIDDLE) {
 				// Scroll
 				scrollOriginX = event.getX();
-			} else {
+			} else if (clickedTrack != null) {
 				sendMouseEventToTool(event);
 			}
 		});
 		canvas.addEventHandler(MouseEvent.MOUSE_DRAGGED, event -> {
-			if (scrollOriginX != -1) {
+			if (clickedSection == Section.VERTICAL_SCROLLBAR) {
+				verticalScrollbar.setBarPosition(event.getY());
+				redraw();
+			} else if (event.getButton() == MouseButton.MIDDLE) {
+				verticalScrollbar.setPosition(event.getY());
+				redraw();
+			} else if (scrollOriginX != -1) {
+				// TODO replace with horizontal scrollbar?
 				setOffset(offsetX + scrollOriginX - event.getX());
 				scrollOriginX = event.getX();
 				redraw();
@@ -142,7 +156,6 @@ public class TrackView {
 				sendMouseEventToTool(event);
 			}
 		});
-
 		canvas.addEventHandler(MouseEvent.MOUSE_MOVED, event -> {
 			// Get light track from mouse coordinates
 			LightTrack track = getTrackFromY(event.getY());
@@ -151,11 +164,11 @@ public class TrackView {
 			if (clickedSection.hasCursor()) {
 				canvas.setCursor(clickedSection.getCursor());
 			} else {
-				Section section = Section.fromY(event.getY());
+				Section section = getSection(event);
 
 				if (section.hasCursor()) {
 					canvas.setCursor(section.getCursor());
-				} else {
+				} else if (track != null) {
 					updateHoveringKeyFrame(track, event);
 					canvas.setCursor(HueStew.getInstance().getToolbox().getSelectedTool()
 							.getCursor(hoveringKeyFrame != null, clickedSection != Section.NONE));
@@ -165,7 +178,6 @@ public class TrackView {
 	}
 
 	public void loadWaves(List<String> filePaths) {
-
 		this.backgroundWaveImages = new ArrayList<Image>();
 
 		try {
@@ -209,7 +221,7 @@ public class TrackView {
 
 		if (hoveringKeyFrame != null)
 			HueStew.getInstance().getToolbox().getSelectTool().setActive();
-		if (event.getEventType() == MouseEvent.MOUSE_CLICKED)
+		if (event.getEventType() == MouseEvent.MOUSE_RELEASED)
 			HueStew.getInstance().getToolbox().reset();
 
 		// Get normalized y coordinate
@@ -221,8 +233,7 @@ public class TrackView {
 			normalizedY = 0;
 
 		// Pass event to current tool
-		HueStew.getInstance().getToolbox().getActiveTool().doAction(event, clickedTrack, hoveringKeyFrame,
-				selectedKeyFrames, getTimeFromX(event.getX()), normalizedY);
+		HueStew.getInstance().getToolbox().getActiveTool().doAction(event, clickedTrack, hoveringKeyFrame, selectedKeyFrames, getTimeFromX(event.getX()), normalizedY);
 
 		// Redraw canvas
 		redraw();
@@ -247,7 +258,7 @@ public class TrackView {
 		} else if (event.getEventType() == MouseEvent.MOUSE_RELEASED) {
 			if (selectRectangle == null)
 				return;
-			
+
 			selectKeyFrames();
 			selectRectangle = null;
 		}
@@ -346,30 +357,28 @@ public class TrackView {
 		// Perform drawing on javafx main thread
 		Platform.runLater(new Runnable() {
 			public void run() {
-
 				GraphicsContext gc = canvas.getGraphicsContext2D();
 				gc.setFont(new Font(11.0));
 				gc.setFill(BACKGROUND_COLOR);
 				gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
-				drawTimeline(gc);
+				drawWave(gc);
 				drawLightTracks(gc);
+				drawTimeline(gc);
 				drawSelection(gc);
 				drawCursor(gc);
+				drawScrollbars(gc);
 			}
 		});
 	}
 
 	private void drawTimeline(GraphicsContext gc) {
-		LinearGradient lg = new LinearGradient(0, 0, 0, 1, true, CycleMethod.NO_CYCLE,
-				new Stop(1.0, new Color(0.2, 0.2, 0.2, 1)), new Stop(0.0, new Color(0.3, 0.3, 0.3, 1)));
+		LinearGradient lg = new LinearGradient(0, 0, 0, 1, true, CycleMethod.NO_CYCLE, new Stop(1.0, new Color(0.2, 0.2, 0.2, 1)), new Stop(0.0, new Color(0.3, 0.3, 0.3, 1)));
 		gc.setFill(lg);
 		gc.fillRect(0, 0, canvas.getWidth(), 40);
 
 		gc.setFill(TIMELINE_COLOR);
 		gc.fillRect(0, 20, canvas.getWidth(), 20);
-
-		drawWave(gc);
 
 		gc.setLineWidth(1);
 		gc.setStroke(Color.web("#222222"));
@@ -381,7 +390,7 @@ public class TrackView {
 		gc.setFill(TIMELINE_TEXT_COLOR);
 
 		int firstTick = getTimeFromX(0);
-		int lastTick = getTimeFromX(canvas.getWidth());
+		int lastTick = getTimeFromX(getTrackWidth());
 
 		// Draw out the ticks on the timeline
 		for (int time = firstTick; time <= lastTick; time++) {
@@ -423,10 +432,10 @@ public class TrackView {
 		int i = 0;
 		for (LightTrack track : HueStew.getInstance().getShow().getLightTracks()) {
 			gc.setFill(TRACK_COLOR);
-			gc.fillRect(0, getTrackPositionY(i), canvas.getWidth(), getTrackHeight());
+			gc.fillRect(0, getTrackPositionY(i), getTrackWidth(), getTrackHeight());
 
 			gc.setStroke(TRACK_BORDER_COLOR);
-			gc.strokeLine(0, getTrackPositionY(i), canvas.getWidth(), getTrackPositionY(i));
+			gc.strokeLine(0, getTrackPositionY(i), getTrackWidth(), getTrackPositionY(i));
 
 			drawTrackPolygon(gc, track, getTrackPositionY(i));
 			drawKeyFrames(gc, track, getTrackPositionY(i));
@@ -481,23 +490,20 @@ public class TrackView {
 		GraphicsUtil.sharpLine(gc, x, 20, x, canvas.getHeight());
 
 		gc.setFill(Color.BROWN);
-		gc.fillPolygon(new double[] { x, x - KEY_FRAME_SIZE, x + KEY_FRAME_SIZE, x },
-				new double[] { y, y - KEY_FRAME_SIZE, y - KEY_FRAME_SIZE, y }, 3);
+		gc.fillPolygon(new double[] { x, x - KEY_FRAME_SIZE, x + KEY_FRAME_SIZE, x }, new double[] { y, y - KEY_FRAME_SIZE, y - KEY_FRAME_SIZE, y }, 3);
 	}
 
 	private void drawKeyFrame(GraphicsContext gc, double x, double y, boolean selected) {
 		gc.setFill(Color.YELLOW);
 		if (selected)
 			gc.setFill(Color.RED);
-		gc.fillPolygon(new double[] { x - KEY_FRAME_SIZE, x, x + KEY_FRAME_SIZE, x },
-				new double[] { y, y + KEY_FRAME_SIZE, y, y - KEY_FRAME_SIZE }, 4);
+		gc.fillPolygon(new double[] { x - KEY_FRAME_SIZE, x, x + KEY_FRAME_SIZE, x }, new double[] { y, y + KEY_FRAME_SIZE, y, y - KEY_FRAME_SIZE }, 4);
 	}
 
 	private void drawSelection(GraphicsContext gc) {
-
+		// TODO limit to track area?
 		if (selectRectangle != null) {
-			gc.rect(selectRectangle.getX(), selectRectangle.getY(), selectRectangle.getWidth(),
-					selectRectangle.getHeight());
+			gc.rect(selectRectangle.getX(), selectRectangle.getY(), selectRectangle.getWidth(), selectRectangle.getHeight());
 			gc.setFill(new Color(0.2, 0.0, 1.0, 0.1));
 			gc.setStroke(new Color(0.2, 0.0, 1.0, 0.9));
 			gc.setLineWidth(0.5);
@@ -506,8 +512,14 @@ public class TrackView {
 		}
 	}
 
+	private void drawScrollbars(GraphicsContext gc) {
+		// TODO
+		gc.setFill(SCROLLBAR_COLOR);
+		gc.fillRoundRect(getTrackWidth(), getTotalTrackPositionY() + verticalScrollbar.getBarPosition(), SCROLLBAR_SIZE, verticalScrollbar.getBarSize(), SCROLLBAR_SIZE, SCROLLBAR_SIZE);
+	}
+
 	private LightTrack getTrackFromY(double y) {
-		double adjustedY = y - getTotalTrackPositionY();
+		double adjustedY = y - getTotalTrackPositionY() + verticalScrollbar.getOffset();
 		int trackNumber = (int) Math.floor(adjustedY / (getTrackHeight() + TRACK_SPACER));
 		List<LightTrack> tracks = HueStew.getInstance().getShow().getLightTracks();
 		if (trackNumber >= 0 && trackNumber < tracks.size()) {
@@ -562,20 +574,43 @@ public class TrackView {
 		return (brightness / 255.0) * getTrackHeight();
 	}
 
-	private double getTrackHeight() {
-		return getTotalTrackHeight() / HueStew.getInstance().getShow().getLightTracks().size() - TRACK_SPACER;
+	private double getTrackWidth() {
+		return canvas.getWidth() - SCROLLBAR_SIZE;
 	}
 
-	private double getTotalTrackHeight() {
+	private double getTrackHeight() {
+		return Math.max(MINIMUM_TRACK_HEIGHT, getTotalVisibleTrackHeight() / HueStew.getInstance().getShow().getLightTracks().size() - TRACK_SPACER);
+	}
+
+	private double getTotalVisibleTrackHeight() {
 		return canvas.getHeight() - getTotalTrackPositionY();
 	}
 
+	private double getTotalTrackHeight() {
+		return (getTrackHeight() + TRACK_SPACER) * HueStew.getInstance().getShow().getLightTracks().size();
+	}
+
 	private double getTrackPositionY(int i) {
-		return getTotalTrackPositionY() + (getTrackHeight() + TRACK_SPACER) * i;
+		return getTotalTrackPositionY() + (getTrackHeight() + TRACK_SPACER) * i - verticalScrollbar.getOffset();
 	}
 
 	private double getTotalTrackPositionY() {
 		return 40;
 	}
 
+	private Section getSection(MouseEvent event) {
+		return getSection(event.getX(), event.getY());
+	}
+
+	private Section getSection(double x, double y) {
+		if (x > getTrackWidth() && y >= getTotalTrackPositionY()) {
+			return Section.VERTICAL_SCROLLBAR;
+		} else if (y <= 20) {
+			return Section.CURSOR;
+		} else if (y <= 40) {
+			return Section.TIMELINE;
+		} else {
+			return Section.TRACKS;
+		}
+	}
 }

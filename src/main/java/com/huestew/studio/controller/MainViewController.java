@@ -99,7 +99,7 @@ public class MainViewController extends ViewController {
 		});
 
 		trackCanvasPane.widthProperty().addListener((observableValue, oldWidth, newWidth) -> {
-			trackCanvas.setWidth(newWidth.doubleValue());
+			trackCanvas.setWidth(newWidth.doubleValue() - trackActionPane.getWidth());
 			trackView.redraw();
 		});
 		
