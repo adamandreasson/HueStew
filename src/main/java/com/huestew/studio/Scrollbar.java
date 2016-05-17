@@ -12,10 +12,10 @@ public class Scrollbar {
 	private Task<Double> fullSize;
 
 	private double origin;
-	private double offset;
+	private double offset = 0;
 
 	private double barOrigin;
-	private double barOffset;
+	private double barOffset = 0;
 
 	/**
 	 * Create a new scrollbar.
@@ -68,6 +68,10 @@ public class Scrollbar {
 		double maxBarOffset = visibleSize - getBarSize();
 
 		this.barOffset = Math.max(0, Math.min(maxBarOffset, barOffset));
+
+		if (Double.isNaN(this.barOffset)) {
+			this.barOffset = 0;
+		}
 	}
 
 	public void setOrigin(double origin) {
