@@ -31,6 +31,7 @@ public class Main extends Application {
 			HueStew.getInstance().getToolbox().getSelectedTool().doAction(event);
 		});
 		primaryStage.addEventFilter(KeyEvent.KEY_RELEASED, event -> {
+			HueStew.getInstance().getView().handleKeyboardEvent(event);
 			HueStew.getInstance().getToolbox().getSelectedTool().doAction(event);
 		});
 

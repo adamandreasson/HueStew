@@ -61,8 +61,11 @@ public class TrackView {
 	private static final int TRACK_SPACER = 10;
 	private static final int MINIMUM_TRACK_HEIGHT = 80;
 	private static final int SCROLLBAR_SIZE = 8;
+	private static final double MINIMUM_ZOOM = 0.5;
+	private static final double MAXIMUM_ZOOM = 4;
 
 	public static final int PIXELS_PER_SECOND = 100;
+	private double zoom = 1;
 
 	private static final Color TIMELINE_COLOR = Color.web("#303030");
 	private static final Color TIMELINE_TICK_COLOR = Color.web("#616161");
@@ -87,6 +90,8 @@ public class TrackView {
 	private Scrollbar horizontalScrollbar;
 
 	private KeyFrame hoveringKeyFrame = null;
+	
+	private boolean ctrlDown;
 
 	/**
 	 * Create a new track view with an associated canvas
@@ -197,14 +202,28 @@ public class TrackView {
 	public void keyboardEvent(KeyEvent event) {
 		switch (event.getCode()) {
 		case SPACE:
-			HueStew.getInstance().getPlayer().toggle();
+			if (event.getEventType() == KeyEvent.KEY_RELEASED)
+				HueStew.getInstance().getPlayer().toggle();
+			break;
+		case CONTROL:
+			ctrlDown = event.getEventType() == KeyEvent.KEY_PRESSED;
+			break;
+		case PLUS:
+			if (ctrlDown && event.getEventType() == KeyEvent.KEY_RELEASED) {
+				adjustZoom(1.25);
+				redraw();
+			}
+			break;
+		case MINUS:
+			if (ctrlDown && event.getEventType() == KeyEvent.KEY_RELEASED) {
+				adjustZoom(0.75);
+				redraw();
+			}
 			break;
 		default:
 			return;
 		}
-		redraw();
 		event.consume();
-
 	}
 
 	private void updateHoveringKeyFrame(LightTrack track, MouseEvent event) {
@@ -408,18 +427,18 @@ public class TrackView {
 			return;
 
 		for (int i = 0; i < backgroundWaveImages.size(); i++) {
-			int startX = 1024 * i;
+			double startX = 1024 * zoom * i;
 			Image image = backgroundWaveImages.get(i);
 
 			// Skip if image is to the left of the canvas
-			if (startX + image.getWidth() < horizontalScrollbar.getOffset())
+			if (startX + image.getWidth() * zoom < horizontalScrollbar.getOffset())
 				continue;
 
 			// Skip the rest if image is to the right of the canvas
 			if (startX > canvas.getWidth() + horizontalScrollbar.getOffset())
 				return;
 
-			gc.drawImage(image, startX - horizontalScrollbar.getOffset(), 40, image.getWidth(), canvas.getHeight() - 40);
+			gc.drawImage(image, startX - horizontalScrollbar.getOffset(), getTotalTrackPositionY(), image.getWidth() * zoom, canvas.getHeight() - 40);
 		}
 	}
 
@@ -561,11 +580,11 @@ public class TrackView {
 	}
 
 	private double getXFromTime(int time) {
-		return (time * PIXELS_PER_SECOND / 1000.0) - horizontalScrollbar.getOffset();
+		return (time * PIXELS_PER_SECOND * zoom / 1000.0) - horizontalScrollbar.getOffset();
 	}
 
 	private int getTimeFromX(double x) {
-		return (int) ((x + horizontalScrollbar.getOffset()) / (PIXELS_PER_SECOND / 1000.0));
+		return (int) ((x + horizontalScrollbar.getOffset()) / (PIXELS_PER_SECOND * zoom / 1000.0));
 	}
 
 	private double getRelativeYFromBrightness(int brightness) {
@@ -577,7 +596,7 @@ public class TrackView {
 	}
 	
 	private double getTrackWidth() {
-		return HueStew.getInstance().getShow().getDuration() / 1000D * PIXELS_PER_SECOND;
+		return HueStew.getInstance().getShow().getDuration() / 1000D * PIXELS_PER_SECOND * zoom;
 	}
 
 	private double getTrackHeight() {
@@ -598,6 +617,15 @@ public class TrackView {
 
 	private double getTotalTrackPositionY() {
 		return 40;
+	}
+	
+	private void adjustZoom(double factor) {
+		double offsetWithoutZoom = horizontalScrollbar.getOffset() / zoom;
+		zoom = Math.max(MINIMUM_ZOOM, Math.min(MAXIMUM_ZOOM, zoom * factor));
+
+		// TODO Scrollbar+setOffset(double)
+		horizontalScrollbar.addOffset(-horizontalScrollbar.getOffset());
+		horizontalScrollbar.addOffset(offsetWithoutZoom * zoom);
 	}
 
 	private Section getSection(MouseEvent event) {
