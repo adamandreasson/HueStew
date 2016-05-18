@@ -62,8 +62,6 @@ public class HueStew {
 		this.tickDuration = 33;
 
 		this.config = fileHandler.loadConfig();
-
-		loadAutoSave();
 	}
 
 	public static HueStew getInstance() {
@@ -73,7 +71,7 @@ public class HueStew {
 		return instance;
 	}
 
-	private void loadAutoSave() {
+	public void loadAutoSave() {
 
 		if (config.getMusicFilePath().isEmpty())
 			return;
@@ -139,7 +137,8 @@ public class HueStew {
 
 		view.updateTitle(audioFile.getName() + " - HueStew Studio");
 		view.enableControls();
-
+		
+		view.updateTracks();
 	}
 
 	private void createEmptyTracks() {

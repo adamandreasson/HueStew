@@ -655,6 +655,10 @@ public class TrackView {
 		return getTotalTrackPositionY() + (getTrackHeight() + TRACK_SPACER) * i - verticalScrollbar.getOffset();
 	}
 
+	public double getTrackPositionY(LightTrack track) {
+		return getTrackPositionY(HueStew.getInstance().getShow().getLightTracks().indexOf(track));
+	}
+
 	private double getTotalTrackPositionY() {
 		return 40;
 	}

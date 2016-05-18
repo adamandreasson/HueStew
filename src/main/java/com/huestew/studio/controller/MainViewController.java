@@ -1,12 +1,17 @@
 package com.huestew.studio.controller;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import com.huestew.studio.HueStew;
 import com.huestew.studio.model.Color;
 import com.huestew.studio.model.KeyFrame;
+import com.huestew.studio.model.LightBank;
+import com.huestew.studio.model.LightTrack;
 import com.huestew.studio.util.Util;
+import com.huestew.studio.view.TrackActionButton;
 import com.huestew.studio.view.TrackView;
 
 import javafx.application.Platform;
@@ -78,11 +83,16 @@ public class MainViewController extends ViewController {
 	private Button saveAsButton;
 
 	private Stage stage;
+	
+	private TrackView trackView;
+	
+	private List<TrackActionButton> trackActionButtons;
 
 	@Override
 	public void init() {
 
-		TrackView trackView = new TrackView(trackCanvas);
+		trackView = new TrackView(trackCanvas);
+		HueStew.getInstance().getView().setTrackView(trackView);
 		trackView.redraw();
 
 		HueStew.getInstance().getView().getVirtualRoom().setCanvas(previewCanvas);
@@ -108,11 +118,13 @@ public class MainViewController extends ViewController {
 			trackView.redraw();
 		});
 		
+		trackActionPane.heightProperty().addListener((observableValue, oldHeight, newHeight) -> {
+			updateTrackActionPanePosition();
+		});
+		
 		colorPickerPane.widthProperty().addListener((observableValue, oldHeight, newHeight) -> {
 			System.out.println("color picker pane resizxed to " + newHeight);
 		});
-
-		HueStew.getInstance().getView().setTrackView(trackView);
 
 		volumeSlider.valueProperty().addListener((observableValue, oldValue, newValue) -> {
 			double normalizedVolume = newValue.doubleValue() / 100;
@@ -327,6 +339,45 @@ public class MainViewController extends ViewController {
 		});
 
 		colorPickerPane.getChildren().add(imgView);
+	}
+	
+	public void updateTrackActionPane(){
+		Platform.runLater(new Runnable(){
+
+			@Override
+			public void run() {
+				
+				trackActionPane.getChildren().clear();
+				trackActionButtons = new ArrayList<TrackActionButton>();
+					
+				Image lightImg = new Image("icon_light.png");
+				
+				for(LightTrack track : HueStew.getInstance().getShow().getLightTracks()){
+					TrackActionButton trackBtn = new TrackActionButton(track);
+					trackBtn.setLayoutY(Math.round(trackView.getTrackPositionY(track)));
+					trackBtn.setGraphic(new ImageView(lightImg));
+					trackBtn.setTooltip(new Tooltip("Configure lights"));
+					trackActionPane.getChildren().add(trackBtn);
+					trackActionButtons.add(trackBtn);
+				}
+			}
+			
+		});
+	}
+
+	private void updateTrackActionPanePosition() {
+		Platform.runLater(new Runnable(){
+
+			@Override
+			public void run() {
+								
+				for(TrackActionButton btn : trackActionButtons){
+					btn.setLayoutY(Math.round(trackView.getTrackPositionY(btn.getTrack())));
+					
+				}
+			}
+			
+		});
 	}
 
 }

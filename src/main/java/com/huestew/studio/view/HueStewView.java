@@ -108,4 +108,15 @@ public class HueStewView {
 	public void openColorPickerPane(Set<KeyFrame> selectedKeyFrames) {
 		mvc.openColorPickerPane(selectedKeyFrames);
 	}
+
+	public void updateTracks() {
+		Platform.runLater(new Runnable(){
+
+			@Override
+			public void run() {
+				mvc.updateTrackActionPane();
+			}
+			
+		});
+	}
 }

@@ -43,6 +43,9 @@ public class Main extends Application {
         });     
 
 
+        	
+        HueStew.getInstance().loadAutoSave();
+        
 	}
 
 	public static void main(String[] args) {
