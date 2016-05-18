@@ -29,7 +29,7 @@ import com.huestew.studio.view.VirtualLight;
  */
 public class HueStew {
 
-	private static HueStew instance = null;
+	private static HueStew instance = new HueStew();
 
 	private HueStewView view;
 	private LightBank lightBank;
@@ -64,9 +64,6 @@ public class HueStew {
 	}
 
 	public static HueStew getInstance() {
-		if (instance == null) {
-			instance = new HueStew();
-		}
 		return instance;
 	}
 

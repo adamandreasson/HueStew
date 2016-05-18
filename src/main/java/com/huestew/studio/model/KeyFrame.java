@@ -1,11 +1,5 @@
 package com.huestew.studio.model;
 
-
-import java.util.Iterator;
-import java.util.TreeSet;
-
-import com.huestew.studio.HueStew;
-
 /**
  * The class for a keyframe which is an event in a lighttrack
  * 
