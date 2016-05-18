@@ -200,7 +200,7 @@ public class MainViewController extends ViewController {
 		File file = fileChooser.showOpenDialog(Util.createStage());
 
 		if (file != null) {
-			HueStew.getInstance().getConfig().setMusicDirectory(file.getParent().toString());
+			HueStew.getInstance().getConfig().setMusicDirectory(file.getParent());
 			HueStew.getInstance().getConfig().setMusicFilePath(file.toString());
 			HueStew.getInstance().initShow(file);
 		}

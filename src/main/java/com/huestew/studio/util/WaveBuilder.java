@@ -29,8 +29,8 @@ import javax.sound.sampled.UnsupportedAudioFileException;
  */
 public class WaveBuilder {
 
-	final int SCALE = 2;
-	final int ACCURACY = 40;
+	static final int SCALE = 2;
+	static final int ACCURACY = 40;
 
 	AudioInputStream audioInputStream;
 	Vector<Line2D.Double> lines = new Vector<Line2D.Double>();
