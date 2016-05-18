@@ -1,15 +1,19 @@
 package com.huestew.studio.tools;
 
+
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+
 
 import com.huestew.studio.HueStew;
 import com.huestew.studio.Toolbox;
 import com.huestew.studio.model.KeyFrame;
 import com.huestew.studio.model.LightState;
 import com.huestew.studio.model.LightTrack;
+
 
 import javafx.scene.Cursor;
 import javafx.scene.input.KeyEvent;
@@ -30,12 +34,13 @@ public class SelectTool extends Tool {
 	private int ceiling;
 	private boolean moveHorizontally = true;
 	private boolean moveVertically = true;
+    private Set<KeyFrame> withoutSelectedKeyFrame;
+  
 
 	public SelectTool(Toolbox toolbox) {
 		super(toolbox);
 	}
 
-	
 	private void deleteSelectedKeyFrames(){
 		if (!selectedKeyFrames.isEmpty()) {
 			Iterator<KeyFrame> deleter = selectedKeyFrames.iterator();
@@ -45,10 +50,8 @@ public class SelectTool extends Tool {
 				temp.remove();
 				HueStew.getInstance().getView().updateTrackView();
 			}
-			
 			//selectedLightTrack.removeKeyFrame(selectedKeyFrame);
 			//selectedKeyFrame = null;
-			
 		}
 	}
 	
@@ -62,13 +65,15 @@ public class SelectTool extends Tool {
 		if (event.getEventType() == MouseEvent.MOUSE_RELEASED && keyFrame != null){
 			if(!selectedKeyFrames.contains(keyFrame)){
 			selectedKeyFrames.add(keyFrame);
+			
+			}
 			}
 
 		else{
 			selectedKeyFrames.remove(keyFrame);
 		}
 			
-		}
+		
 		
 		if (event.getEventType() == MouseEvent.MOUSE_RELEASED && keyFrame == null){
 			if(!selectedKeyFrames.isEmpty()){
@@ -78,14 +83,16 @@ public class SelectTool extends Tool {
 			}
 			
 		}
-		
 
 		if (event.getEventType() == MouseEvent.MOUSE_PRESSED) {
 			
-			if (keyFrame == null) {
+			
+			if(keyFrame == null){
 				return;
 			}
-
+            withoutSelectedKeyFrame = new HashSet<KeyFrame>(selectedKeyFrames);
+            withoutSelectedKeyFrame.remove(selectedKeyFrame);
+           
 			TreeSet<KeyFrame> keyFrames = lightTrack.getKeyFrames();
 
 			// Determine lower timestamp limit
@@ -95,13 +102,28 @@ public class SelectTool extends Tool {
 			// Determine upper timestamp limit
 			KeyFrame higher = keyFrames.higher(keyFrame);
 			ceiling = higher == null ? Integer.MAX_VALUE : higher.getTimestamp() - HueStew.getInstance().getTickDuration();
-		} else if (event.getEventType() == MouseEvent.MOUSE_DRAGGED && selectedKeyFrame != null) {
+            }
+	
+            else if (event.getEventType() == MouseEvent.MOUSE_DRAGGED && selectedKeyFrame != null) {
+            	//Save previous timestamp/brightness
+            	int tempStamp = selectedKeyFrame.getTimestamp();
+            	LightState tempState = selectedKeyFrame.getState();
+            	int tempBrightness = tempState.getBrightness();
 
 			if (moveHorizontally) {
 				// Update timestamp
-				selectedKeyFrame.setTimestamp(Math.max(floor, Math.min(ceiling, timestamp)));
-			}
+				
+				selectedKeyFrame.setTimestamp(timestamp);
+				
+				for (KeyFrame keyframe : withoutSelectedKeyFrame){
+			
+				   keyframe.setTimestamp(keyframe.getTimestamp() + (selectedKeyFrame.getTimestamp() - tempStamp));
+                   //keyframe.setTimestamp(Math.max(keyframe.findLeftmostTimestamp(), Math.min(keyframe.findRightmostTimestamp(), keyframe.getTimestamp() + (selectedKeyFrame.getTimestamp() - tempStamp))));
 
+				}
+				
+                }
+	
 			if (moveVertically) {
 				if (lightTrack != selectedLightTrack) {
 					// Correct the normalized Y value
@@ -112,14 +134,26 @@ public class SelectTool extends Tool {
 						normalizedY = 1;
 					}
 				}
-
+				
+				if(selectedKeyFrame == null){
+					return;
+				}
+				
 				// Update brightness
 				LightState state = selectedKeyFrame.getState();
-				state.setBrightness((int) (255 * normalizedY));
+            	state.setBrightness((int) (255 * normalizedY));
 				selectedKeyFrame.setState(state);
+				
+				for (KeyFrame keyframe : withoutSelectedKeyFrame){
+					LightState stateToSet = keyframe.getState();
+					stateToSet.setBrightness(stateToSet.getBrightness() + (state.getBrightness() - tempBrightness));
+				}
+				
 			}
-		}
-	}
+            }
+
+			}
+            
 
 	@Override
 	public void doAction(KeyEvent event) {
@@ -149,4 +183,5 @@ public class SelectTool extends Tool {
 			return Cursor.DEFAULT;
 	}
 
-}
+	}
+	
