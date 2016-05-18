@@ -77,54 +77,6 @@ public class KeyFrame implements Comparable<KeyFrame> {
 	public LightState getState() {
 		return state;
 	}
-
-	
-	public int findRightTimestamp(){
-		
-		TreeSet<KeyFrame> keyFrameList = track.getKeyFrames();
-		
-		int ceiling;
-		
-		Iterator<KeyFrame> iter = keyFrameList.iterator();
-        KeyFrame rightKeyFrame = iter.next();
-        KeyFrame b;
-        while (iter.hasNext()) {
-            b = iter.next();
-            if(rightKeyFrame.compareTo(b) < 0){
-            	rightKeyFrame = b;
-                
-            }
-            System.out.println(rightKeyFrame.getTimestamp() + "");
-        }
-        
-        ceiling = rightKeyFrame == null ? Integer.MAX_VALUE : rightKeyFrame.getTimestamp() - HueStew.getInstance().getTickDuration();
-        
-        return ceiling;
-				
-				
-		
-	}
-		
-	public int findLeftTimestamp(){
-		
-		TreeSet<KeyFrame> keyFrameList = track.getKeyFrames();
-		int floor;
-
-        Iterator<KeyFrame> itr = keyFrameList.iterator(); 
-        KeyFrame leftKeyFrame = itr.next();
-        KeyFrame a;
-        while (itr.hasNext()) {
-            a = itr.next();
-            if(leftKeyFrame.compareTo(a) > 0){
-            	leftKeyFrame = a;
-            }
-            System.out.println(leftKeyFrame.getTimestamp() + "");
-        }
-        
-        floor = leftKeyFrame == null ? 0 : leftKeyFrame.getTimestamp() + HueStew.getInstance().getTickDuration();
-        
-        return floor;
-	}
 	
 	/**
 	 * @param state

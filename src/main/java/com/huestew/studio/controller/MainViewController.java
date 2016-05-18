@@ -6,9 +6,9 @@ import java.util.List;
 import java.util.Set;
 
 import com.huestew.studio.HueStew;
+import com.huestew.studio.LightBank;
 import com.huestew.studio.model.Color;
 import com.huestew.studio.model.KeyFrame;
-import com.huestew.studio.model.LightBank;
 import com.huestew.studio.model.LightTrack;
 import com.huestew.studio.util.Util;
 import com.huestew.studio.view.TrackActionButton;

@@ -9,7 +9,6 @@ import java.nio.file.AccessDeniedException;
 import com.huestew.studio.controller.Player;
 import com.huestew.studio.model.Audio;
 import com.huestew.studio.model.Color;
-import com.huestew.studio.model.LightBank;
 import com.huestew.studio.model.LightState;
 import com.huestew.studio.model.LightTrack;
 import com.huestew.studio.model.Show;
