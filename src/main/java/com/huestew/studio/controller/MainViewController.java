@@ -97,6 +97,8 @@ public class MainViewController extends ViewController {
 
 		HueStew.getInstance().getView().getVirtualRoom().setCanvas(previewCanvas);
 		HueStew.getInstance().getView().getVirtualRoom().redraw();
+		
+		trackActionButtons = new ArrayList<>();
 
 		previewCanvasPane.widthProperty().addListener((observableValue, oldSceneWidth, newSceneWidth) -> {
 			previewCanvas.setWidth((double) newSceneWidth);
@@ -348,7 +350,7 @@ public class MainViewController extends ViewController {
 			public void run() {
 				
 				trackActionPane.getChildren().clear();
-				trackActionButtons = new ArrayList<TrackActionButton>();
+				trackActionButtons.clear();
 					
 				Image lightImg = new Image("icon_light.png");
 				
