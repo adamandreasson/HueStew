@@ -526,7 +526,8 @@ public class TrackView {
 			double y = startY + getTrackHeight() - getRelativeYFromBrightness(frame.getState().getBrightness());
 			boolean selected = false;
 
-			if (selectedKeyFrames != null && selectedKeyFrames.contains(frame))
+			// TODO use a different collection?
+			if (selectedKeyFrames.stream().anyMatch(e -> e == frame))
 				selected = true;
 
 			drawKeyFrame(gc, x, y, selected);
