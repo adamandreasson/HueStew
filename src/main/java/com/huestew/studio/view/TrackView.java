@@ -23,6 +23,7 @@ import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
@@ -177,6 +178,24 @@ public class TrackView {
 					canvas.setCursor(HueStew.getInstance().getToolbox().getSelectedTool()
 							.getCursor(hoveringKeyFrame != null, clickedSection != Section.NONE));
 				}
+			}
+		});
+
+		// Register scroll event handler
+		canvas.addEventHandler(ScrollEvent.SCROLL, event -> {
+			if (event.getTouchCount() == 0) {
+				// Scroll wheel -> zoom or scroll horizontally
+				if (ctrlDown) {
+					// Zoom
+					adjustZoom(event.getDeltaY() > 0 ? 1.25 : 0.75);
+				} else {
+					// Scroll
+					horizontalScrollbar.addOffset(-event.getDeltaY());
+				}
+				redraw();
+			} else {
+				// TODO Touchpad scroll
+				
 			}
 		});
 
