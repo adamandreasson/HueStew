@@ -107,97 +107,13 @@ public class TrackView {
 		this.horizontalScrollbar = new Scrollbar(() -> getVisibleTrackWidth(), () -> getTrackWidth());
 
 		// Register mouse event handlers
-		canvas.addEventHandler(MouseEvent.MOUSE_RELEASED, event -> {
-			canvas.requestFocus();
-
-			// Force redraw
-			lastRedraw = 0;
-
-			if (clickedTrack != null) {
-				sendMouseEventToTool(event);
-			}
-
-			if (event.getButton() == MouseButton.SECONDARY && hoveringKeyFrame != null) {
-				// HueStew.getInstance().getView().openColorPickerPane(hoveringKeyFrame);
-				HueStew.getInstance().getView().openColorPickerPane(selectedKeyFrames);
-			}
-
-			clickedSection = Section.NONE;
-		});
-		canvas.addEventHandler(MouseEvent.MOUSE_PRESSED, event -> {
-			canvas.requestFocus();
-			clickedSection = getSection(event);
-			clickedTrack = getTrackFromY(event.getY());
-			System.out.println(clickedSection.name());
-
-			if (clickedSection == Section.VERTICAL_SCROLLBAR) {
-				verticalScrollbar.setBarOrigin(event.getY());
-			} else if (clickedSection == Section.HORIZONTAL_SCROLLBAR) {
-				horizontalScrollbar.setBarOrigin(event.getX());
-			} else if (event.getButton() == MouseButton.MIDDLE) {
-				verticalScrollbar.setOrigin(event.getY());
-				horizontalScrollbar.setOrigin(event.getX());
-			} else if (clickedSection == Section.TIMELINE) {
-				horizontalScrollbar.setOrigin(event.getX());
-			}  else if (clickedTrack != null) {
-				sendMouseEventToTool(event);
-			}
-		});
-		canvas.addEventHandler(MouseEvent.MOUSE_DRAGGED, event -> {
-			if (clickedSection == Section.VERTICAL_SCROLLBAR) {
-				verticalScrollbar.setBarPosition(event.getY());
-				redraw();
-			} else if (clickedSection == Section.HORIZONTAL_SCROLLBAR) {
-				horizontalScrollbar.setBarPosition(event.getX());
-				redraw();
-			} else if (event.getButton() == MouseButton.MIDDLE) {
-				verticalScrollbar.setPosition(event.getY());
-				horizontalScrollbar.setPosition(event.getX());
-				redraw();
-			} else if (clickedSection == Section.TIMELINE) {
-				horizontalScrollbar.setPosition(event.getX());
-				redraw();
-			} else {
-				sendMouseEventToTool(event);
-			}
-		});
-		canvas.addEventHandler(MouseEvent.MOUSE_MOVED, event -> {
-			// Get light track from mouse coordinates
-			LightTrack track = getTrackFromY(event.getY());
-
-			// Set cursor
-			if (clickedSection.hasCursor()) {
-				canvas.setCursor(clickedSection.getCursor());
-			} else {
-				Section section = getSection(event);
-
-				if (section.hasCursor()) {
-					canvas.setCursor(section.getCursor());
-				} else if (track != null) {
-					updateHoveringKeyFrame(track, event);
-					canvas.setCursor(HueStew.getInstance().getToolbox().getSelectedTool()
-							.getCursor(hoveringKeyFrame != null, clickedSection != Section.NONE));
-				}
-			}
-		});
+		canvas.addEventHandler(MouseEvent.MOUSE_RELEASED, event -> handleMouseReleasedEvent(event));
+		canvas.addEventHandler(MouseEvent.MOUSE_PRESSED, event -> handleMousePressedEvent(event));
+		canvas.addEventHandler(MouseEvent.MOUSE_DRAGGED, event -> handleMouseDraggedEvent(event));
+		canvas.addEventHandler(MouseEvent.MOUSE_MOVED, event -> handleMouseMovedEvent(event));
 
 		// Register scroll event handler
-		canvas.addEventHandler(ScrollEvent.SCROLL, event -> {
-			if (event.getTouchCount() == 0) {
-				// Scroll wheel -> zoom or scroll horizontally
-				if (ctrlDown) {
-					// Zoom
-					adjustZoom(event.getDeltaY() > 0 ? 1.25 : 0.75);
-				} else {
-					// Scroll
-					horizontalScrollbar.addOffset(-event.getDeltaY());
-				}
-				redraw();
-			} else {
-				// TODO Touchpad scroll
-				
-			}
-		});
+		canvas.addEventHandler(ScrollEvent.SCROLL, event -> handleScrollEvent(event));
 
 		// Uppdate scrollbars when canvas size is changed
 		canvas.widthProperty().addListener((a, b, c) -> horizontalScrollbar.update());
@@ -248,6 +164,86 @@ public class TrackView {
 	private void updateHoveringKeyFrame(LightTrack track, MouseEvent event) {
 		this.hoveringKeyFrame = getKeyFrame(track, event.getX(), getRelativeTrackY(track, event.getY()));
 	}
+	
+	private void handleMousePressedEvent(MouseEvent event) {
+		canvas.requestFocus();
+		clickedSection = getSection(event);
+		clickedTrack = getTrackFromY(event.getY());
+		System.out.println(clickedSection.name());
+
+		if (clickedSection == Section.VERTICAL_SCROLLBAR) {
+			verticalScrollbar.setBarOrigin(event.getY());
+		} else if (clickedSection == Section.HORIZONTAL_SCROLLBAR) {
+			horizontalScrollbar.setBarOrigin(event.getX());
+		} else if (event.getButton() == MouseButton.MIDDLE) {
+			verticalScrollbar.setOrigin(event.getY());
+			horizontalScrollbar.setOrigin(event.getX());
+		} else if (clickedSection == Section.TIMELINE) {
+			horizontalScrollbar.setOrigin(event.getX());
+		} else if (clickedSection == Section.CURSOR) {
+			int time = getTimeFromX(event.getX());
+			HueStew.getInstance().getPlayer().seek(time);
+		} else {
+			sendMouseEventToTool(event);
+		}
+	}
+	
+	private void handleMouseReleasedEvent(MouseEvent event) {
+		canvas.requestFocus();
+
+		// Force redraw
+		lastRedraw = 0;
+
+		if (clickedTrack != null) {
+			sendMouseEventToTool(event);
+		}
+
+		if (event.getButton() == MouseButton.SECONDARY && hoveringKeyFrame != null) {
+			// HueStew.getInstance().getView().openColorPickerPane(hoveringKeyFrame);
+			HueStew.getInstance().getView().openColorPickerPane(selectedKeyFrames);
+		}
+
+		clickedSection = Section.NONE;
+	}
+	
+	private void handleMouseDraggedEvent(MouseEvent event) {
+		if (clickedSection == Section.VERTICAL_SCROLLBAR) {
+			verticalScrollbar.setBarPosition(event.getY());
+			redraw();
+		} else if (clickedSection == Section.HORIZONTAL_SCROLLBAR) {
+			horizontalScrollbar.setBarPosition(event.getX());
+			redraw();
+		} else if (event.getButton() == MouseButton.MIDDLE) {
+			verticalScrollbar.setPosition(event.getY());
+			horizontalScrollbar.setPosition(event.getX());
+			redraw();
+		} else if (clickedSection == Section.TIMELINE) {
+			horizontalScrollbar.setPosition(event.getX());
+			redraw();
+		} else {
+			sendMouseEventToTool(event);
+		}
+	}
+	
+	private void handleMouseMovedEvent(MouseEvent event) {
+		// Get light track from mouse coordinates
+		LightTrack track = getTrackFromY(event.getY());
+
+		// Set cursor
+		if (clickedSection.hasCursor()) {
+			canvas.setCursor(clickedSection.getCursor());
+		} else {
+			Section section = getSection(event);
+
+			if (section.hasCursor()) {
+				canvas.setCursor(section.getCursor());
+			} else if (track != null) {
+				updateHoveringKeyFrame(track, event);
+				canvas.setCursor(HueStew.getInstance().getToolbox().getSelectedTool()
+						.getCursor(hoveringKeyFrame != null, clickedSection != Section.NONE));
+			}
+		}
+	}
 
 	private void sendMouseEventToTool(MouseEvent event) {
 		if (clickedSection != Section.TRACKS) {
@@ -260,6 +256,10 @@ public class TrackView {
 			updateSelectRectangle(event);
 		}
 
+		if (clickedTrack == null) {
+			return;
+		}
+		
 		if (hoveringKeyFrame != null)
 			HueStew.getInstance().getToolbox().getSelectTool().setActive();
 		if (event.getEventType() == MouseEvent.MOUSE_RELEASED)
@@ -354,8 +354,26 @@ public class TrackView {
 
 		selectedKeyFrames = selection;
 	}
+	
+	private void handleScrollEvent(ScrollEvent event) {
+		if (event.getTouchCount() == 0) {
+			// Scroll wheel -> zoom or scroll horizontally
+			if (ctrlDown) {
+				// Zoom
+				adjustZoom(event.getDeltaY() > 0 ? 1.25 : 0.75);
+			} else {
+				// Scroll
+				horizontalScrollbar.addOffset(-event.getDeltaY());
+			}
+			redraw();
+		} else {
+			// TODO Touchpad scroll
+			
+		}
+	}
 
 	private void parseTrackEvent(MouseEvent event) {
+		// TODO refactor different sections into this method?
 		// Seeking event
 		if (clickedSection == Section.CURSOR) {
 			int time = getTimeFromX(event.getX());
@@ -369,10 +387,12 @@ public class TrackView {
 			return;
 
 		// Don't draw too often, it's unnecessary
+		/*
 		long now = System.currentTimeMillis();
 		if (now - lastRedraw < 16)
 			return;
 		lastRedraw = now;
+		*/
 
 		// Scroll automatically while playing the show
 		if (HueStew.getInstance().getPlayer().isPlaying()) {
