@@ -61,9 +61,10 @@ public class Player {
 	 * media file.
 	 */
 	public void play() {
-		if (mediaPlayer.getStatus() == Status.PLAYING)
+		if (isPlaying())
 			return;
 
+		pauseTime = 0;
 		mediaPlayer.play();
 
 		// TODO Put runnable in new class?
@@ -99,7 +100,7 @@ public class Player {
 
 	/** pauses the show at the current timestamp **/
 	public void pause() {
-		if (mediaPlayer.getStatus() == Status.PLAYING) {
+		if (isPlaying()) {
 			pauseTime = getCurrentTime();
 			mediaPlayer.pause();
 			playingThread.interrupt();
@@ -130,6 +131,7 @@ public class Player {
 		mediaPlayer.seek(Duration.millis(time));
 
 		if (!isPlaying()) {
+			pauseTime = time;
 			HueStew.getInstance().tick();
 		}
 	}
