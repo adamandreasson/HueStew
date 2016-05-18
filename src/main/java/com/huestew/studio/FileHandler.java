@@ -5,11 +5,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.nio.file.AccessDeniedException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -43,7 +44,9 @@ public class FileHandler {
 			throw new AccessDeniedException("Could not initialize app directory in " + appDir);
 		}
 		File pluginFile = new File(appDirFile.toString() + System.getProperty("file.separator") + "plugins");
-		pluginFile.mkdir();
+		if (!pluginFile.exists() && !pluginFile.mkdir()) {
+			throw new AccessDeniedException("Could not initialize plugin directory in " + pluginFile.getAbsolutePath());
+		}
 
 	}
 
@@ -134,9 +137,9 @@ public class FileHandler {
 
 		obj.put("tracks", tracks);
 
-		try(  PrintWriter out = new PrintWriter(getAppFilePath("autosave.json"))  ){
-			out.println( obj.toString(2) );
-		} catch (FileNotFoundException e) {
+		try (PrintWriter out = new PrintWriter(getAppFilePath("autosave.json"), "utf-8")) {
+			out.println(obj.toString(2));
+		} catch (FileNotFoundException | UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -147,7 +150,8 @@ public class FileHandler {
 
 		String everything = "";
 
-		try(BufferedReader br = new BufferedReader(new FileReader(getAppFilePath("autosave.json")))) {
+		try (BufferedReader br = new BufferedReader(new InputStreamReader(
+				new FileInputStream(getAppFilePath("autosave.json")), "utf-8"))) {
 
 			StringBuilder sb = new StringBuilder();
 			String line = br.readLine();
@@ -174,11 +178,11 @@ public class FileHandler {
 		JSONArray tracks = obj.getJSONArray("tracks");
 		for (int i = 0; i < tracks.length(); i++) {
 
-			JSONArray frames = (JSONArray)tracks.get(i);
+			JSONArray frames = (JSONArray) tracks.get(i);
 			LightTrack track = new LightTrack();
 
 			for (int j = 0; j < frames.length(); j++) {
-				JSONObject frameObj = (JSONObject)frames.get(j);
+				JSONObject frameObj = (JSONObject) frames.get(j);
 				JSONObject stateObj = frameObj.getJSONObject("state");
 				JSONObject colorObj = stateObj.getJSONObject("color");
 				Color color = new Color(colorObj.getDouble("red"), colorObj.getDouble("blue"), colorObj.getDouble("green"));

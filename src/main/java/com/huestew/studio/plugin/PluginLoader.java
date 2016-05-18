@@ -41,7 +41,7 @@ public class PluginLoader {
 							if(plugin != null){
 								pluginHandler.addPlugin(plugin);
 							}
-						} catch (MalformedURLException e) {
+						} catch (MalformedURLException | ClassCastException | ReflectiveOperationException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
@@ -88,33 +88,16 @@ public class PluginLoader {
 
 	}
 
-	private Plugin load(File file, Properties prop) throws MalformedURLException {
+	private Plugin load(File file, Properties prop) throws MalformedURLException, ClassCastException, ReflectiveOperationException  {
 
 		URL[] url = { file.toURI().toURL() };
 
 		URLClassLoader child = new URLClassLoader(url, this.getClass().getClassLoader());
-		Class<?> classToLoad = null;
-		try {
-			classToLoad = Class.forName(prop.getProperty("main"), true, child);
-		} catch (ClassNotFoundException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+		Class<?> classToLoad = Class.forName(prop.getProperty("main"), true, child);
 
-		Class<? extends Plugin> pluginClass = null;
-		try {
-			pluginClass = classToLoad.asSubclass(Plugin.class);
-		} catch (ClassCastException ex) {
-			ex.printStackTrace();
-		}
+		Class<? extends Plugin> pluginClass = classToLoad.asSubclass(Plugin.class);
 
-		Plugin plugin = null;
-		try {
-			plugin = pluginClass.newInstance();
-		} catch (InstantiationException | IllegalAccessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		Plugin plugin = pluginClass.newInstance();
 		plugin.onEnable();
 		return plugin;
 	}
