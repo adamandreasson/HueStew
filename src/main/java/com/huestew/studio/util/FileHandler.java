@@ -6,9 +6,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.nio.file.AccessDeniedException;
@@ -63,11 +62,9 @@ public class FileHandler {
 	public void saveConfig(HueStewConfig config) {
 
 		Properties prop = new Properties();
-		OutputStream output = null;
+		
 
-		try {
-
-			output = new FileOutputStream(getAppFilePath("config.properties"));
+		try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(getAppFilePath("config.properties")), "utf-8")) {
 
 			prop.setProperty("saveDir", config.getSaveDirectory());
 			prop.setProperty("musicDir", config.getMusicDirectory());
@@ -75,19 +72,10 @@ public class FileHandler {
 			prop.setProperty("volume", String.valueOf(config.getVolume()));
 			prop.setProperty("window", config.getWindowDimensions());
 
-			prop.store(output, null);
+			prop.store(writer, null);
 
 		} catch (IOException io) {
 			io.printStackTrace();
-		} finally {
-			if (output != null) {
-				try {
-					output.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-
 		}
 
 	}
@@ -97,26 +85,16 @@ public class FileHandler {
 		if (new File(getAppFilePath("config.properties")).exists()) {
 
 			Properties prop = new Properties();
-			InputStream input = null;
 
-			try {
+			try (InputStreamReader reader = new InputStreamReader(new FileInputStream(getAppFilePath("config.properties")), "utf-8")) {
 
-				input = new FileInputStream(getAppFilePath("config.properties"));
-				prop.load(input);
+				prop.load(reader);
 
 				return new HueStewConfig(prop.getProperty("saveDir", appDir), prop.getProperty("musicDir", System.getProperty("user.home")),
 						prop.getProperty("musicFilePath", ""), Double.parseDouble(prop.getProperty("volume", "1.0")), prop.getProperty("window", ""));
 
 			} catch (IOException ex) {
 				ex.printStackTrace();
-			} finally {
-				if (input != null) {
-					try {
-						input.close();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
 			}
 		}
 
