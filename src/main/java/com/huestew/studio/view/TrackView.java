@@ -114,7 +114,7 @@ public class TrackView {
 		// Register scroll event handler
 		canvas.addEventHandler(ScrollEvent.SCROLL, event -> handleScrollEvent(event));
 
-		// Uppdate scrollbars when canvas size is changed
+		// Update scrollbars when canvas size is changed
 		canvas.widthProperty().addListener((a, b, c) -> {
 			if (HueStew.getInstance().getShow() != null) {
 				horizontalScrollbar.update();
