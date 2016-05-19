@@ -1,8 +1,7 @@
-package com.huestew.studio.tools;
+package com.huestew.studio.controller.tools;
 
 import java.util.Set;
 
-import com.huestew.studio.Toolbox;
 import com.huestew.studio.model.KeyFrame;
 import com.huestew.studio.model.LightTrack;
 

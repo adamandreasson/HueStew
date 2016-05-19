@@ -1,6 +1,4 @@
-package com.huestew.studio;
-
-import com.huestew.studio.tools.*;
+package com.huestew.studio.controller.tools;
 
 /**
  * A toolbox containing a set of tools.

@@ -1,12 +1,10 @@
-/**
- * 
- */
 package com.huestew.studio;
 
 import java.io.File;
 import java.nio.file.AccessDeniedException;
 
 import com.huestew.studio.controller.Player;
+import com.huestew.studio.controller.tools.Toolbox;
 import com.huestew.studio.model.Audio;
 import com.huestew.studio.model.Color;
 import com.huestew.studio.model.LightState;
@@ -27,9 +25,8 @@ import com.huestew.studio.view.VirtualLight;
  * 
  * @author Adam Andreasson
  */
-public class HueStew {
-
-	private static HueStew instance = new HueStew();
+public enum HueStew {
+	INSTANCE;
 
 	private HueStewView view;
 	private LightBank lightBank;
@@ -64,7 +61,7 @@ public class HueStew {
 	}
 
 	public static HueStew getInstance() {
-		return instance;
+		return INSTANCE;
 	}
 
 	public void loadAutoSave() {

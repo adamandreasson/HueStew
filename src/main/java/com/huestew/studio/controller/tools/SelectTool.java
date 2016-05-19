@@ -1,4 +1,4 @@
-package com.huestew.studio.tools;
+package com.huestew.studio.controller.tools;
 
 
 import java.util.HashSet;
@@ -9,7 +9,6 @@ import java.util.TreeSet;
 
 
 import com.huestew.studio.HueStew;
-import com.huestew.studio.Toolbox;
 import com.huestew.studio.model.KeyFrame;
 import com.huestew.studio.model.LightState;
 import com.huestew.studio.model.LightTrack;
