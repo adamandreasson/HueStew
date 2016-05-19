@@ -16,7 +16,7 @@ import javafx.scene.input.MouseEvent;
 
 public class PopulateTool extends Tool {
 
-	private Cursor cursor = new ImageCursor(new Image("cursor_pencil_add.png"), 4, 0);
+	private Cursor cursor = new ImageCursor(new Image("/cursor_pencil_add.png"), 4, 0);
 
 	public PopulateTool(Toolbox toolbox) {
 		super(toolbox);
