@@ -1,4 +1,4 @@
-package com.huestew.studio;
+package com.huestew.studio.util;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -19,7 +19,9 @@ import java.util.Properties;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import com.huestew.studio.HueStew;
 import com.huestew.studio.model.Color;
+import com.huestew.studio.model.HueStewConfig;
 import com.huestew.studio.model.KeyFrame;
 import com.huestew.studio.model.LightState;
 import com.huestew.studio.model.LightTrack;

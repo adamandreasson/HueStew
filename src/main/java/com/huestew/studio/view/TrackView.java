@@ -8,7 +8,6 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import com.huestew.studio.HueStew;
-import com.huestew.studio.Scrollbar;
 import com.huestew.studio.controller.tools.SelectTool;
 import com.huestew.studio.model.KeyFrame;
 import com.huestew.studio.model.LightTrack;

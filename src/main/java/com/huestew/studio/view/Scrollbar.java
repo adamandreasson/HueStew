@@ -1,4 +1,6 @@
-package com.huestew.studio;
+package com.huestew.studio.view;
+
+import com.huestew.studio.util.Task;
 
 // TODO move to correct package
 /**

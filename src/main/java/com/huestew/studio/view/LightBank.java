@@ -1,12 +1,10 @@
 /**
  * 
  */
-package com.huestew.studio;
+package com.huestew.studio.view;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import com.huestew.studio.view.Light;
 
 /**
  * A collection of currently available lights.

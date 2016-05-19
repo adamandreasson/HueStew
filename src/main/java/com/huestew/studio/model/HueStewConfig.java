@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.huestew.studio;
+package com.huestew.studio.model;
 
 /**
  * The config class used to store information regarding how to set up the studio 
