@@ -45,9 +45,14 @@ public enum SnapshotManager {
 	 * 			the latest version of show on the undo stack.
 	 */
 	public Show undo(Show show) {
-		Show s = undoStack.pop();
-		redoStack.push(new Show(s));
-		return s;
+		if(canUndo()) {
+			Show s = undoStack.pop();
+			redoStack.push(new Show(s));
+			return s;
+		} else {
+			throw new IllegalStateException("Cannot undo when undostack is zero");
+		}
+		
 	}
 	
 	/**
@@ -59,7 +64,13 @@ public enum SnapshotManager {
 	 * 			the pre undo version of show.
 	 */
 	public Show redo(Show show) {
-		return null;
+		if (canRedo()) {
+			Show s = redoStack.pop();
+			undoStack.push(new Show(s));
+			return s;
+		} else {
+			throw new IllegalStateException("Cannot redo when redostack is zero");
+		}
 	}
 	
 	/**
