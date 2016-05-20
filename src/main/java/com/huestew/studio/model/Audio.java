@@ -2,7 +2,6 @@ package com.huestew.studio.model;
 
 import java.io.File;
 
-import javafx.scene.image.Image;
 import javafx.scene.media.Media;
 
 public class Audio {
@@ -21,15 +20,5 @@ public class Audio {
 	
 	public File getFile(){
 		return file;
-	}
-	
-	public Image getWaveBackground() {
-		// TODO 
-		throw new UnsupportedOperationException();
-	}
-	
-	public void generateWaveBackground() {
-		// TODO
-		throw new UnsupportedOperationException();
 	}
 }

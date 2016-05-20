@@ -39,12 +39,12 @@ public class FileHandler {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		appDir = System.getProperty("user.home") + System.getProperty("file.separator") + "HueStew";
+		appDir = System.getProperty("user.home") + File.separator + "HueStew";
 		File appDirFile = new File(appDir);
 		if (!appDirFile.exists() && !appDirFile.mkdir()) {
 			throw new AccessDeniedException("Could not initialize app directory in " + appDir);
 		}
-		File pluginFile = new File(appDirFile.toString() + System.getProperty("file.separator") + "plugins");
+		File pluginFile = new File(appDirFile.toString() + File.separator + "plugins");
 		if (!pluginFile.exists() && !pluginFile.mkdir()) {
 			throw new AccessDeniedException("Could not initialize plugin directory in " + pluginFile.getAbsolutePath());
 		}
@@ -52,11 +52,11 @@ public class FileHandler {
 	}
 
 	public String getTempFilePath(String file) {
-		return tmpDir.toString() + System.getProperty("file.separator") + file;
+		return tmpDir.toString() + File.separator + file;
 	}
 
 	public String getAppFilePath(String file) {
-		return appDir + System.getProperty("file.separator") + file;
+		return appDir + File.separator + file;
 	}
 
 	public void saveConfig(HueStewConfig config) {

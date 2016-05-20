@@ -8,18 +8,20 @@ package com.huestew.studio.model;
  */
 public class LightState {
 
-	/** the color of the keyframe defined as a rgb value **/
+	/** the color of the keyframe defined as a rgb value */
 	private Color color;
 
-	/** the brightness of the keyframe **/
+	/** the brightness of the keyframe */
 	private short brightness;
 
-	/** the saturation of the keyframe **/
+	/** the saturation of the keyframe */
 	private short saturation;
 
 	/**
 	 * Copies the values of a LightState
-	 * @param state values which is to be copied.
+	 * 
+	 * @param state
+	 *            values which is to be copied.
 	 */
 	public LightState(LightState state) {
 		this(state.getColor(), state.getBrightness(), state.getSaturation());
@@ -28,7 +30,7 @@ public class LightState {
 	/**
 	 * Creates a new KeyFrame object with the specified values.
 	 * 
-	 * @param color2
+	 * @param color
 	 * @param brightness
 	 * @param saturation
 	 */
@@ -103,7 +105,9 @@ public class LightState {
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -111,12 +115,14 @@ public class LightState {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + brightness;
-		result = prime * result + ((color == null) ? 0 : color.hashCode());
+		result = prime * result + color.hashCode();
 		result = prime * result + saturation;
 		return result;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -130,21 +136,17 @@ public class LightState {
 		LightState other = (LightState) obj;
 		if (brightness != other.brightness)
 			return false;
-		else{
-			// Here we make a difference. Two states are equal if they are both brightness 0.
-			if(brightness < 1)
+		else {
+			// Here we make a difference. Two states are equal if they are both
+			// brightness 0.
+			if (brightness == 0)
 				return true;
 		}
-		if (color == null) {
-			if (other.color != null)
-				return false;
-		} else if (!color.equals(other.color))
+		if (!color.equals(other.color))
 			return false;
 		if (saturation != other.saturation)
 			return false;
 		return true;
 	}
-
-
 
 }

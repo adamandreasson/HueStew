@@ -4,9 +4,9 @@
 package com.huestew.studio.model;
 
 /**
- * A custom class for storing color.
- * Stores the values based on the RGB scale with minimum value 0 and 
- * maximum value 1 for each of the colors.
+ * A custom class for storing color. Stores the values based on the RGB scale
+ * with minimum value 0 and maximum value 1 for each of the colors.
+ * 
  * @author Adam
  *
  */
@@ -15,104 +15,110 @@ public class Color {
 	private double red;
 	private double green;
 	private double blue;
-	
+
 	/**
 	 * Creates a new color object with the specified values.
+	 * 
 	 * @param red
-	 * 				the amount of red.
+	 *            the amount of red.
 	 * @param green
-	 * 				the amount of green.
+	 *            the amount of green.
 	 * @param blue
-	 * 				the amount of blue.
+	 *            the amount of blue.
 	 */
-	public Color(double red, double green, double blue){
+	public Color(double red, double green, double blue) {
 		setRed(red);
 		setGreen(green);
 		setBlue(blue);
 	}
-	
+
 	/**
 	 * Creates a new color object based on the values of another.
+	 * 
 	 * @param color
-	 * 				the color to be copied.
+	 *            the color to be copied.
 	 */
-	public Color(Color color){
+	public Color(Color color) {
 		this.red = color.getRed();
 		this.green = color.getGreen();
 		this.blue = color.getBlue();
 	}
-	
+
 	/**
 	 * Creates a new color object based on the values of a JavaFX color object.
+	 * 
 	 * @param color
-	 * 				the JavaFX color object to be copied.
+	 *            the JavaFX color object to be copied.
 	 */
-	public Color(javafx.scene.paint.Color color){
+	public Color(javafx.scene.paint.Color color) {
 		this.red = color.getRed();
 		this.green = color.getGreen();
 		this.blue = color.getBlue();
 	}
-	
+
 	/**
 	 * Converts the color to a JavaFX color with the opacity 1.
-	 * @return
-	 * 			the color as a JavaFx color
+	 * 
+	 * @return the color as a JavaFx color
 	 */
-	public javafx.scene.paint.Color toFxColor(){
+	public javafx.scene.paint.Color toFxColor() {
 		return new javafx.scene.paint.Color(red, green, blue, 1);
 	}
-	
+
 	/**
 	 * @return the red
 	 */
 	public double getRed() {
 		return red;
 	}
-	
+
 	/**
-	 * @param red the red to set
+	 * @param red
+	 *            the red to set
 	 */
 	public void setRed(double red) {
 		if (!(red < 0 || red > 1)) {
 			this.red = red;
 		} else {
-			throw new IllegalArgumentException("Red must be between 0-255");
-		}		
+			throw new IllegalArgumentException("Red must be between 0-1");
+		}
 	}
-	
+
 	/**
 	 * @return the green
 	 */
 	public double getGreen() {
 		return green;
 	}
-	
+
 	/**
-	 * @param green the green to set
+	 * @param green
+	 *            the green to set
 	 */
 	public void setGreen(double green) {
 		if (!(green < 0 || green > 1)) {
-			this.green = green;	
+			this.green = green;
 		} else {
-			throw new IllegalArgumentException("Green must be between 0-255");
+			throw new IllegalArgumentException("Green must be between 0-1");
 		}
 	}
-	
+
 	/**
 	 * @return the blue
 	 */
 	public double getBlue() {
 		return blue;
 	}
-	
+
 	/**
-	 * @param blue the blue to set
+	 * @param blue
+	 *            the blue to set
 	 */
 	public void setBlue(double blue) {
 		if (!(blue < 0 || blue > 1)) {
-			this.blue = blue;	
+			this.blue = blue;
 		} else {
-			throw new IllegalArgumentException("Blue must be between 0-255");
+			throw new IllegalArgumentException("Blue must be between 0-1");
 		}
 	}
 
@@ -128,7 +134,7 @@ public class Color {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + (int)(red*73) + (int)(green*13) + (int)(blue*11);
+		result = prime * result + (int) (red * 73) + (int) (green * 13) + (int) (blue * 11);
 		return result;
 	}
 
@@ -144,13 +150,7 @@ public class Color {
 		if (!(obj instanceof Color))
 			return false;
 		Color other = (Color) obj;
-		if (red != other.red)
-			return false;
-		if (green != other.green)
-			return false;
-		if (blue != other.blue)
-			return false;
-		return true;
+		return Math.abs(red - other.red) < 0.0001 && Math.abs(green - other.green) < 0.0001 && Math.abs(blue - other.blue) < 0.0001;
 	}
-	
+
 }

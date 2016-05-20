@@ -17,7 +17,7 @@ public class Show {
 
 	private Audio audio;
 
-	public Show(){
+	public Show() {
 		this.lightTracks = new ArrayList<LightTrack>();
 	}
 
@@ -88,8 +88,12 @@ public class Show {
 
 	/**
 	 * @param duration the duration to set
+	 * @throws IllegalArgumentException if duration is negative
 	 */
 	public void setDuration(int duration) {
+		if (duration < 0) {
+			throw new IllegalArgumentException("Duration cannot be negative");
+		}
 		this.duration = duration;
 	}
 }

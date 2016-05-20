@@ -31,21 +31,24 @@ public class KeyFrame implements Comparable<KeyFrame> {
 		this.setTimestamp(timestamp);
 	}
 	
-	
-	
+	public KeyFrame(KeyFrame other) {
+		this(other.timestamp, new LightState(other.state), other.track);
+	}
+
 	/**
 	 * Method for getting the timestamp of the keyframe, will be zero or greater
 	 * 
 	 * @return the timestamp of the keyframe
 	 */
-	
-	public void remove(){
-		track.removeKeyFrame(this);
-	}
-	
-	
 	public int getTimestamp() {
 		return this.timestamp;
+	}
+	
+	/**
+	 * Remove key frame from the light track.
+	 */
+	public void remove(){
+		track.removeKeyFrame(this);
 	}
 
 	/**
