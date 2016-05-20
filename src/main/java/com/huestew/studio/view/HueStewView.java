@@ -8,8 +8,6 @@ import java.util.List;
 import com.huestew.studio.HueStew;
 import com.huestew.studio.controller.MainViewController;
 import com.huestew.studio.model.KeyFrame;
-import com.huestew.studio.model.LightTrack;
-
 import javafx.application.Platform;
 import javafx.scene.input.KeyEvent;
 
