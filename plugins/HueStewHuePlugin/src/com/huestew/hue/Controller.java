@@ -6,7 +6,7 @@ package com.huestew.hue;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.huestew.studio.HueStew;
+import com.huestew.studio.view.LightBank;
 import com.philips.lighting.hue.sdk.PHAccessPoint;
 import com.philips.lighting.hue.sdk.PHBridgeSearchManager;
 import com.philips.lighting.hue.sdk.PHHueSDK;
@@ -157,9 +157,8 @@ public class Controller {
 		List<PHLight> allLights = bridge.getResourceCache().getAllLights();
 		for(PHLight phLight : allLights){
 			System.out.println(phLight.getName());
-			HueLight light = new HueLight(phLight);
-			if(phLight.getIdentifier().equals("1"))
-				HueStew.getInstance().getShow().getLightTracks().get(0).addListener(light);
+			HueLight light = new HueLight(phLight, "Philips Hue: " + phLight.getName());
+			LightBank.getInstance().addLight(light);
 		}
 
 	}

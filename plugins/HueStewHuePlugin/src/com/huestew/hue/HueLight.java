@@ -28,9 +28,11 @@ public class HueLight implements Light {
 
 	private PHLight phLight;
 	private KeyFrame lastFrame;
+	private String name;
 
-	public HueLight(PHLight phLight) {
+	public HueLight(PHLight phLight, String name) {
 		this.phLight = phLight;
+		this.name = name;
 	}
 
 	/*
@@ -127,7 +129,7 @@ public class HueLight implements Light {
 
 	@Override
 	public String getName() {
-		return "Philips Hue Light";
+		return name;
 	}
 
 }
