@@ -16,8 +16,7 @@ public enum SnapshotManager {
 	
 	private SnapshotManager() {
 		undoStack = new Stack<Show>();
-		redoStack = new Stack<Show>();
-			
+		redoStack = new Stack<Show>();			
 	}
 	
 	public static SnapshotManager getInstance() {
