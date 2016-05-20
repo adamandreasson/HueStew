@@ -33,7 +33,7 @@ import javafx.stage.Stage;
  * @author Adam
  *
  */
-public class HuePlugin extends Plugin {
+public class HuePlugin implements Plugin {
 
 	ChoiceBox<String> bridgeChoiceBox;
 	Button searchBtn;

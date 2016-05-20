@@ -125,16 +125,9 @@ public class HueLight implements Light {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.huestew.studio.view.Light#setState(com.huestew.studio.model.
-	 * LightState)
-	 */
 	@Override
-	public void setState(LightState state) {
-		// TODO Auto-generated method stub
-
+	public String getName() {
+		return "Philips Hue Light";
 	}
 
 }

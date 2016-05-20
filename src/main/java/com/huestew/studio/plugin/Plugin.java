@@ -7,11 +7,11 @@ package com.huestew.studio.plugin;
  * @author Adam
  *
  */
-public abstract class Plugin {
+public interface Plugin {
 
-	public abstract void onEnable();
+	void onEnable();
 
-	public abstract void sendLightState();
+	void sendLightState();
 
-	public abstract void onDisable();
+	void onDisable();
 }
