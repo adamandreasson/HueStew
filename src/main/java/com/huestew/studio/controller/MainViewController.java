@@ -430,7 +430,6 @@ public class MainViewController extends ViewController {
 
 	public void setSequencePossible(boolean b) {
 		addSequenceButton.setDisable(!b);
-		System.out.println("disable=!=!" + b);
 	}
 
 }

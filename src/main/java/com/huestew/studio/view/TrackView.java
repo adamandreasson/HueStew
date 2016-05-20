@@ -165,7 +165,6 @@ public class TrackView {
 		canvas.requestFocus();
 		clickedSection = getSection(event);
 		clickedTrack = getTrackFromY(event.getY());
-		System.out.println(clickedSection.name());
 
 		if (clickedSection == Section.VERTICAL_SCROLLBAR) {
 			verticalScrollbar.setBarOrigin(event.getY());
