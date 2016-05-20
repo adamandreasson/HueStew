@@ -71,6 +71,7 @@ public class SelectTool extends Tool {
 			if (moveHorizontally) {
 
 				int delta = timestamp - keyFrame.getTimestamp();
+				boolean allowedMove = true;
 
 				for (KeyFrame keyframe : selectedKeyFrames) {
 
@@ -87,8 +88,18 @@ public class SelectTool extends Tool {
 
 					int newTimestamp = keyframe.getTimestamp() + delta;
 
-					if (newTimestamp < maxTimestamp && newTimestamp > minTimestamp)
-						keyframe.setTimestamp(newTimestamp);
+					if (newTimestamp < minTimestamp || newTimestamp > maxTimestamp)
+						allowedMove = false;
+
+				}
+
+				if(!allowedMove)
+					return;
+				
+				for (KeyFrame keyframe : selectedKeyFrames) {
+
+					int newTimestamp = keyframe.getTimestamp() + delta;
+					keyframe.setTimestamp(newTimestamp);
 
 				}
 
