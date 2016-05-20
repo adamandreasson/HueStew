@@ -1,6 +1,5 @@
 package com.huestew.studio.controller.tools;
 
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import com.huestew.studio.HueStew;
@@ -49,23 +48,24 @@ public class SelectTool extends Tool {
 			return;
 		}
 		
-		
 		if (event.getEventType() == MouseEvent.MOUSE_PRESSED) {
 			
 			if (keyFramesSelected.isEmpty()) {
-				selectedKeyFrames = new HashSet<KeyFrame>();
-				selectedKeyFrames.add(keyFrame);
+				keyFramesSelected.add(keyFrame);
 			}else{
-				selectedKeyFrames = keyFramesSelected;
+				
+				if(!keyFramesSelected.contains(keyFrame)){
+					keyFramesSelected.clear();
+					keyFramesSelected.add(keyFrame);
+				}
+				
 			}
-			
+			selectedKeyFrames = keyFramesSelected;
 			keyFrame.getTimestamp();
 
-		} else if (event.getEventType() == MouseEvent.MOUSE_DRAGGED && selectedKeyFrames != null) {
-			// Save previous timestamp/brightness
+		} else if (event.getEventType() == MouseEvent.MOUSE_DRAGGED && !selectedKeyFrames.isEmpty()) {
 
 			if (moveHorizontally) {
-				// Update timestamp
 
 				int delta = timestamp - keyFrame.getTimestamp();
 				
