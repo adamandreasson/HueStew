@@ -1,7 +1,6 @@
 package com.huestew.studio.model;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Stack;
 
 /** 
  * A manager for snapshots of the model, used to support redo/undo.
@@ -11,13 +10,13 @@ import java.util.List;
 public enum SnapshotManager {
 	INSTANCE;
 
-	private List<Show> undoStack;
+	private Stack<Show> undoStack;
 	
-	private List<Show> redoStack;
+	private Stack<Show> redoStack;
 	
 	private SnapshotManager() {
-		undoStack = new ArrayList<Show>();
-		redoStack = new ArrayList<Show>();
+		undoStack = new Stack<Show>();
+		redoStack = new Stack<Show>();
 			
 	}
 	
@@ -32,7 +31,9 @@ public enum SnapshotManager {
 	 * @param show
 	 * 				the version of the show previous to the command
 	 */
-	public void commandIssued(Show show) {		
+	public void commandIssued(Show show) {
+		undoStack.push(new Show(show));
+		redoStack.clear();
 	}
 	
 	/**
@@ -44,7 +45,9 @@ public enum SnapshotManager {
 	 * 			the latest version of show on the undo stack.
 	 */
 	public Show undo(Show show) {
-		return null;
+		Show s = undoStack.pop();
+		redoStack.push(new Show(s));
+		return s;
 	}
 	
 	/**
