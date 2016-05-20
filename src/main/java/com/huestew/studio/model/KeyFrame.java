@@ -12,7 +12,7 @@ public class KeyFrame implements Comparable<KeyFrame> {
 	private int timestamp;
 
 	private LightState state;
-	
+
 	private LightTrack track;
 
 	/**
@@ -30,7 +30,7 @@ public class KeyFrame implements Comparable<KeyFrame> {
 	public KeyFrame(int timestamp) {
 		this.setTimestamp(timestamp);
 	}
-	
+
 	public KeyFrame(KeyFrame other) {
 		this(other.timestamp, other.state, other.track);
 	}
@@ -43,12 +43,30 @@ public class KeyFrame implements Comparable<KeyFrame> {
 	public int getTimestamp() {
 		return this.timestamp;
 	}
-	
+
 	/**
 	 * Remove key frame from the light track.
 	 */
-	public void remove(){
+	public void remove() {
 		track.removeKeyFrame(this);
+	}
+
+	/**
+	 * Method to find the previous keyframe in the track
+	 * @return previous KeyFrame
+	 */
+	public KeyFrame previous() {
+		KeyFrame temp = new KeyFrame(timestamp - 1);
+		return track.getKeyFrames().floor(temp);
+	}
+
+	/**
+	 * Method to find the following keyframe in the track
+	 * @return next KeyFrame
+	 */
+	public KeyFrame next() {
+		KeyFrame temp = new KeyFrame(timestamp + 1);
+		return track.getKeyFrames().ceiling(temp);
 	}
 
 	/**
@@ -74,7 +92,7 @@ public class KeyFrame implements Comparable<KeyFrame> {
 	public LightState getState() {
 		return new LightState(state);
 	}
-	
+
 	/**
 	 * @param state
 	 *            the state to set

@@ -47,19 +47,22 @@ public class SelectTool extends Tool {
 		if (keyFrame == null) {
 			return;
 		}
-		
+
 		if (event.getEventType() == MouseEvent.MOUSE_PRESSED) {
-			
+
 			if (keyFramesSelected.isEmpty()) {
+
 				keyFramesSelected.add(keyFrame);
-			}else{
-				
-				if(!keyFramesSelected.contains(keyFrame)){
+
+			} else {
+
+				if (!keyFramesSelected.contains(keyFrame)) {
 					keyFramesSelected.clear();
 					keyFramesSelected.add(keyFrame);
 				}
-				
+
 			}
+
 			selectedKeyFrames = keyFramesSelected;
 			keyFrame.getTimestamp();
 
@@ -68,10 +71,24 @@ public class SelectTool extends Tool {
 			if (moveHorizontally) {
 
 				int delta = timestamp - keyFrame.getTimestamp();
-				
+
 				for (KeyFrame keyframe : selectedKeyFrames) {
 
-					keyframe.setTimestamp(keyframe.getTimestamp() + delta);
+					int maxTimestamp = Integer.MAX_VALUE;
+					int minTimestamp = 0;
+
+					KeyFrame nextFrame = keyframe.next();
+					if (nextFrame != null)
+						maxTimestamp = nextFrame.getTimestamp() - 10;
+
+					KeyFrame prevFrame = keyframe.previous();
+					if (prevFrame != null)
+						minTimestamp = prevFrame.getTimestamp() + 10;
+
+					int newTimestamp = keyframe.getTimestamp() + delta;
+
+					if (newTimestamp < maxTimestamp && newTimestamp > minTimestamp)
+						keyframe.setTimestamp(newTimestamp);
 
 				}
 
