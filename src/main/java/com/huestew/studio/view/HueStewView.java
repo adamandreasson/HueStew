@@ -8,6 +8,7 @@ import java.util.List;
 import com.huestew.studio.HueStew;
 import com.huestew.studio.controller.MainViewController;
 import com.huestew.studio.model.KeyFrame;
+import com.huestew.studio.model.LightTrack;
 
 import javafx.application.Platform;
 import javafx.scene.input.KeyEvent;
@@ -100,5 +101,13 @@ public class HueStewView {
 
 	public void updateZoomButtons() {
 		Platform.runLater(() -> mvc.updateZoomButtons());
+	}
+
+	private boolean sequencePossible(List<KeyFrame> selectedKeyFrames, int tracksInSelection){
+		return !(selectedKeyFrames == null || selectedKeyFrames.isEmpty() || tracksInSelection > 1 || selectedKeyFrames.size() < 2);
+	}
+	
+	public void notifySelectionChange(List<KeyFrame> selectedKeyFrames, int tracksInSelection) {
+			mvc.setSequencePossible(sequencePossible(selectedKeyFrames, tracksInSelection));
 	}
 }

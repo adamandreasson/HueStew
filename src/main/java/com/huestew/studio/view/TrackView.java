@@ -316,9 +316,12 @@ public class TrackView {
 		double minY = Math.min(y1, y2);
 		double maxY = Math.max(y1, y2);
 
+		int tracksInSelection = 0;
 		int i = -1;
+		
 		for (LightTrack track : HueStew.getInstance().getShow().getLightTracks()) {
 			i++;
+			boolean trackInSelection = false;
 
 			if (getTrackPositionY(i) < minY - getTrackHeight())
 				continue;
@@ -343,12 +346,19 @@ public class TrackView {
 				if (frameX > minX && frameX < maxX) {
 					if (localFrameY > trackMinY && localFrameY < trackMaxY) {
 						selection.add(keyFrame);
+						trackInSelection = true;
 					}
 				}
 			}
+			
+			if(trackInSelection)
+				tracksInSelection++;
+			
 		}
-
+		
 		selectedKeyFrames = selection;
+	
+		HueStew.getInstance().getView().notifySelectionChange(selectedKeyFrames, tracksInSelection);
 	}
 	
 	private void handleScrollEvent(ScrollEvent event) {

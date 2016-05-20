@@ -64,6 +64,9 @@ public class MainViewController extends ViewController {
 	private ToggleButton selectToolButton;
 
 	@FXML
+	private Button addSequenceButton;
+	
+	@FXML
 	private Slider volumeSlider;
 
 	@FXML
@@ -163,6 +166,12 @@ public class MainViewController extends ViewController {
 		selectToolButton.setGraphic(new ImageView(new Image("icon_cursor.png")));
 		selectToolButton.setTooltip(new Tooltip("Select tool"));
 
+		addSequenceButton.setGraphic(new ImageView(new Image("icon_sequence.png")));
+		addSequenceButton.setTooltip(new Tooltip("Create sequence"));
+		
+		addSequenceButton.setDisable(true);
+
+
 		ToggleGroup toolGroup = new ToggleGroup();
 		populateToolButton.setToggleGroup(toolGroup);
 		selectToolButton.setToggleGroup(toolGroup);
@@ -254,6 +263,11 @@ public class MainViewController extends ViewController {
 	public void updateZoomButtons() {
 		zoomInMenuItem.setDisable(trackView.getZoom() == TrackView.MAXIMUM_ZOOM);
 		zoomOutMenuItem.setDisable(trackView.getZoom() == TrackView.MINIMUM_ZOOM);
+	}
+
+	@FXML
+	private void addSequencePressed(){
+		System.out.println("add sequence!");
 	}
 
 	public void openColorPickerPane(KeyFrame hoveringKeyFrame) {
@@ -412,6 +426,11 @@ public class MainViewController extends ViewController {
 			}
 			
 		});
+	}
+
+	public void setSequencePossible(boolean b) {
+		addSequenceButton.setDisable(!b);
+		System.out.println("disable=!=!" + b);
 	}
 
 }
