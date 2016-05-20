@@ -1,7 +1,7 @@
 package com.huestew.studio.controller.tools;
 
-import java.util.Iterator;
 import java.util.List;
+
 import com.huestew.studio.HueStew;
 import com.huestew.studio.model.KeyFrame;
 import com.huestew.studio.model.LightState;
@@ -20,24 +20,22 @@ import javafx.scene.input.MouseEvent;
 public class SelectTool extends Tool {
 
 	private List<KeyFrame> selectedKeyFrames;
-	private boolean moveHorizontally = true;
-	private boolean moveVertically = true;
+	private boolean ctrlDown = false;
+	private boolean shiftDown = false;
 
 	public SelectTool(Toolbox toolbox) {
 		super(toolbox);
 	}
 
 	private void deleteSelectedKeyFrames() {
-		if (!selectedKeyFrames.isEmpty()) {
-			Iterator<KeyFrame> deleter = selectedKeyFrames.iterator();
-
-			while (deleter.hasNext()) {
-				KeyFrame temp = deleter.next();
-				temp.remove();
-				HueStew.getInstance().getView().updateTrackView();
+		if (selectedKeyFrames != null && !selectedKeyFrames.isEmpty()) {
+			
+			for(KeyFrame frame : selectedKeyFrames){
+				frame.remove();
 			}
-			// selectedLightTrack.removeKeyFrame(selectedKeyFrame);
-			// selectedKeyFrame = null;
+			
+			HueStew.getInstance().getView().updateTrackView();
+			
 		}
 	}
 
@@ -45,6 +43,8 @@ public class SelectTool extends Tool {
 	public void doAction(MouseEvent event, LightTrack lightTrack, KeyFrame keyFrame, List<KeyFrame> keyFramesSelected,
 			int timestamp, double normalizedY) {
 
+		selectedKeyFrames = keyFramesSelected;
+		
 		if (keyFrame == null) {
 			return;
 		}
@@ -58,19 +58,21 @@ public class SelectTool extends Tool {
 			} else {
 
 				if (!keyFramesSelected.contains(keyFrame)) {
-					System.out.println("keyFramesSecletec not contin");
-					keyFramesSelected.clear();
+
+					// ctrl down means user wants to add frame to selection
+					if(!ctrlDown)
+						keyFramesSelected.clear();
+					
 					keyFramesSelected.add(keyFrame);
 				}
 
 			}
 
-			selectedKeyFrames = keyFramesSelected;
 			keyFrame.getTimestamp();
 
 		} else if (event.getEventType() == MouseEvent.MOUSE_DRAGGED && !selectedKeyFrames.isEmpty()) {
 
-			if (moveHorizontally) {
+			if (!shiftDown) {
 
 				int delta = timestamp - keyFrame.getTimestamp();
 				boolean allowedMove = true;
@@ -107,7 +109,7 @@ public class SelectTool extends Tool {
 				}
 			}
 
-			if (moveVertically) {
+			if (!ctrlDown) {
 
 				int delta = ((int)(normalizedY*255)) - keyFrame.getState().getBrightness();
 
@@ -124,26 +126,7 @@ public class SelectTool extends Tool {
 					frame.setState(newState);
 
 				}
-
-				/*
-				 * if (lightTrack != selectedLightTrack) { // Correct the
-				 * normalized Y value List<LightTrack> lightTracks =
-				 * HueStew.getInstance().getShow().getLightTracks(); if
-				 * (lightTracks.indexOf(lightTrack) >
-				 * lightTracks.indexOf(selectedLightTrack)) { normalizedY = 0; }
-				 * else { normalizedY = 1; } }
-				 * 
-				 * if (selectedKeyFrame == null) { return; }
-				 * 
-				 * // Update brightness LightState state =
-				 * selectedKeyFrame.getState(); state.setBrightness((int) (255 *
-				 * normalizedY)); selectedKeyFrame.setState(state);
-				 * 
-				 * for (KeyFrame keyframe : withoutSelectedKeyFrame) {
-				 * LightState stateToSet = keyframe.getState();
-				 * stateToSet.setBrightness(stateToSet.getBrightness() +
-				 * (state.getBrightness() - tempBrightness)); }
-				 */
+					
 			}
 		}
 
@@ -155,10 +138,10 @@ public class SelectTool extends Tool {
 
 		switch (event.getCode()) {
 		case CONTROL:
-			moveVertically = !pressed;
+			ctrlDown = pressed;
 			break;
 		case SHIFT:
-			moveHorizontally = !pressed;
+			shiftDown = pressed;
 			break;
 		case DELETE:
 			deleteSelectedKeyFrames();
