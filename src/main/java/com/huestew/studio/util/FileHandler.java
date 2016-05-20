@@ -176,5 +176,12 @@ public class FileHandler {
 		}
 
 	}
+	
+	public void clean(){
+	    for(File filePath : tmpDir.toFile().listFiles()) {
+	    	filePath.delete();
+	    }
+		tmpDir.toFile().delete();
+	}
 
 }

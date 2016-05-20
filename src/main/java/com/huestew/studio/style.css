@@ -3,6 +3,7 @@
 	-fx-background-color: #3a3a3a;
 	-fx-border-color: #282828;
 	-fx-border-width: 1px;
+	-fx-box-border: transparent;
 }
 
 .darkpane {

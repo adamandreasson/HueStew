@@ -39,7 +39,7 @@ public class Player {
 			Media media = show.getAudio().getFxMedia();
 			mediaPlayer = new MediaPlayer(media);
 			mediaPlayer.setAutoPlay(false);
-
+			
 			mediaPlayer.setOnReady(new Runnable() {
 
 				@Override
