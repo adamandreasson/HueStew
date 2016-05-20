@@ -19,6 +19,7 @@ import javafx.scene.Cursor;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.Slider;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
@@ -80,6 +81,12 @@ public class MainViewController extends ViewController {
 
 	@FXML
 	private Button saveAsButton;
+
+	@FXML
+	private MenuItem zoomInMenuItem;
+
+	@FXML
+	private MenuItem zoomOutMenuItem;
 
 	private Stage stage;
 	
@@ -221,6 +228,25 @@ public class MainViewController extends ViewController {
 		 * fileChooser.showSaveDialog(Util.createStage()); if (file != null) {
 		 * System.out.println("SAVING TO " + file.getAbsolutePath()); }
 		 */
+	}
+
+	@FXML
+	private void zoomInButtonPressed() {
+		trackView.adjustZoom(TrackView.ZOOM_IN);
+		trackView.redraw();
+		updateZoomButtons();
+	}
+
+	@FXML
+	private void zoomOutButtonPressed() {
+		trackView.adjustZoom(TrackView.ZOOM_OUT);
+		trackView.redraw();
+		updateZoomButtons();
+	}
+
+	public void updateZoomButtons() {
+		zoomInMenuItem.setDisable(trackView.getZoom() == TrackView.MAXIMUM_ZOOM);
+		zoomOutMenuItem.setDisable(trackView.getZoom() == TrackView.MINIMUM_ZOOM);
 	}
 
 	public void openColorPickerPane(KeyFrame hoveringKeyFrame) {

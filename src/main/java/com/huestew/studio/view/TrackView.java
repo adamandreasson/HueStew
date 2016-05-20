@@ -61,10 +61,13 @@ public class TrackView {
 	private static final int TRACK_SPACER = 10;
 	private static final int MINIMUM_TRACK_HEIGHT = 80;
 	private static final int SCROLLBAR_SIZE = 8;
-	private static final double MINIMUM_ZOOM = 0.5;
-	private static final double MAXIMUM_ZOOM = 4;
 
 	public static final int PIXELS_PER_SECOND = 100;
+	public static final double MINIMUM_ZOOM = 0.5;
+	public static final double MAXIMUM_ZOOM = 4;
+	public static final double ZOOM_IN = 0.25;
+	public static final double ZOOM_OUT = -0.25;
+	
 	private double zoom = 1;
 
 	private static final Color TIMELINE_COLOR = Color.web("#303030");
@@ -149,18 +152,6 @@ public class TrackView {
 			break;
 		case CONTROL:
 			ctrlDown = event.getEventType() == KeyEvent.KEY_PRESSED;
-			break;
-		case PLUS:
-			if (ctrlDown && event.getEventType() == KeyEvent.KEY_RELEASED) {
-				adjustZoom(1.25);
-				redraw();
-			}
-			break;
-		case MINUS:
-			if (ctrlDown && event.getEventType() == KeyEvent.KEY_RELEASED) {
-				adjustZoom(0.75);
-				redraw();
-			}
 			break;
 		default:
 			return;
@@ -367,7 +358,8 @@ public class TrackView {
 			// Scroll wheel -> zoom or scroll horizontally
 			if (ctrlDown) {
 				// Zoom
-				adjustZoom(event.getDeltaY() > 0 ? 1.25 : 0.75);
+				adjustZoom(event.getDeltaY() > 0 ? ZOOM_IN : ZOOM_OUT);
+				HueStew.getInstance().getView().updateZoomButtons();
 			} else {
 				// Scroll
 				horizontalScrollbar.addOffset(-event.getDeltaY());
@@ -669,10 +661,14 @@ public class TrackView {
 	private double getTotalTrackPositionY() {
 		return 40;
 	}
-	
-	private void adjustZoom(double factor) {
+
+	public double getZoom() {
+		return zoom;
+	}
+
+	public void adjustZoom(double factor) {
 		double offsetWithoutZoom = horizontalScrollbar.getOffset() / zoom;
-		zoom = Math.max(MINIMUM_ZOOM, Math.min(MAXIMUM_ZOOM, zoom * factor));
+		zoom = Math.max(MINIMUM_ZOOM, Math.min(MAXIMUM_ZOOM, zoom + factor));
 
 		// TODO Scrollbar+setOffset(double)
 		horizontalScrollbar.addOffset(-horizontalScrollbar.getOffset());

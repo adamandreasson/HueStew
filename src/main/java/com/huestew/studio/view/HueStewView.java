@@ -72,14 +72,7 @@ public class HueStewView {
 	}
 
 	public void updateTitle(String string) {
-		Platform.runLater(new Runnable(){
-
-			@Override
-			public void run() {
-				mvc.updateTitle(string);
-			}
-			
-		});
+		Platform.runLater(() -> mvc.updateTitle(string));
 	}
 
 	public void openColorPickerPane(KeyFrame hoveringKeyFrame) {
@@ -95,14 +88,7 @@ public class HueStewView {
 	}
 
 	public void enableControls() {
-		Platform.runLater(new Runnable(){
-
-			@Override
-			public void run() {
-				mvc.enableControls();
-			}
-			
-		});
+		Platform.runLater(() -> mvc.enableControls());
 	}
 
 	public void openColorPickerPane(Set<KeyFrame> selectedKeyFrames) {
@@ -110,13 +96,10 @@ public class HueStewView {
 	}
 
 	public void updateTracks() {
-		Platform.runLater(new Runnable(){
+		Platform.runLater(() -> mvc.updateTrackActionPane());
+	}
 
-			@Override
-			public void run() {
-				mvc.updateTrackActionPane();
-			}
-			
-		});
+	public void updateZoomButtons() {
+		Platform.runLater(() -> mvc.updateZoomButtons());
 	}
 }
