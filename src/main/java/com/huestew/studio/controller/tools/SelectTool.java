@@ -4,6 +4,7 @@ import java.util.Iterator;
 import java.util.Set;
 import com.huestew.studio.HueStew;
 import com.huestew.studio.model.KeyFrame;
+import com.huestew.studio.model.LightState;
 import com.huestew.studio.model.LightTrack;
 
 import javafx.scene.Cursor;
@@ -57,6 +58,7 @@ public class SelectTool extends Tool {
 			} else {
 
 				if (!keyFramesSelected.contains(keyFrame)) {
+					System.out.println("keyFramesSecletec not contin");
 					keyFramesSelected.clear();
 					keyFramesSelected.add(keyFrame);
 				}
@@ -93,19 +95,36 @@ public class SelectTool extends Tool {
 
 				}
 
-				if(!allowedMove)
-					return;
-				
-				for (KeyFrame keyframe : selectedKeyFrames) {
+				if(allowedMove){
 
-					int newTimestamp = keyframe.getTimestamp() + delta;
-					keyframe.setTimestamp(newTimestamp);
+					for (KeyFrame keyframe : selectedKeyFrames) {
+
+						int newTimestamp = keyframe.getTimestamp() + delta;
+						keyframe.setTimestamp(newTimestamp);
+
+					}
 
 				}
-
 			}
 
 			if (moveVertically) {
+
+				int delta = ((int)(normalizedY*255)) - keyFrame.getState().getBrightness();
+
+
+				for (KeyFrame frame : selectedKeyFrames) {
+
+					int newBrightness = frame.getState().getBrightness() + delta;
+					LightState newState = new LightState(frame.getState());
+					try{
+						newState.setBrightness(newBrightness);
+					}catch(IllegalArgumentException e){
+						continue;
+					}
+					frame.setState(newState);
+
+				}
+
 				/*
 				 * if (lightTrack != selectedLightTrack) { // Correct the
 				 * normalized Y value List<LightTrack> lightTracks =
