@@ -120,8 +120,7 @@ public enum HueStew {
 
 			view.getVirtualRoom().addBulb(bulb);
 
-			track.addListener(light);
-			
+			track.addListener(light);		
 			i++;
 		}
 
@@ -189,7 +188,7 @@ public enum HueStew {
 	public void save() {
 
 		pluginHandler.sendDisable();
-		fileHandler.saveTrackData();
+		fileHandler.saveTrackData(show.getLightTracks());
 
 	}
 

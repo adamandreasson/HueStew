@@ -13,12 +13,12 @@ import java.io.UnsupportedEncodingException;
 import java.nio.file.AccessDeniedException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Properties;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import com.huestew.studio.HueStew;
 import com.huestew.studio.model.Color;
 import com.huestew.studio.model.HueStewConfig;
 import com.huestew.studio.model.KeyFrame;
@@ -102,20 +102,20 @@ public class FileHandler {
 
 	}
 
-	public void saveTrackData() {
+	public void saveTrackData(List<LightTrack> tracks) {
 
 		JSONObject obj = new JSONObject();
 
-		JSONArray tracks = new JSONArray();
+		JSONArray tracksJson = new JSONArray();
 
-		for (LightTrack track : HueStew.getInstance().getShow().getLightTracks()) {
+		for (LightTrack track : tracks) {
 
 			JSONArray trackArr = new JSONArray(track.getKeyFrames());
 
-			tracks.put(trackArr);
+			tracksJson.put(trackArr);
 		}
 
-		obj.put("tracks", tracks);
+		obj.put("tracks", tracksJson);
 
 		try (PrintWriter out = new PrintWriter(getAppFilePath("autosave.json"), "utf-8")) {
 			out.println(obj.toString(2));
