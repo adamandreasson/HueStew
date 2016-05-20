@@ -32,7 +32,7 @@ public class KeyFrame implements Comparable<KeyFrame> {
 	}
 	
 	public KeyFrame(KeyFrame other) {
-		this(other.timestamp, new LightState(other.state), other.track);
+		this(other.timestamp, other.state, other.track);
 	}
 
 	/**
@@ -72,7 +72,7 @@ public class KeyFrame implements Comparable<KeyFrame> {
 	 * @return the state
 	 */
 	public LightState getState() {
-		return state;
+		return new LightState(state);
 	}
 	
 	/**
@@ -80,7 +80,7 @@ public class KeyFrame implements Comparable<KeyFrame> {
 	 *            the state to set
 	 */
 	public void setState(LightState state) {
-		this.state = state;
+		this.state = new LightState(state);
 	}
 
 	@Override

@@ -20,6 +20,17 @@ public class Show {
 	public Show() {
 		this.lightTracks = new ArrayList<LightTrack>();
 	}
+	
+	public Show(Show other) {
+		List<LightTrack> temp = other.getLightTracks();
+		
+		for (LightTrack lt : temp) {
+			this.lightTracks.add(new LightTrack(lt));
+		}
+		
+		this.duration = other.getDuration();
+		this.audio = other.getAudio();
+	}
 
 	/**
 	 * Add a new lighttrack to the show.

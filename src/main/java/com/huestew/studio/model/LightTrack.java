@@ -10,9 +10,23 @@ import java.util.TreeSet;
  * @author Patrik Olson
  */
 public class LightTrack {
-	private TreeSet<KeyFrame> keyFrames = new TreeSet<>();
-	private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
+	private TreeSet<KeyFrame> keyFrames;
+	private PropertyChangeSupport pcs;
 
+	public LightTrack() {
+		keyFrames = new TreeSet<>();
+		pcs = new PropertyChangeSupport(this);
+	}
+	
+	public LightTrack(LightTrack other) {
+		TreeSet<KeyFrame> temp = other.getKeyFrames();
+		
+		for (KeyFrame k : temp) {
+			keyFrames.add(k);
+		}
+		
+		this.pcs = other.getPropertyChangeSupport();
+	}
 	/**
 	 * Add a key frame to this light track.
 	 * 
@@ -65,6 +79,10 @@ public class LightTrack {
 	 */
 	public void removeListener(PropertyChangeListener listener) {
 		pcs.removePropertyChangeListener("keyFrameTransition", listener);
+	}
+	
+	public PropertyChangeSupport getPropertyChangeSupport() {
+		return pcs;
 	}
 
 	/**
