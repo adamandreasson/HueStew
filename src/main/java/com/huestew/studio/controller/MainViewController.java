@@ -88,6 +88,9 @@ public class MainViewController extends ViewController {
 
 	@FXML
 	private MenuItem zoomOutMenuItem;
+	
+	@FXML
+	private AnchorPane rootPane;
 
 	private Stage stage;
 
@@ -174,7 +177,8 @@ public class MainViewController extends ViewController {
 		selectToolButton.setSelected(true);
 
 		trackMenuController = (TrackMenuController) Util.loadFxml("/trackmenu.fxml");
-		trackCanvasPane.getChildren().add(0, trackMenuController.getView());
+		rootPane.getChildren().add(0, trackMenuController.getView());
+		
 	}
 
 	@FXML

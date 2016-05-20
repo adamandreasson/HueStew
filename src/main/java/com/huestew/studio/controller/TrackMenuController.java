@@ -9,6 +9,7 @@ import com.huestew.studio.view.LightBank;
 import com.huestew.studio.view.TrackActionButton;
 
 import javafx.fxml.FXML;
+import javafx.geometry.Bounds;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
@@ -19,7 +20,19 @@ public class TrackMenuController extends ViewController {
 	@FXML
 	private AnchorPane pane;
 
+	@FXML
+	private AnchorPane coverPane;
+	
+	TrackActionButton activeButton;
+	
 	public void openFor(TrackActionButton trackBtn) {
+		
+		activeButton = trackBtn;
+		
+		AnchorPane.setTopAnchor(coverPane, 0.0);
+		AnchorPane.setLeftAnchor(coverPane, 0.0);
+		AnchorPane.setRightAnchor(coverPane, 0.0);
+		AnchorPane.setBottomAnchor(coverPane, 0.0);
 		
 		// TODO move this to close
 		pane.getChildren().clear();
@@ -65,14 +78,24 @@ public class TrackMenuController extends ViewController {
 		
 		pane.getChildren().add(box);
 		pane.autosize();
-		pane.setLayoutY(trackBtn.getLayoutY() - pane.getHeight() + 32.0);
-		pane.setLayoutX(trackBtn.getLayoutX() + trackBtn.getWidth());
-		pane.toFront();
+		
+		Bounds boundsInScene = trackBtn.localToScene(trackBtn.getBoundsInLocal());
+		
+		pane.setLayoutY(boundsInScene.getMinY() - pane.getHeight() + 32.0);
+		pane.setLayoutX(boundsInScene.getMaxX());
+		coverPane.toFront();
 		
 		trackBtn.setSelected(true);
 	}
 
 	public void close() {
-		pane.toBack();
+		coverPane.toBack();
+		activeButton.setSelected(false);
 	}
+
+    @FXML
+    void mouseDownCover() {
+    	System.out.println("mouse down on cover");
+    	close();
+    }
 }
