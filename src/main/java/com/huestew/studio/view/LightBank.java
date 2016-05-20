@@ -3,8 +3,8 @@
  */
 package com.huestew.studio.view;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import com.huestew.studio.model.LightTrack;
 
 /**
  * A collection of currently available lights.
@@ -15,11 +15,10 @@ public class LightBank {
 	
 	private static LightBank instance = null;
 
-	/** An arraylist of lights currently being available to be used **/
-	private List<Light> lights;
+	private HashMap<Light, LightTrack> lights;
 	
 	private LightBank() {
-		lights = new ArrayList<>();
+		lights = new HashMap<>();
 	}
 	
 	public static synchronized LightBank getInstance() {
@@ -32,12 +31,16 @@ public class LightBank {
 	/**
 	 * @return a list of currently available lights
 	 */
-	public List<Light> getLights() {
-		return new ArrayList<Light>(lights);
+	public HashMap<Light, LightTrack> getLights() {
+		return new HashMap<Light, LightTrack>(lights);
 	}
 	
 	public void addLight(Light light) {
-		lights.add(light);
+		lights.put(light, null);
+	}
+	
+	public void addLight(Light light, LightTrack track) {
+		lights.put(light, track);
 	}
 	
 	public void update() {

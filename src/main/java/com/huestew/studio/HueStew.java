@@ -6,9 +6,7 @@ import java.nio.file.AccessDeniedException;
 import com.huestew.studio.controller.Player;
 import com.huestew.studio.controller.tools.Toolbox;
 import com.huestew.studio.model.Audio;
-import com.huestew.studio.model.Color;
 import com.huestew.studio.model.HueStewConfig;
-import com.huestew.studio.model.LightState;
 import com.huestew.studio.model.LightTrack;
 import com.huestew.studio.model.Show;
 import com.huestew.studio.model.VirtualBulb;
@@ -113,10 +111,8 @@ public enum HueStew {
 			double x = (i + 1) * (1.0 / (show.getLightTracks().size() + 1));
 			bulb.setPosition(x, 1.0 / 2);
 
-			Light light = new VirtualLight(bulb);
-			LightState state = new LightState(new Color(1,1,1), 255, 255);
-			light.setState(state);
-			lightBank.addLight(light);
+			Light light = new VirtualLight(bulb, "Virtual Light " + i);
+			lightBank.addLight(light, track);
 
 			view.getVirtualRoom().addBulb(bulb);
 

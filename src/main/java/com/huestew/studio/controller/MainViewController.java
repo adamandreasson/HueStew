@@ -3,7 +3,6 @@ package com.huestew.studio.controller;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-
 import com.huestew.studio.HueStew;
 import com.huestew.studio.model.Color;
 import com.huestew.studio.model.KeyFrame;
@@ -396,12 +395,17 @@ public class MainViewController extends ViewController {
 				trackActionButtons.clear();
 					
 				Image lightImg = new Image("icon_light.png");
+				ToggleGroup actionGroup = new ToggleGroup();
 				
 				for(LightTrack track : HueStew.getInstance().getShow().getLightTracks()){
 					TrackActionButton trackBtn = new TrackActionButton(track);
+					trackBtn.setToggleGroup(actionGroup);
 					trackBtn.setLayoutY(Math.round(trackView.getTrackPositionY(track)));
 					trackBtn.setGraphic(new ImageView(lightImg));
 					trackBtn.setTooltip(new Tooltip("Configure lights"));
+					trackBtn.setOnAction((e) -> {
+						trackMenuController.openFor(trackBtn);
+					});
 					trackActionPane.getChildren().add(trackBtn);
 					trackActionButtons.add(trackBtn);
 				}

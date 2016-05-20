@@ -16,8 +16,8 @@ import com.huestew.studio.model.VirtualBulb;
  */
 public class VirtualLight implements Light {
 
-	/** the virtual bulb assigned to this controller. **/
 	private VirtualBulb bulb;
+	private String name;
 
 	/**
 	 * Creates a new virtualLight with a bulb assigned to it.
@@ -25,8 +25,10 @@ public class VirtualLight implements Light {
 	 * @param bulb
 	 *            the bulb which is assigned to the new virtualight.
 	 */
-	public VirtualLight(VirtualBulb bulb) {
+	public VirtualLight(VirtualBulb bulb, String name) {
 		this.bulb = bulb;
+		bulb.setState(new LightState(new Color(0, 0, 0), 0, 0));
+		this.name = name;
 	}
 
 	/**
@@ -38,34 +40,22 @@ public class VirtualLight implements Light {
 		return bulb;
 	}
 
-	@Override
-	/**
-	 * Send a command to the assigned virtualbulb to change its state
-	 * 
-	 * @param state
-	 *            the new state for the virtualbulb
-	 */
-	public void setState(LightState state) {
-		bulb.setState(state);
-	}
-
-
 	private LightState blendLightStates(LightState from, LightState to, double transitionProgress) {
 		int brightness = (int) blend(from.getBrightness(), to.getBrightness(), transitionProgress);
 		int saturation = (int) blend(from.getSaturation(), to.getSaturation(), transitionProgress);
-		Color color = new Color(blend(from.getColor().getRed(), to.getColor().getRed(), transitionProgress), 
+		Color color = new Color(blend(from.getColor().getRed(), to.getColor().getRed(), transitionProgress),
 				blend(from.getColor().getGreen(), to.getColor().getGreen(), transitionProgress),
 				blend(from.getColor().getBlue(), to.getColor().getBlue(), transitionProgress));
-		
+
 		return new LightState(color, brightness, saturation);
 	}
-	
+
 	private double blend(double from, double to, double progress) {
-		double diff = Math.abs(to-from);
-		if(from < to){
-			return from + (diff*progress);
-		}else{
-			return from - (diff*progress);
+		double diff = Math.abs(to - from);
+		if (from < to) {
+			return from + (diff * progress);
+		} else {
+			return from - (diff * progress);
 		}
 	}
 
@@ -77,7 +67,7 @@ public class VirtualLight implements Light {
 			if (transition.getFrom() == null || transition.getTo() == null) {
 
 				if (transition.getFrom() == null && transition.getTo() != null) {
-					setState(transition.getTo().getState());
+					bulb.setState(transition.getTo().getState());
 					return;
 				}
 				return;
@@ -87,11 +77,17 @@ public class VirtualLight implements Light {
 				int cursor = HueStew.getInstance().getCursor() - transition.getFrom().getTimestamp();
 				int transitionLength = transition.getTo().getTimestamp() - transition.getFrom().getTimestamp();
 				double transitionProgress = cursor / ((double) transitionLength);
-				LightState interState = blendLightStates(transition.getFrom().getState(), transition.getTo().getState(), transitionProgress);
-				setState(interState);
+				LightState interState = blendLightStates(transition.getFrom().getState(), transition.getTo().getState(),
+						transitionProgress);
+				bulb.setState(interState);
 
 			}
 		}
+	}
+
+	@Override
+	public String getName() {
+		return name;
 	}
 
 }
