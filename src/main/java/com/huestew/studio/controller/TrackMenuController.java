@@ -20,6 +20,10 @@ public class TrackMenuController extends ViewController {
 	private AnchorPane pane;
 
 	public void openFor(TrackActionButton trackBtn) {
+		
+		// TODO move this to close
+		pane.getChildren().clear();
+		
 		HashMap<Light, LightTrack> lights = LightBank.getInstance().getLights();
 		
 		VBox box = new VBox();
@@ -35,16 +39,33 @@ public class TrackMenuController extends ViewController {
 			CheckBox check = new CheckBox();
 			check.setSelected(trackBtn.getTrack() != null && trackBtn.getTrack() == track);
 
+			check.setOnAction((e)->{
+				
+				if(check.isSelected()){
+					trackBtn.getTrack().addListener(light);
+					LightBank.getInstance().updateLight(light, trackBtn.getTrack());
+				}else{
+					trackBtn.getTrack().removeListener(light);
+					LightBank.getInstance().updateLight(light, null);
+				}
+				
+			});
+
+			if(track != null && track != trackBtn.getTrack())
+				check.setDisable(true);
+			
 			listEntryPane.getChildren().add(label);
 			listEntryPane.getChildren().add(check);
+			AnchorPane.setTopAnchor(label, 4.0);
 			AnchorPane.setLeftAnchor(label, 4.0);
+			AnchorPane.setTopAnchor(check, 4.0);
 			AnchorPane.setRightAnchor(check, 4.0);
 			box.getChildren().add(listEntryPane);
 		}
 		
 		pane.getChildren().add(box);
 		pane.autosize();
-		pane.setLayoutY(trackBtn.getLayoutY());
+		pane.setLayoutY(trackBtn.getLayoutY() - pane.getHeight() + 32.0);
 		pane.setLayoutX(trackBtn.getLayoutX() + trackBtn.getWidth());
 		pane.toFront();
 		

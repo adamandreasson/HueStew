@@ -47,4 +47,8 @@ public class LightBank {
 		//TODO update all the available
 	}
 
+	public void updateLight(Light light, LightTrack track) {
+		lights.replace(light, track);
+	}
+
 }
