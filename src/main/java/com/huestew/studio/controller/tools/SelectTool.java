@@ -1,7 +1,7 @@
 package com.huestew.studio.controller.tools;
 
 import java.util.Iterator;
-import java.util.Set;
+import java.util.List;
 import com.huestew.studio.HueStew;
 import com.huestew.studio.model.KeyFrame;
 import com.huestew.studio.model.LightState;
@@ -19,7 +19,7 @@ import javafx.scene.input.MouseEvent;
  */
 public class SelectTool extends Tool {
 
-	private Set<KeyFrame> selectedKeyFrames;
+	private List<KeyFrame> selectedKeyFrames;
 	private boolean moveHorizontally = true;
 	private boolean moveVertically = true;
 
@@ -42,7 +42,7 @@ public class SelectTool extends Tool {
 	}
 
 	@Override
-	public void doAction(MouseEvent event, LightTrack lightTrack, KeyFrame keyFrame, Set<KeyFrame> keyFramesSelected,
+	public void doAction(MouseEvent event, LightTrack lightTrack, KeyFrame keyFrame, List<KeyFrame> keyFramesSelected,
 			int timestamp, double normalizedY) {
 
 		if (keyFrame == null) {

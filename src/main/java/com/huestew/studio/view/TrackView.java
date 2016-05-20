@@ -1,10 +1,8 @@
 package com.huestew.studio.view;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import java.util.TreeSet;
 
 import com.huestew.studio.HueStew;
@@ -87,7 +85,7 @@ public class TrackView {
 	private LightTrack clickedTrack;
 
 	private Rectangle selectRectangle;
-	private Set<KeyFrame> selectedKeyFrames;
+	private List<KeyFrame> selectedKeyFrames;
 
 	private Scrollbar verticalScrollbar;
 	private Scrollbar horizontalScrollbar;
@@ -104,7 +102,7 @@ public class TrackView {
 	 */
 	public TrackView(Canvas canvas) {
 		this.canvas = canvas;
-		this.selectedKeyFrames = new HashSet<KeyFrame>();
+		this.selectedKeyFrames = new ArrayList<>();
 		this.verticalScrollbar = new Scrollbar(() -> getTotalVisibleTrackHeight(), () -> getTotalTrackHeight());
 		this.horizontalScrollbar = new Scrollbar(() -> getVisibleTrackWidth(), () -> getTrackWidth());
 
@@ -306,7 +304,7 @@ public class TrackView {
 
 	private void selectKeyFrames() {
 
-		Set<KeyFrame> selection = new HashSet<KeyFrame>();
+		List<KeyFrame> selection = new ArrayList<KeyFrame>();
 
 		double x1 = selectRectangle.getX();
 		double x2 = selectRectangle.getX() + selectRectangle.getWidth();

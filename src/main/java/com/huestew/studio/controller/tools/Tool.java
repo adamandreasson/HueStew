@@ -1,6 +1,6 @@
 package com.huestew.studio.controller.tools;
 
-import java.util.Set;
+import java.util.List;
 
 import com.huestew.studio.model.KeyFrame;
 import com.huestew.studio.model.LightTrack;
@@ -49,7 +49,7 @@ public abstract class Tool {
 	 *            The normalized y coordinate of where the interaction occurred.
 	 *
 	 */
-	public abstract void doAction(MouseEvent event, LightTrack lightTrack, KeyFrame keyFrame, Set<KeyFrame> selectedKeyFrames, int timestamp, double normalizedY);
+	public abstract void doAction(MouseEvent event, LightTrack lightTrack, KeyFrame keyFrame, List<KeyFrame> selectedKeyFrames, int timestamp, double normalizedY);
 
 	/**
 	 * Changes the behavior of the tool based on a key event.

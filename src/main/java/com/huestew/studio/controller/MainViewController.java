@@ -3,7 +3,6 @@ package com.huestew.studio.controller;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import com.huestew.studio.HueStew;
 import com.huestew.studio.model.Color;
@@ -332,7 +331,7 @@ public class MainViewController extends ViewController {
 		stage.setHeight(Double.parseDouble(split[4]));
 	}
 
-	public void openColorPickerPane(Set<KeyFrame> selectedKeyFrames) {
+	public void openColorPickerPane(List<KeyFrame> selectedKeyFrames) {
 
 		colorPickerPane.getChildren().clear();
 		

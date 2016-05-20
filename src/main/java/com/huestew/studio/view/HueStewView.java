@@ -4,7 +4,6 @@
 package com.huestew.studio.view;
 
 import java.util.List;
-import java.util.Set;
 
 import com.huestew.studio.HueStew;
 import com.huestew.studio.controller.MainViewController;
@@ -91,7 +90,7 @@ public class HueStewView {
 		Platform.runLater(() -> mvc.enableControls());
 	}
 
-	public void openColorPickerPane(Set<KeyFrame> selectedKeyFrames) {
+	public void openColorPickerPane(List<KeyFrame> selectedKeyFrames) {
 		mvc.openColorPickerPane(selectedKeyFrames);
 	}
 

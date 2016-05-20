@@ -111,17 +111,6 @@ public class KeyFrame implements Comparable<KeyFrame> {
 
 	@Override
 	/**
-	 * @super
-	 */
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + timestamp;
-		return result;
-	}
-
-	@Override
-	/**
 	 * Compares to keyframes based on their timestamp.
 	 */
 	public boolean equals(Object obj) {
