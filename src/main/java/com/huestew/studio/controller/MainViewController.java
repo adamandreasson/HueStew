@@ -26,6 +26,9 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -88,10 +91,12 @@ public class MainViewController extends ViewController {
 	private MenuItem zoomOutMenuItem;
 
 	private Stage stage;
-	
+
 	private TrackView trackView;
-	
+
 	private List<TrackActionButton> trackActionButtons;
+
+	private TrackMenuController trackMenuController;
 
 	@Override
 	public void init() {
@@ -162,6 +167,9 @@ public class MainViewController extends ViewController {
 		populateToolButton.setToggleGroup(toolGroup);
 		selectToolButton.setToggleGroup(toolGroup);
 		selectToolButton.setSelected(true);
+
+		trackMenuController = (TrackMenuController) Util.loadFxml("/trackmenu.fxml");
+		trackCanvasPane.getChildren().add(0, trackMenuController.getView());
 	}
 
 	@FXML
