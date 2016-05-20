@@ -70,7 +70,6 @@ public class TrackView {
 
 	private static final Color TIMELINE_COLOR = Color.web("#303030");
 	private static final Color TIMELINE_TICK_COLOR = Color.web("#616161");
-	private static final Color TIMELINE_TICK_SHADOW_COLOR = new Color(0.26, 0.26, 0.26, 0);
 	private static final Color TIMELINE_TEXT_COLOR = Color.web("#a5a5a5");
 	private static final Color BACKGROUND_COLOR = Color.web("#535353");
 	private static final Color TRACK_COLOR = new Color(0.06, 0.06, 0.06, 0.2);
@@ -79,7 +78,6 @@ public class TrackView {
 
 	private Canvas canvas;
 	private List<Image> backgroundWaveImages;
-	private long lastRedraw;
 
 	private Section clickedSection = Section.NONE;
 	private LightTrack clickedTrack;
@@ -185,9 +183,6 @@ public class TrackView {
 	
 	private void handleMouseReleasedEvent(MouseEvent event) {
 		canvas.requestFocus();
-
-		// Force redraw
-		lastRedraw = 0;
 
 		if (clickedTrack != null) {
 			sendMouseEventToTool(event);

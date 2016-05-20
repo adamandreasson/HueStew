@@ -16,9 +16,6 @@ import javafx.util.Duration;
  */
 public class Player {
 
-	/** the show which the player will be playing **/
-	private Show show;
-
 	private MediaPlayer mediaPlayer;
 
 	private Thread playingThread;
@@ -31,8 +28,6 @@ public class Player {
 	 * 				the show to be played.
 	 */
 	public Player(Show show) {
-
-		this.show = show;
 
 		try {
 
