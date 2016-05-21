@@ -113,6 +113,7 @@ public class MainViewController extends ViewController {
 		this.toolbox = new Toolbox(this);
 		this.virtualRoom = new VirtualRoom();
 		this.showController = new ShowController(this);
+		showController.loadAutoSave();
 
 		trackViewController = new TrackViewController(trackCanvas, this);
 		trackViewController.redraw();
@@ -309,7 +310,12 @@ public class MainViewController extends ViewController {
 	 *            New title
 	 */
 	public void updateTitle(String title) {
-		stage.setTitle(title);
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				stage.setTitle(title);
+			}
+		});
 	}
 
 	public void enableControls() {
@@ -401,7 +407,7 @@ public class MainViewController extends ViewController {
 				Image lightImg = new Image("icon_light.png");
 				ToggleGroup actionGroup = new ToggleGroup();
 
-				for (LightTrack track : HueStew.getInstance().getShow().getLightTracks()) {
+				for (LightTrack track : showController.getShow().getLightTracks()) {
 					TrackActionButton trackBtn = new TrackActionButton(track);
 					trackBtn.setToggleGroup(actionGroup);
 					trackBtn.setLayoutY(Math.round(trackViewController.getTrackPositionY(track)));

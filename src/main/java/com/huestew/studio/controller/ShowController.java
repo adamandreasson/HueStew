@@ -24,7 +24,8 @@ public class ShowController {
 	
 	public ShowController(MainViewController controller){
 		this.controller = controller;
-		this.show = new Show();
+		this.fileHandler = HueStew.getInstance().getFileHandler();
+		
 		HueStew.getInstance().setShow(show);
 	}
 
@@ -46,7 +47,6 @@ public class ShowController {
 
 	public void save() {
 
-		HueStew.getInstance().shutdown();
 		fileHandler.saveTrackData(show.getLightTracks());
 
 	}
@@ -69,6 +69,7 @@ public class ShowController {
 	public void initShow(File audioFile) {
 
 		this.show = new Show();
+		HueStew.getInstance().setShow(show);
 		
 		fileHandler.loadTrackData(show);
 
