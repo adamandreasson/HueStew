@@ -1,7 +1,7 @@
 package com.huestew.studio;
 
 import com.huestew.studio.controller.MainViewController;
-import com.huestew.studio.util.Util;
+import com.huestew.studio.controller.ViewController;
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
@@ -15,7 +15,7 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 
-		MainViewController controller = (MainViewController) Util.loadFxml("/main.fxml");
+		MainViewController controller = (MainViewController) ViewController.loadFxml("/main.fxml");
 		HueStew.getInstance().setController(controller);
 		primaryStage.setTitle("HueStew Studio");
 		controller.setStage(primaryStage);

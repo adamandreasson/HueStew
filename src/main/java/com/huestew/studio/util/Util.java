@@ -1,12 +1,5 @@
 package com.huestew.studio.util;
 
-import java.io.IOException;
-
-import com.huestew.studio.HueStew;
-import com.huestew.studio.controller.ViewController;
-
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
@@ -14,29 +7,6 @@ import javafx.stage.Stage;
  * Various utilities.
  */
 public class Util {
-	/**
-	 * Load a JavaFX view and get its controller.
-	 * 
-	 * @param path
-	 *            The path to the fxml file that defines the view.
-	 * @return The controller of the view.
-	 */
-	public static ViewController loadFxml(String path) {
-		FXMLLoader loader = new FXMLLoader(HueStew.class.getResource(path));
-		Parent view;
-
-		try {
-			view = loader.load();
-		} catch (IOException e) {
-			e.printStackTrace();
-			return null;
-		}
-
-		ViewController controller = loader.getController();
-		controller.setParent(view);
-		controller.init();
-		return controller;
-	}
 
 	public static Stage createStage() {
 		Stage stage = new Stage();

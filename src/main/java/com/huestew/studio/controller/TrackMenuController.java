@@ -5,7 +5,6 @@ import java.util.Map.Entry;
 
 import com.huestew.studio.model.LightTrack;
 import com.huestew.studio.view.Light;
-import com.huestew.studio.view.LightBank;
 import com.huestew.studio.view.TrackActionButton;
 
 import javafx.fxml.FXML;

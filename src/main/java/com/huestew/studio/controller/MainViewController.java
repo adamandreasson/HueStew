@@ -182,7 +182,7 @@ public class MainViewController extends ViewController {
 		selectToolButton.setToggleGroup(toolGroup);
 		selectToolButton.setSelected(true);
 
-		trackMenuController = (TrackMenuController) Util.loadFxml("/trackmenu.fxml");
+		trackMenuController = (TrackMenuController) ViewController.loadFxml("/trackmenu.fxml");
 		rootPane.getChildren().add(0, trackMenuController.getParent());
 
 		drumKitController = new DrumKitController(drumKitPaneWrap, this);

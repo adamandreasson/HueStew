@@ -3,6 +3,7 @@ package com.huestew.studio;
 import java.io.File;
 import java.nio.file.AccessDeniedException;
 
+import com.huestew.studio.controller.LightBank;
 import com.huestew.studio.controller.MainViewController;
 import com.huestew.studio.controller.Player;
 import com.huestew.studio.model.Audio;
@@ -16,7 +17,6 @@ import com.huestew.studio.util.FileHandler;
 import com.huestew.studio.util.FileUtil;
 import com.huestew.studio.util.WaveBuilder;
 import com.huestew.studio.view.Light;
-import com.huestew.studio.view.LightBank;
 import com.huestew.studio.view.TrackView;
 import com.huestew.studio.view.VirtualLight;
 

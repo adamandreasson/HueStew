@@ -1,10 +1,11 @@
 /**
  * 
  */
-package com.huestew.studio.view;
+package com.huestew.studio.controller;
 
 import java.util.HashMap;
 import com.huestew.studio.model.LightTrack;
+import com.huestew.studio.view.Light;
 
 /**
  * A collection of currently available lights.

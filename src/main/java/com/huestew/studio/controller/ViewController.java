@@ -1,5 +1,10 @@
 package com.huestew.studio.controller;
 
+import java.io.IOException;
+
+import com.huestew.studio.HueStew;
+
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 
 /**
@@ -29,4 +34,29 @@ public abstract class ViewController {
 	 * Invoked after the view has been set.
 	 */
 	public void init() {}
+	
+
+	/**
+	 * Load a JavaFX view and get its controller.
+	 * 
+	 * @param path
+	 *            The path to the fxml file that defines the view.
+	 * @return The controller of the view.
+	 */
+	public static ViewController loadFxml(String path) {
+		FXMLLoader loader = new FXMLLoader(HueStew.class.getResource(path));
+		Parent view;
+
+		try {
+			view = loader.load();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+
+		ViewController controller = loader.getController();
+		controller.setParent(view);
+		controller.init();
+		return controller;
+	}
 }
