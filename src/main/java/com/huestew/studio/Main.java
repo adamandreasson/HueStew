@@ -28,11 +28,11 @@ public class Main extends Application {
 
 		primaryStage.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
 			controller.getView().handleKeyboardEvent(event);
-			HueStew.getInstance().getToolbox().getSelectedTool().doAction(event);
+			controller.getToolbox().getSelectedTool().doAction(event);
 		});
 		primaryStage.addEventFilter(KeyEvent.KEY_RELEASED, event -> {
 			controller.getView().handleKeyboardEvent(event);
-			HueStew.getInstance().getToolbox().getSelectedTool().doAction(event);
+			controller.getToolbox().getSelectedTool().doAction(event);
 		});
 
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {

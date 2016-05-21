@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.TreeSet;
 
 import com.huestew.studio.HueStew;
+import com.huestew.studio.controller.MainViewController;
 import com.huestew.studio.controller.tools.SelectTool;
 import com.huestew.studio.model.KeyFrame;
 import com.huestew.studio.model.LightTrack;
@@ -77,6 +78,7 @@ public class TrackView {
 	private static final Color SCROLLBAR_COLOR = Color.web("#303030");
 
 	private Canvas canvas;
+	private MainViewController controller;
 	private List<Image> backgroundWaveImages;
 
 	private Section clickedSection = Section.NONE;
@@ -98,8 +100,10 @@ public class TrackView {
 	 * @param canvas
 	 *            the canvas in which the track view will be drawn.
 	 */
-	public TrackView(Canvas canvas) {
+	public TrackView(Canvas canvas, MainViewController controller) {
 		this.canvas = canvas;
+		this.controller = controller;
+		
 		this.selectedKeyFrames = new ArrayList<>();
 		this.verticalScrollbar = new Scrollbar(() -> getTotalVisibleTrackHeight(), () -> getTotalTrackHeight());
 		this.horizontalScrollbar = new Scrollbar(() -> getVisibleTrackWidth(), () -> getTrackWidth());
@@ -189,8 +193,7 @@ public class TrackView {
 		}
 
 		if (event.getButton() == MouseButton.SECONDARY && hoveringKeyFrame != null) {
-			// HueStew.getInstance().getView().openColorPickerPane(hoveringKeyFrame);
-			HueStew.getInstance().getController().openColorPickerPane(selectedKeyFrames);
+			controller.openColorPickerPane(selectedKeyFrames);
 		}
 
 		clickedSection = Section.NONE;
@@ -229,7 +232,7 @@ public class TrackView {
 				canvas.setCursor(section.getCursor());
 			} else if (track != null) {
 				updateHoveringKeyFrame(track, event);
-				canvas.setCursor(HueStew.getInstance().getToolbox().getSelectedTool()
+				canvas.setCursor(controller.getToolbox().getSelectedTool()
 						.getCursor(hoveringKeyFrame != null, clickedSection != Section.NONE));
 			}
 		}
@@ -242,7 +245,7 @@ public class TrackView {
 		}
 
 		// TODO what's that smell?
-		if (HueStew.getInstance().getToolbox().getActiveTool() instanceof SelectTool) {
+		if (controller.getToolbox().getActiveTool() instanceof SelectTool) {
 			updateSelectRectangle(event);
 		}
 
@@ -251,9 +254,9 @@ public class TrackView {
 		}
 		
 		if (hoveringKeyFrame != null)
-			HueStew.getInstance().getToolbox().getSelectTool().setActive();
+			controller.getToolbox().getSelectTool().setActive();
 		if (event.getEventType() == MouseEvent.MOUSE_RELEASED)
-			HueStew.getInstance().getToolbox().reset();
+			controller.getToolbox().reset();
 
 		// Get normalized y coordinate
 		double inverseTrackY = getTrackHeight() - getRelativeTrackY(clickedTrack, event.getY());
@@ -264,7 +267,7 @@ public class TrackView {
 			normalizedY = 0;
 
 		// Pass event to current tool
-		HueStew.getInstance().getToolbox().getActiveTool().doAction(event, clickedTrack, hoveringKeyFrame, selectedKeyFrames, getTimeFromX(event.getX()), normalizedY);
+		controller.getToolbox().getActiveTool().doAction(event, clickedTrack, hoveringKeyFrame, selectedKeyFrames, getTimeFromX(event.getX()), normalizedY);
 
 		// Redraw canvas
 		redraw();
@@ -352,7 +355,7 @@ public class TrackView {
 		
 		selectedKeyFrames = selection;
 	
-		HueStew.getInstance().getController().notifySelectionChange(selectedKeyFrames, tracksInSelection);
+		controller.notifySelectionChange(selectedKeyFrames, tracksInSelection);
 	}
 	
 	private void handleScrollEvent(ScrollEvent event) {
@@ -361,7 +364,7 @@ public class TrackView {
 			if (ctrlDown) {
 				// Zoom
 				adjustZoom(event.getDeltaY() > 0 ? ZOOM_IN : ZOOM_OUT);
-				HueStew.getInstance().getController().updateZoomButtons();
+				controller.updateZoomButtons();
 			} else {
 				// Scroll
 				horizontalScrollbar.addOffset(-event.getDeltaY());

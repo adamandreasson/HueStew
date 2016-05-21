@@ -2,7 +2,6 @@ package com.huestew.studio.controller.tools;
 
 import java.util.List;
 
-import com.huestew.studio.HueStew;
 import com.huestew.studio.model.KeyFrame;
 import com.huestew.studio.model.LightState;
 import com.huestew.studio.model.LightTrack;
@@ -40,7 +39,7 @@ public class SelectTool extends Tool {
 			frame.remove();
 		}
 
-		HueStew.getInstance().getController().getView().updateTrackView();
+		toolbox.getController().getView().updateTrackView();
 
 	}
 

@@ -19,7 +19,7 @@ import javafx.scene.input.MouseEvent;
  */
 
 public abstract class Tool {
-	private Toolbox toolbox;
+	protected Toolbox toolbox;
 	
 	public Tool(Toolbox toolbox) {
 		this.toolbox = toolbox;

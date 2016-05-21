@@ -5,7 +5,6 @@ import java.nio.file.AccessDeniedException;
 
 import com.huestew.studio.controller.MainViewController;
 import com.huestew.studio.controller.Player;
-import com.huestew.studio.controller.tools.Toolbox;
 import com.huestew.studio.model.Audio;
 import com.huestew.studio.model.HueStewConfig;
 import com.huestew.studio.model.LightTrack;
@@ -30,8 +29,6 @@ public enum HueStew {
 	INSTANCE;
 
 	private MainViewController controller;
-	private LightBank lightBank;
-	private Toolbox toolbox;
 	private Show show;
 	private Player player;
 	private int cursor;
@@ -53,8 +50,6 @@ public enum HueStew {
 		System.out.println(pluginFolder);
 		new PluginLoader(pluginFolder, pluginHandler);
 		
-		this.lightBank = LightBank.getInstance();
-		this.toolbox = new Toolbox();
 		this.tickDuration = 33;
 
 		this.config = fileHandler.loadConfig();
@@ -62,6 +57,10 @@ public enum HueStew {
 
 	public static HueStew getInstance() {
 		return INSTANCE;
+	}
+
+	public void setController(MainViewController controller) {
+		this.controller = controller;
 	}
 
 	public void loadAutoSave() {
@@ -111,7 +110,7 @@ public enum HueStew {
 			bulb.setPosition(x, 1.0 / 2);
 
 			Light light = new VirtualLight(bulb, "Virtual Light " + i);
-			lightBank.addLight(light, track);
+			LightBank.getInstance().addLight(light, track);
 
 			controller.getView().getVirtualRoom().addBulb(bulb);
 
@@ -194,14 +193,6 @@ public enum HueStew {
 		return player;
 	}
 
-	public LightBank getLightBank() {
-		return lightBank;
-	}
-	
-	public Toolbox getToolbox() {
-		return toolbox;
-	}
-
 	public Show getShow() {
 		return show;
 	}
@@ -255,14 +246,6 @@ public enum HueStew {
 	 */
 	public HueStewConfig getConfig() {
 		return config;
-	}
-
-	public void setController(MainViewController controller) {
-		this.controller = controller;
-	}
-
-	public MainViewController getController() {
-		return controller;
 	}
 
 }
