@@ -3,7 +3,7 @@
  */
 package com.huestew.studio.view;
 
-import java.util.List;
+import com.huestew.studio.controller.TrackViewController;
 
 import javafx.scene.input.KeyEvent;
 
@@ -14,7 +14,7 @@ import javafx.scene.input.KeyEvent;
 public class HueStewView {
 
 	private VirtualRoom virtualRoom;
-	private TrackView trackView;
+	private TrackViewController trackView;
 
 	public HueStewView() {
 		this.virtualRoom = new VirtualRoom();
@@ -27,28 +27,20 @@ public class HueStewView {
 	public void setVirtualRoom(VirtualRoom virtualRoom) {
 		this.virtualRoom = virtualRoom;
 	}
-	
-	public void updateTrackView() {
-		trackView.redraw();
-	}
 
 	/**
 	 * @param trackView
 	 *            the trackView to set
 	 */
-	public void setTrackView(TrackView trackView) {
+	public void setTrackView(TrackViewController trackView) {
 		this.trackView = trackView;
-	}
-
-	public void updateWaveImage(List<String> filePaths) {
-		trackView.loadWaves(filePaths);
 	}
 
 	public void handleKeyboardEvent(KeyEvent event) {
 		trackView.keyboardEvent(event);
 	}
 
-	public TrackView getTrackView() {
+	public TrackViewController getTrackView() {
 		return trackView;
 	}
 }

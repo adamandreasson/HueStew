@@ -39,7 +39,7 @@ public class SelectTool extends Tool {
 			frame.remove();
 		}
 
-		toolbox.getController().getView().updateTrackView();
+		toolbox.getController().updateTrackView();
 
 	}
 

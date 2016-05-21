@@ -100,6 +100,7 @@ public class MainViewController extends ViewController {
 	private HueStewView view;
 	private Stage stage;
 	private List<TrackActionButton> trackActionButtons;
+	private TrackViewController trackViewController;
 	private TrackMenuController trackMenuController;
 	private DrumKitController drumKitController;
 	private Toolbox toolbox;
@@ -110,9 +111,8 @@ public class MainViewController extends ViewController {
 		this.view = new HueStewView();
 		this.toolbox = new Toolbox(this);
 
-		TrackView trackView = new TrackView(trackCanvas, this);
-		view.setTrackView(trackView);
-		trackView.redraw();
+		trackViewController = new TrackViewController(trackCanvas, this);
+		trackViewController.redraw();
 
 		view.getVirtualRoom().setCanvas(previewCanvas);
 		view.getVirtualRoom().redraw();
@@ -131,12 +131,12 @@ public class MainViewController extends ViewController {
 
 		trackCanvasPane.widthProperty().addListener((observableValue, oldWidth, newWidth) -> {
 			trackCanvas.setWidth(newWidth.doubleValue() - trackActionPane.getWidth());
-			trackView.redraw();
+			trackViewController.redraw();
 		});
 
 		trackCanvasPane.heightProperty().addListener((observableValue, oldHeight, newHeight) -> {
 			trackCanvas.setHeight(newHeight.doubleValue());
-			trackView.redraw();
+			trackViewController.redraw();
 		});
 
 		trackActionPane.heightProperty().addListener((observableValue, oldHeight, newHeight) -> {
@@ -256,21 +256,21 @@ public class MainViewController extends ViewController {
 
 	@FXML
 	private void zoomInButtonPressed() {
-		view.getTrackView().adjustZoom(TrackView.ZOOM_IN);
-		view.getTrackView().redraw();
+		trackViewController.adjustZoom(TrackView.ZOOM_IN);
+		trackViewController.redraw();
 		updateZoomButtons();
 	}
 
 	@FXML
 	private void zoomOutButtonPressed() {
-		view.getTrackView().adjustZoom(TrackView.ZOOM_OUT);
-		view.getTrackView().redraw();
+		trackViewController.adjustZoom(TrackView.ZOOM_OUT);
+		trackViewController.redraw();
 		updateZoomButtons();
 	}
 
 	public void updateZoomButtons() {
-		zoomInMenuItem.setDisable(view.getTrackView().getZoom() == TrackView.MAXIMUM_ZOOM);
-		zoomOutMenuItem.setDisable(view.getTrackView().getZoom() == TrackView.MINIMUM_ZOOM);
+		zoomInMenuItem.setDisable(trackViewController.getZoom() == TrackView.MAXIMUM_ZOOM);
+		zoomOutMenuItem.setDisable(trackViewController.getZoom() == TrackView.MINIMUM_ZOOM);
 	}
 
 	@FXML
@@ -401,7 +401,7 @@ public class MainViewController extends ViewController {
 				for (LightTrack track : HueStew.getInstance().getShow().getLightTracks()) {
 					TrackActionButton trackBtn = new TrackActionButton(track);
 					trackBtn.setToggleGroup(actionGroup);
-					trackBtn.setLayoutY(Math.round(view.getTrackView().getTrackPositionY(track)));
+					trackBtn.setLayoutY(Math.round(trackViewController.getTrackPositionY(track)));
 					trackBtn.setGraphic(new ImageView(lightImg));
 					trackBtn.setTooltip(new Tooltip("Configure lights"));
 					trackBtn.setOnAction((e) -> {
@@ -422,7 +422,7 @@ public class MainViewController extends ViewController {
 			public void run() {
 
 				for (TrackActionButton btn : trackActionButtons) {
-					btn.setLayoutY(Math.round(view.getTrackView().getTrackPositionY(btn.getTrack())));
+					btn.setLayoutY(Math.round(trackViewController.getTrackPositionY(btn.getTrack())));
 
 				}
 			}
@@ -452,6 +452,14 @@ public class MainViewController extends ViewController {
 	 */
 	public Toolbox getToolbox() {
 		return toolbox;
+	}
+
+	public void updateTrackView() {
+		trackViewController.redraw();
+	}
+
+	public void updateWaveImage(List<String> imagePaths) {
+		trackViewController.loadWaves(imagePaths);
 	}
 
 }

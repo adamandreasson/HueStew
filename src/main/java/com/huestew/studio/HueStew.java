@@ -88,7 +88,7 @@ public enum HueStew {
 		setCursor(player.getCurrentTime());
 
 		// Update track view canvas
-		controller.getView().updateTrackView();
+		controller.updateTrackView();
 	}
 
 	public void initShow(File audioFile) {
@@ -140,7 +140,7 @@ public enum HueStew {
 	public void playerReady() {
 
 		int width = (int) ((show.getDuration() / 1000.0) * TrackView.PIXELS_PER_SECOND);
-		controller.getView().updateTrackView();
+		controller.updateTrackView();
 
 		controller.updateFooterStatus("Generating waveform...");
 		createWave(width);
@@ -163,7 +163,7 @@ public enum HueStew {
 				String tmpWaveFile = fileHandler.getTempFilePath("wave");
 				WaveBuilder builder = new WaveBuilder(tmpSongFile, tmpWaveFile, width, 400);
 
-				controller.getView().updateWaveImage(builder.getImagePaths());
+				controller.updateWaveImage(builder.getImagePaths());
 				controller.updateFooterStatus("Ready");
 			}
 
