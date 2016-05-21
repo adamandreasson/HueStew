@@ -19,7 +19,6 @@ public class ShowController {
 	private MainViewController controller;
 	private Player player;
 	private FileHandler fileHandler;
-	private int cursor;
 	private Show show;
 	
 	public ShowController(MainViewController controller){
@@ -83,7 +82,7 @@ public class ShowController {
 			double x = (i + 1) * (1.0 / (show.getLightTracks().size() + 1));
 			bulb.setPosition(x, 1.0 / 2);
 
-			Light light = new VirtualLight(bulb, "Virtual Light " + i);
+			Light light = new VirtualLight(bulb, "Virtual Light " + i, show);
 			LightBank.getInstance().addLight(light, track);
 
 			controller.getVirtualRoom().addBulb(bulb);
@@ -147,15 +146,13 @@ public class ShowController {
 	}
 
 	public int getCursor() {
-		return cursor;
+		return show.getCursor();
 	}
 
 	public void setCursor(int cursor) {
 		if (cursor < 0) {
 			throw new IllegalArgumentException("Cursor must be positive.");
 		}
-
-		this.cursor = cursor;
 
 		// Update cursor in show
 		show.updateCursor(cursor);

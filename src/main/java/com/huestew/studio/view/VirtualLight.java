@@ -2,10 +2,10 @@ package com.huestew.studio.view;
 
 import java.beans.PropertyChangeEvent;
 
-import com.huestew.studio.HueStew;
 import com.huestew.studio.model.Color;
 import com.huestew.studio.model.KeyFrameTransition;
 import com.huestew.studio.model.LightState;
+import com.huestew.studio.model.Show;
 import com.huestew.studio.model.VirtualBulb;
 
 /**
@@ -18,6 +18,7 @@ public class VirtualLight implements Light {
 
 	private VirtualBulb bulb;
 	private String name;
+	private Show show;
 
 	/**
 	 * Creates a new virtualLight with a bulb assigned to it.
@@ -25,10 +26,11 @@ public class VirtualLight implements Light {
 	 * @param bulb
 	 *            the bulb which is assigned to the new virtualight.
 	 */
-	public VirtualLight(VirtualBulb bulb, String name) {
+	public VirtualLight(VirtualBulb bulb, String name, Show show) {
 		this.bulb = bulb;
 		bulb.setState(new LightState(new Color(0, 0, 0), 0, 0));
 		this.name = name;
+		this.show = show;
 	}
 
 	/**
@@ -74,7 +76,7 @@ public class VirtualLight implements Light {
 
 			} else {
 
-				int cursor = HueStew.getInstance().getCursor() - transition.getFrom().getTimestamp();
+				int cursor = show.getCursor() - transition.getFrom().getTimestamp();
 				int transitionLength = transition.getTo().getTimestamp() - transition.getFrom().getTimestamp();
 				double transitionProgress = cursor / ((double) transitionLength);
 				LightState interState = blendLightStates(transition.getFrom().getState(), transition.getTo().getState(),

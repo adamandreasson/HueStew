@@ -37,7 +37,7 @@ public class Main extends Application {
 
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             public void handle(WindowEvent we) {
-            	HueStew.getInstance().shutdown();
+            	controller.shutdown();
             	HueStew.getInstance().getFileHandler().clean();
             	System.exit(0);
             }

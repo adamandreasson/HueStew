@@ -89,16 +89,11 @@ public enum HueStew {
 	}
 
 	public void shutdown() {
-		controller.shutdown();
 		pluginHandler.sendDisable();
 	}
 
 	public void tick() {
 		controller.tick();
-	}
-	
-	public int getCursor(){
-		return controller.getCursor();
 	}
 
 }

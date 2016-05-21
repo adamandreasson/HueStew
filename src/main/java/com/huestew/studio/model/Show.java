@@ -16,6 +16,8 @@ public class Show {
 	private int duration;
 
 	private Audio audio;
+	
+	private int cursor;
 
 	public Show() {
 		this.lightTracks = new ArrayList<LightTrack>();
@@ -84,10 +86,14 @@ public class Show {
 	 *            the timestamp at which the cursor is currently at.
 	 */
 	public void updateCursor(int cursor) {
+		
+		this.cursor = cursor;
+		
 		// Update cursor in each light track
 		for (LightTrack track : lightTracks) {
 			track.updateCursor(cursor);
 		}
+		
 	}
 
 	/**
@@ -106,5 +112,12 @@ public class Show {
 			throw new IllegalArgumentException("Duration cannot be negative");
 		}
 		this.duration = duration;
+	}
+
+	/**
+	 * @return the cursor
+	 */
+	public int getCursor() {
+		return cursor;
 	}
 }

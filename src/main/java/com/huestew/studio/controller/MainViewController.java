@@ -477,6 +477,7 @@ public class MainViewController extends ViewController {
 	}
 
 	public void shutdown() {
+		HueStew.getInstance().shutdown();
 		showController.autoSave();
 	}
 
@@ -486,10 +487,6 @@ public class MainViewController extends ViewController {
 
 	public Player getPlayer() {
 		return showController.getPlayer();
-	}
-
-	public int getCursor() {
-		return showController.getCursor();
 	}
 	
 	public Show getShow(){

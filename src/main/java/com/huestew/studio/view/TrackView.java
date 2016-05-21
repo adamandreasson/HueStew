@@ -8,7 +8,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.TreeSet;
 
-import com.huestew.studio.HueStew;
 import com.huestew.studio.model.KeyFrame;
 import com.huestew.studio.model.LightTrack;
 import com.huestew.studio.model.Show;
@@ -91,7 +90,7 @@ public class TrackView {
 
 		// Scroll automatically while playing the show
 		if (isPlaying) {
-			double x = getXFromTime(HueStew.getInstance().getCursor());
+			double x = getXFromTime(show.getCursor());
 			double leftEdge = 10;
 			double rightEdge = canvas.getWidth() - 300;
 
@@ -233,7 +232,7 @@ public class TrackView {
 	}
 
 	private void drawCursor(GraphicsContext gc) {
-		double x = getXFromTime(HueStew.getInstance().getCursor());
+		double x = getXFromTime(show.getCursor());
 		double y = 20 + KEY_FRAME_SIZE;
 
 		gc.setStroke(Color.BLACK);
