@@ -20,6 +20,7 @@ public class ShowController {
 	private Player player;
 	private FileHandler fileHandler;
 	private int cursor;
+	private Show show;
 	
 	public ShowController(MainViewController controller){
 		this.controller = controller;
@@ -45,7 +46,7 @@ public class ShowController {
 
 	public void save() {
 
-		fileHandler.saveTrackData(HueStew.getInstance().getShow().getLightTracks());
+		fileHandler.saveTrackData(show.getLightTracks());
 
 	}
 
@@ -66,8 +67,7 @@ public class ShowController {
 
 	public void initShow(File audioFile) {
 
-		Show show = new Show();
-		HueStew.getInstance().setShow(show);
+		this.show = new Show();
 		
 		fileHandler.loadTrackData(show);
 
@@ -107,13 +107,13 @@ public class ShowController {
 	private void createEmptyTracks() {
 		for (int i = 0; i < 3; i++) {
 			LightTrack track = new LightTrack();
-			HueStew.getInstance().getShow().addLightTrack(track);
+			show.addLightTrack(track);
 		}
 	}
 
 	public void playerReady() {
 
-		int width = (int) ((HueStew.getInstance().getShow().getDuration() / 1000.0) * TrackView.PIXELS_PER_SECOND);
+		int width = (int) ((show.getDuration() / 1000.0) * TrackView.PIXELS_PER_SECOND);
 		controller.updateTrackView();
 
 		controller.updateFooterStatus("Generating waveform...");
@@ -132,7 +132,7 @@ public class ShowController {
 			@Override
 			public void run() {
 
-				FileUtil.convertAudioFile(HueStew.getInstance().getShow().getAudio().getFile().getPath(), tmpSongFile);
+				FileUtil.convertAudioFile(show.getAudio().getFile().getPath(), tmpSongFile);
 
 				String tmpWaveFile = fileHandler.getTempFilePath("wave");
 				WaveBuilder builder = new WaveBuilder(tmpSongFile, tmpWaveFile, width, 400);
@@ -158,7 +158,7 @@ public class ShowController {
 		this.cursor = cursor;
 
 		// Update cursor in show
-		HueStew.getInstance().getShow().updateCursor(cursor);
+		show.updateCursor(cursor);
 
 		// TODO this should probably not be here
 		controller.getVirtualRoom().redraw();
@@ -169,6 +169,10 @@ public class ShowController {
 	 */
 	public Player getPlayer() {
 		return player;
+	}
+
+	public Show getShow() {
+		return show;
 	}
 	
 }

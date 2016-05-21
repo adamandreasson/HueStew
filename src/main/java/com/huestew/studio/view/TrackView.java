@@ -11,6 +11,7 @@ import java.util.TreeSet;
 import com.huestew.studio.HueStew;
 import com.huestew.studio.model.KeyFrame;
 import com.huestew.studio.model.LightTrack;
+import com.huestew.studio.model.Show;
 import com.huestew.studio.util.GraphicsUtil;
 import com.huestew.studio.util.Util;
 
@@ -62,10 +63,12 @@ public class TrackView {
 	private List<KeyFrame> selectedKeyFrames;
 
 	private Canvas canvas;
+	private Show show;
 
-	public TrackView(Canvas canvas) {
+	public TrackView(Canvas canvas, Show show) {
 		this.canvas = canvas;
-
+		this.show = show;
+		
 		this.selectedKeyFrames = new ArrayList<>();
 
 		this.verticalScrollbar = new Scrollbar(() -> getTotalVisibleTrackHeight(), () -> getTotalTrackHeight());
@@ -177,7 +180,7 @@ public class TrackView {
 
 	private void drawLightTracks(GraphicsContext gc) {
 		int i = 0;
-		for (LightTrack track : HueStew.getInstance().getShow().getLightTracks()) {
+		for (LightTrack track : show.getLightTracks()) {
 			gc.setFill(TRACK_COLOR);
 			gc.fillRect(0, getTrackPositionY(i), getVisibleTrackWidth(), getTrackHeight());
 
@@ -275,7 +278,7 @@ public class TrackView {
 	public LightTrack getTrackFromY(double y) {
 		double adjustedY = y - getTotalTrackPositionY() + verticalScrollbar.getOffset();
 		int trackNumber = (int) Math.floor(adjustedY / (getTrackHeight() + TRACK_SPACER));
-		List<LightTrack> tracks = HueStew.getInstance().getShow().getLightTracks();
+		List<LightTrack> tracks = show.getLightTracks();
 		if (trackNumber >= 0 && trackNumber < tracks.size()) {
 			return tracks.get(trackNumber);
 		}
@@ -311,7 +314,7 @@ public class TrackView {
 	}
 
 	public double getRelativeTrackY(LightTrack track, double y) {
-		int trackNumber = HueStew.getInstance().getShow().getLightTracks().indexOf(track);
+		int trackNumber = show.getLightTracks().indexOf(track);
 		double trackStartY = getTrackPositionY(trackNumber);
 		return (y - trackStartY);
 	}
@@ -333,12 +336,12 @@ public class TrackView {
 	}
 
 	private double getTrackWidth() {
-		return HueStew.getInstance().getShow().getDuration() / 1000D * PIXELS_PER_SECOND * zoom;
+		return show.getDuration() / 1000D * PIXELS_PER_SECOND * zoom;
 	}
 
 	public double getTrackHeight() {
 		return Math.max(MINIMUM_TRACK_HEIGHT,
-				getTotalVisibleTrackHeight() / HueStew.getInstance().getShow().getLightTracks().size() - TRACK_SPACER);
+				getTotalVisibleTrackHeight() / show.getLightTracks().size() - TRACK_SPACER);
 	}
 
 	private double getTotalVisibleTrackHeight() {
@@ -346,7 +349,7 @@ public class TrackView {
 	}
 
 	private double getTotalTrackHeight() {
-		return (getTrackHeight() + TRACK_SPACER) * HueStew.getInstance().getShow().getLightTracks().size();
+		return (getTrackHeight() + TRACK_SPACER) * show.getLightTracks().size();
 	}
 
 	private double getTrackPositionY(int i) {
@@ -354,7 +357,7 @@ public class TrackView {
 	}
 
 	public double getTrackPositionY(LightTrack track) {
-		return getTrackPositionY(HueStew.getInstance().getShow().getLightTracks().indexOf(track));
+		return getTrackPositionY(show.getLightTracks().indexOf(track));
 	}
 
 	private double getTotalTrackPositionY() {
@@ -427,7 +430,7 @@ public class TrackView {
 		int tracksInSelection = 0;
 		int i = -1;
 
-		for (LightTrack track : HueStew.getInstance().getShow().getLightTracks()) {
+		for (LightTrack track : show.getLightTracks()) {
 			i++;
 			boolean trackInSelection = false;
 

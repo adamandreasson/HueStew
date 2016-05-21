@@ -2,7 +2,6 @@ package com.huestew.studio.controller;
 
 import java.util.List;
 
-import com.huestew.studio.HueStew;
 import com.huestew.studio.controller.tools.SelectTool;
 import com.huestew.studio.model.KeyFrame;
 import com.huestew.studio.model.LightTrack;
@@ -43,7 +42,7 @@ public class TrackViewController {
 	public TrackViewController(Canvas canvas, MainViewController controller) {
 		this.canvas = canvas;
 		this.controller = controller;
-		this.view = new TrackView(canvas);
+		this.view = new TrackView(canvas, controller.getShow());
 
 		// Register mouse event handlers
 		canvas.addEventHandler(MouseEvent.MOUSE_RELEASED, event -> handleMouseReleasedEvent(event));
@@ -56,12 +55,12 @@ public class TrackViewController {
 
 		// Update scrollbars when canvas size is changed
 		canvas.widthProperty().addListener((a, b, c) -> {
-			if (HueStew.getInstance().getShow() != null) {
+			if (controller.getShow() != null) {
 				view.getHorizontalScrollbar().update();
 			}
 		});
 		canvas.heightProperty().addListener((a, b, c) -> {
-			if (HueStew.getInstance().getShow() != null) {
+			if (controller.getShow() != null) {
 				view.getVerticalScrollbar().update();
 			}
 		});
@@ -254,18 +253,16 @@ public class TrackViewController {
 			redraw();
 		}
 	}
-	
-	public void redraw(){
-		if (HueStew.getInstance().getShow() == null || HueStew.getInstance().getShow().getDuration() == 0)
+
+	public void redraw() {
+		if (controller.getShow() == null || controller.getShow().getDuration() == 0)
 			return;
-		
+
 		view.redraw(controller.getPlayer().isPlaying());
 	}
 	/*
-	public TrackView getView(){
-		return view;
-	}
-*/
+	 * public TrackView getView(){ return view; }
+	 */
 
 	public void loadWaves(List<String> imagePaths) {
 		view.loadWaves(imagePaths);

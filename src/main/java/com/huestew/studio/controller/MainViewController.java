@@ -8,6 +8,7 @@ import com.huestew.studio.controller.tools.Toolbox;
 import com.huestew.studio.model.Color;
 import com.huestew.studio.model.KeyFrame;
 import com.huestew.studio.model.LightTrack;
+import com.huestew.studio.model.Show;
 import com.huestew.studio.util.Util;
 import com.huestew.studio.view.TrackActionButton;
 import com.huestew.studio.view.TrackView;
@@ -407,7 +408,7 @@ public class MainViewController extends ViewController {
 				Image lightImg = new Image("icon_light.png");
 				ToggleGroup actionGroup = new ToggleGroup();
 
-				for (LightTrack track : HueStew.getInstance().getShow().getLightTracks()) {
+				for (LightTrack track : showController.getShow().getLightTracks()) {
 					TrackActionButton trackBtn = new TrackActionButton(track);
 					trackBtn.setToggleGroup(actionGroup);
 					trackBtn.setLayoutY(Math.round(trackViewController.getTrackPositionY(track)));
@@ -489,6 +490,10 @@ public class MainViewController extends ViewController {
 
 	public int getCursor() {
 		return showController.getCursor();
+	}
+	
+	public Show getShow(){
+		return showController.getShow();
 	}
 
 }

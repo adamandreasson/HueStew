@@ -5,7 +5,6 @@ import java.nio.file.AccessDeniedException;
 
 import com.huestew.studio.controller.MainViewController;
 import com.huestew.studio.model.HueStewConfig;
-import com.huestew.studio.model.Show;
 import com.huestew.studio.plugin.PluginHandler;
 import com.huestew.studio.plugin.PluginLoader;
 import com.huestew.studio.util.FileHandler;
@@ -18,7 +17,6 @@ import com.huestew.studio.util.FileHandler;
 public enum HueStew {
 	INSTANCE;
 
-	private Show show;
 	private MainViewController controller;
 	private int tickDuration;
 	private FileHandler fileHandler;
@@ -93,20 +91,6 @@ public enum HueStew {
 	public void shutdown() {
 		controller.shutdown();
 		pluginHandler.sendDisable();
-	}
-
-	/**
-	 * @return the show
-	 */
-	public Show getShow() {
-		return show;
-	}
-
-	/**
-	 * @param show the show to set
-	 */
-	public void setShow(Show show) {
-		this.show = show;
 	}
 
 	public void tick() {
