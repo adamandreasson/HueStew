@@ -17,7 +17,6 @@ import com.huestew.studio.view.VirtualLight;
 public class ShowController {
 
 	private MainViewController controller;
-	private Show show;
 	private Player player;
 	private FileHandler fileHandler;
 	private int cursor;
@@ -26,7 +25,6 @@ public class ShowController {
 		this.controller = controller;
 		this.fileHandler = HueStew.getInstance().getFileHandler();
 		
-		HueStew.getInstance().setShow(show);
 	}
 
 	public void tick() {
@@ -47,7 +45,7 @@ public class ShowController {
 
 	public void save() {
 
-		fileHandler.saveTrackData(show.getLightTracks());
+		fileHandler.saveTrackData(HueStew.getInstance().getShow().getLightTracks());
 
 	}
 
@@ -68,7 +66,7 @@ public class ShowController {
 
 	public void initShow(File audioFile) {
 
-		this.show = new Show();
+		Show show = new Show();
 		HueStew.getInstance().setShow(show);
 		
 		fileHandler.loadTrackData(show);
@@ -109,13 +107,13 @@ public class ShowController {
 	private void createEmptyTracks() {
 		for (int i = 0; i < 3; i++) {
 			LightTrack track = new LightTrack();
-			show.addLightTrack(track);
+			HueStew.getInstance().getShow().addLightTrack(track);
 		}
 	}
 
 	public void playerReady() {
 
-		int width = (int) ((show.getDuration() / 1000.0) * TrackView.PIXELS_PER_SECOND);
+		int width = (int) ((HueStew.getInstance().getShow().getDuration() / 1000.0) * TrackView.PIXELS_PER_SECOND);
 		controller.updateTrackView();
 
 		controller.updateFooterStatus("Generating waveform...");
@@ -134,7 +132,7 @@ public class ShowController {
 			@Override
 			public void run() {
 
-				FileUtil.convertAudioFile(show.getAudio().getFile().getPath(), tmpSongFile);
+				FileUtil.convertAudioFile(HueStew.getInstance().getShow().getAudio().getFile().getPath(), tmpSongFile);
 
 				String tmpWaveFile = fileHandler.getTempFilePath("wave");
 				WaveBuilder builder = new WaveBuilder(tmpSongFile, tmpWaveFile, width, 400);
@@ -160,7 +158,7 @@ public class ShowController {
 		this.cursor = cursor;
 
 		// Update cursor in show
-		show.updateCursor(cursor);
+		HueStew.getInstance().getShow().updateCursor(cursor);
 
 		// TODO this should probably not be here
 		controller.getVirtualRoom().redraw();
@@ -171,10 +169,6 @@ public class ShowController {
 	 */
 	public Player getPlayer() {
 		return player;
-	}
-
-	public Show getShow() {
-		return show;
 	}
 	
 }

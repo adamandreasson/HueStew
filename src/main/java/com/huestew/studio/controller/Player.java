@@ -30,7 +30,7 @@ public class Player {
 
 		try {
 
-			Media media = controller.getShow().getAudio().getFxMedia();
+			Media media = HueStew.getInstance().getShow().getAudio().getFxMedia();
 			mediaPlayer = new MediaPlayer(media);
 			mediaPlayer.setAutoPlay(false);
 			
@@ -38,7 +38,7 @@ public class Player {
 
 				@Override
 				public void run() {
-					controller.getShow().setDuration((int) media.getDuration().toMillis());
+					HueStew.getInstance().getShow().setDuration((int) media.getDuration().toMillis());
 
 					controller.playerReady();
 				}

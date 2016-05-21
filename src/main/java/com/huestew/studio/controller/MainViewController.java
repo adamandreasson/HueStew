@@ -407,7 +407,7 @@ public class MainViewController extends ViewController {
 				Image lightImg = new Image("icon_light.png");
 				ToggleGroup actionGroup = new ToggleGroup();
 
-				for (LightTrack track : showController.getShow().getLightTracks()) {
+				for (LightTrack track : HueStew.getInstance().getShow().getLightTracks()) {
 					TrackActionButton trackBtn = new TrackActionButton(track);
 					trackBtn.setToggleGroup(actionGroup);
 					trackBtn.setLayoutY(Math.round(trackViewController.getTrackPositionY(track)));
