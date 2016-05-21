@@ -15,6 +15,7 @@ import javafx.scene.input.MouseEvent;
  * A combined tool for selecting, moving and deleting keyframes.
  * 
  * @author Marcus
+ * @author Adam
  *
  */
 public class SelectTool extends Tool {
@@ -27,24 +28,31 @@ public class SelectTool extends Tool {
 		super(toolbox);
 	}
 
+	/**
+	 * Delete all selected frames and update the track view
+	 */
 	private void deleteSelectedKeyFrames() {
-		if (selectedKeyFrames != null && !selectedKeyFrames.isEmpty()) {
-			
-			for(KeyFrame frame : selectedKeyFrames){
-				frame.remove();
-			}
-			
-			HueStew.getInstance().getView().updateTrackView();
-			
+		if (selectedKeyFrames == null || selectedKeyFrames.isEmpty()) {
+			return;
 		}
+
+		for (KeyFrame frame : selectedKeyFrames) {
+			frame.remove();
+		}
+
+		HueStew.getInstance().getView().updateTrackView();
+
 	}
 
 	@Override
 	public void doAction(MouseEvent event, LightTrack lightTrack, KeyFrame keyFrame, List<KeyFrame> keyFramesSelected,
 			int timestamp, double normalizedY) {
 
+		// Always update list of selected key frames with the one given by
+		// TrackView selection
 		selectedKeyFrames = keyFramesSelected;
-		
+
+		// Stop if the mouse is not on a keyframe
 		if (keyFrame == null) {
 			return;
 		}
@@ -53,30 +61,42 @@ public class SelectTool extends Tool {
 
 			if (keyFramesSelected.isEmpty()) {
 
+				// If there are no selected key frames and we press a keyframe,
+				// select it
 				keyFramesSelected.add(keyFrame);
 
 			} else {
 
+				// If you click a frame that is not in the current selection
 				if (!keyFramesSelected.contains(keyFrame)) {
 
-					// ctrl down means user wants to add frame to selection
-					if(!ctrlDown)
+					// if ctrl is not down, clear the selection
+					if (!ctrlDown)
 						keyFramesSelected.clear();
-					
+
+					// add the clicked frame to selection
 					keyFramesSelected.add(keyFrame);
 				}
 
 			}
 
-			keyFrame.getTimestamp();
-
 		} else if (event.getEventType() == MouseEvent.MOUSE_DRAGGED && !selectedKeyFrames.isEmpty()) {
 
 			if (!shiftDown) {
 
+				// calculate difference between mouse current timestamp and the
+				// clicked frame's timestamp
 				int delta = timestamp - keyFrame.getTimestamp();
+
+				// by default the move action is allowed
 				boolean allowedMove = true;
 
+				/*
+				 * this entire loop has the single purpose of finding out
+				 * whether the move should be allowed we loop through each frame
+				 * and look at the distance to the next and previous frame. if
+				 * they are too close together, do not allow the move
+				 */
 				for (KeyFrame keyframe : selectedKeyFrames) {
 
 					int maxTimestamp = Integer.MAX_VALUE;
@@ -97,10 +117,13 @@ public class SelectTool extends Tool {
 
 				}
 
-				if(allowedMove){
+				if (allowedMove) {
 
+					// Move each selected frame
 					for (KeyFrame keyframe : selectedKeyFrames) {
 
+						// the new timestamp of the frame is calculated by
+						// adding the delta to it's current timestamp
 						int newTimestamp = keyframe.getTimestamp() + delta;
 						keyframe.setTimestamp(newTimestamp);
 
@@ -111,22 +134,29 @@ public class SelectTool extends Tool {
 
 			if (!ctrlDown) {
 
-				int delta = ((int)(normalizedY*255)) - keyFrame.getState().getBrightness();
-
+				// calculate difference between current brightness and the
+				// proposed brightness as given by the normalized y value
+				int delta = ((int) (normalizedY * 255)) - keyFrame.getState().getBrightness();
 
 				for (KeyFrame frame : selectedKeyFrames) {
 
 					int newBrightness = frame.getState().getBrightness() + delta;
 					LightState newState = new LightState(frame.getState());
-					try{
+
+					// no fancy checks, just skip the frame if brightness value
+					// is out of bounds
+					try {
 						newState.setBrightness(newBrightness);
-					}catch(IllegalArgumentException e){
+					} catch (IllegalArgumentException e) {
 						continue;
 					}
+
+					// if the new state is valid, we can update the frame's
+					// state
 					frame.setState(newState);
 
 				}
-					
+
 			}
 		}
 
