@@ -71,7 +71,7 @@ public class TrackViewController {
 		switch (event.getCode()) {
 		case SPACE:
 			if (event.getEventType() == KeyEvent.KEY_RELEASED)
-				HueStew.getInstance().getPlayer().toggle();
+				controller.getPlayer().toggle();
 			break;
 		case CONTROL:
 			ctrlDown = event.getEventType() == KeyEvent.KEY_PRESSED;
@@ -102,7 +102,7 @@ public class TrackViewController {
 			view.getHorizontalScrollbar().setOrigin(event.getX());
 		} else if (clickedSection == TrackSection.CURSOR) {
 			int time = view.getTimeFromX(event.getX());
-			HueStew.getInstance().getPlayer().seek(time);
+			controller.getPlayer().seek(time);
 		} else {
 			sendMouseEventToTool(event);
 		}
@@ -250,7 +250,7 @@ public class TrackViewController {
 		// Seeking event
 		if (clickedSection == TrackSection.CURSOR) {
 			int time = view.getTimeFromX(event.getX());
-			HueStew.getInstance().getPlayer().seek(time);
+			controller.getPlayer().seek(time);
 			redraw();
 		}
 	}
@@ -259,7 +259,7 @@ public class TrackViewController {
 		if (HueStew.getInstance().getShow() == null || HueStew.getInstance().getShow().getDuration() == 0)
 			return;
 		
-		view.redraw(HueStew.getInstance().getPlayer().isPlaying());
+		view.redraw(controller.getPlayer().isPlaying());
 	}
 	/*
 	public TrackView getView(){

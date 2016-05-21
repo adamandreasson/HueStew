@@ -37,15 +37,11 @@ public class Main extends Application {
 
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             public void handle(WindowEvent we) {
-            	HueStew.getInstance().autoSave();
+            	HueStew.getInstance().shutdown();
             	HueStew.getInstance().getFileHandler().clean();
             	System.exit(0);
             }
-        });     
-
-
-        	
-        HueStew.getInstance().loadAutoSave();
+        });
         
 	}
 

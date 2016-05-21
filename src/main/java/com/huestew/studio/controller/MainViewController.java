@@ -98,6 +98,7 @@ public class MainViewController extends ViewController {
 	@FXML
 	private AnchorPane rootPane;
 
+	private ShowController showController;
 	private VirtualRoom virtualRoom;
 	private Stage stage;
 	private List<TrackActionButton> trackActionButtons;
@@ -111,6 +112,7 @@ public class MainViewController extends ViewController {
 
 		this.toolbox = new Toolbox(this);
 		this.virtualRoom = new VirtualRoom();
+		this.showController = new ShowController(this);
 
 		trackViewController = new TrackViewController(trackCanvas, this);
 		trackViewController.redraw();
@@ -150,8 +152,8 @@ public class MainViewController extends ViewController {
 
 		volumeSlider.valueProperty().addListener((observableValue, oldValue, newValue) -> {
 			double normalizedVolume = newValue.doubleValue() / 100;
-			if (HueStew.getInstance().getPlayer() != null) {
-				HueStew.getInstance().getPlayer().setVolume(normalizedVolume);
+			if (showController.getPlayer() != null) {
+				showController.getPlayer().setVolume(normalizedVolume);
 			}
 			HueStew.getInstance().getConfig().setVolume(normalizedVolume);
 		});
@@ -202,18 +204,18 @@ public class MainViewController extends ViewController {
 
 	@FXML
 	private void playStartButtonPressed() {
-		HueStew.getInstance().getPlayer().seek(0);
-		HueStew.getInstance().getPlayer().play();
+		showController.getPlayer().seek(0);
+		showController.getPlayer().play();
 	}
 
 	@FXML
 	private void playButtonPressed() {
-		HueStew.getInstance().getPlayer().play();
+		showController.getPlayer().play();
 	}
 
 	@FXML
 	private void pauseButtonPressed() {
-		HueStew.getInstance().getPlayer().pause();
+		showController.getPlayer().pause();
 	}
 
 	@FXML
@@ -233,7 +235,7 @@ public class MainViewController extends ViewController {
 		if (file != null) {
 			HueStew.getInstance().getConfig().setMusicDirectory(file.getParent());
 			HueStew.getInstance().getConfig().setMusicFilePath(file.toString());
-			HueStew.getInstance().initShow(file);
+			showController.initShow(file);
 		}
 
 	}
@@ -242,7 +244,7 @@ public class MainViewController extends ViewController {
 	private void saveButtonPressed() {
 		System.out.println("saving");
 
-		HueStew.getInstance().save();
+		showController.save();
 		/*
 		 * FileChooser fileChooser = new FileChooser();
 		 * fileChooser.setInitialDirectory(new
@@ -465,6 +467,22 @@ public class MainViewController extends ViewController {
 
 	public VirtualRoom getVirtualRoom() {
 		return virtualRoom;
+	}
+
+	public void shutdown() {
+		showController.autoSave();
+	}
+
+	public void tick() {
+		showController.tick();
+	}
+
+	public Player getPlayer() {
+		return showController.getPlayer();
+	}
+
+	public int getCursor() {
+		return showController.getCursor();
 	}
 
 }

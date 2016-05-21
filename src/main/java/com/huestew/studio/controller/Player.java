@@ -1,7 +1,6 @@
 package com.huestew.studio.controller;
 
 import com.huestew.studio.HueStew;
-import com.huestew.studio.model.Show;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaPlayer.Status;
@@ -27,11 +26,11 @@ public class Player {
 	 * @param show
 	 * 				the show to be played.
 	 */
-	public Player(Show show) {
+	public Player(ShowController controller) {
 
 		try {
 
-			Media media = show.getAudio().getFxMedia();
+			Media media = controller.getShow().getAudio().getFxMedia();
 			mediaPlayer = new MediaPlayer(media);
 			mediaPlayer.setAutoPlay(false);
 			
@@ -39,9 +38,9 @@ public class Player {
 
 				@Override
 				public void run() {
-					show.setDuration((int) media.getDuration().toMillis());
+					controller.getShow().setDuration((int) media.getDuration().toMillis());
 
-					HueStew.getInstance().playerReady();
+					controller.playerReady();
 				}
 			});
 
