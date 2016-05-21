@@ -6,13 +6,13 @@ import javafx.scene.Parent;
  * An abstract JavaFX controller class.
  */
 public abstract class ViewController {
-	private Parent view;
+	private Parent parent;
 
 	/**
 	 * @return The view associated with this controller.
 	 */
-	public Parent getView() {
-		return view;
+	public Parent getParent() {
+		return parent;
 	}
 
 	/**
@@ -21,8 +21,8 @@ public abstract class ViewController {
 	 * @param view
 	 *            The view associated with this controller.
 	 */
-	public void setView(Parent view) {
-		this.view = view;
+	public void setParent(Parent parent) {
+		this.parent = parent;
 	}
 
 	/**

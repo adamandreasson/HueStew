@@ -33,7 +33,7 @@ public class Util {
 		}
 
 		ViewController controller = loader.getController();
-		controller.setView(view);
+		controller.setParent(view);
 		controller.init();
 		return controller;
 	}

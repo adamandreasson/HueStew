@@ -16,10 +16,10 @@ public class Main extends Application {
 	public void start(Stage primaryStage) throws Exception {
 
 		MainViewController controller = (MainViewController) Util.loadFxml("/main.fxml");
-		HueStew.getInstance().getView().setMainViewController(controller);
+		HueStew.getInstance().setController(controller);
 		primaryStage.setTitle("HueStew Studio");
 		controller.setStage(primaryStage);
-		Scene scene = new Scene(controller.getView(),1280,720);
+		Scene scene = new Scene(controller.getParent(),1280,720);
 		System.out.println(getClass().getResource("/style.css").toExternalForm());
         scene.getStylesheets().add(getClass().getResource("/style.css").toExternalForm());
 		primaryStage.setScene(scene);
@@ -27,11 +27,11 @@ public class Main extends Application {
 		primaryStage.show();
 
 		primaryStage.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
-			HueStew.getInstance().getView().handleKeyboardEvent(event);
+			controller.getView().handleKeyboardEvent(event);
 			HueStew.getInstance().getToolbox().getSelectedTool().doAction(event);
 		});
 		primaryStage.addEventFilter(KeyEvent.KEY_RELEASED, event -> {
-			HueStew.getInstance().getView().handleKeyboardEvent(event);
+			controller.getView().handleKeyboardEvent(event);
 			HueStew.getInstance().getToolbox().getSelectedTool().doAction(event);
 		});
 

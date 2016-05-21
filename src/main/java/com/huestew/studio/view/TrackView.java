@@ -190,7 +190,7 @@ public class TrackView {
 
 		if (event.getButton() == MouseButton.SECONDARY && hoveringKeyFrame != null) {
 			// HueStew.getInstance().getView().openColorPickerPane(hoveringKeyFrame);
-			HueStew.getInstance().getView().openColorPickerPane(selectedKeyFrames);
+			HueStew.getInstance().getController().openColorPickerPane(selectedKeyFrames);
 		}
 
 		clickedSection = Section.NONE;
@@ -352,7 +352,7 @@ public class TrackView {
 		
 		selectedKeyFrames = selection;
 	
-		HueStew.getInstance().getView().notifySelectionChange(selectedKeyFrames, tracksInSelection);
+		HueStew.getInstance().getController().notifySelectionChange(selectedKeyFrames, tracksInSelection);
 	}
 	
 	private void handleScrollEvent(ScrollEvent event) {
@@ -361,7 +361,7 @@ public class TrackView {
 			if (ctrlDown) {
 				// Zoom
 				adjustZoom(event.getDeltaY() > 0 ? ZOOM_IN : ZOOM_OUT);
-				HueStew.getInstance().getView().updateZoomButtons();
+				HueStew.getInstance().getController().updateZoomButtons();
 			} else {
 				// Scroll
 				horizontalScrollbar.addOffset(-event.getDeltaY());

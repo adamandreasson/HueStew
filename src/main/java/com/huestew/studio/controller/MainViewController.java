@@ -8,6 +8,7 @@ import com.huestew.studio.model.Color;
 import com.huestew.studio.model.KeyFrame;
 import com.huestew.studio.model.LightTrack;
 import com.huestew.studio.util.Util;
+import com.huestew.studio.view.HueStewView;
 import com.huestew.studio.view.TrackActionButton;
 import com.huestew.studio.view.TrackView;
 
@@ -52,6 +53,9 @@ public class MainViewController extends ViewController {
 	
 	@FXML
 	public AnchorPane colorPickerPane;
+	
+	@FXML
+	public AnchorPane drumKitPaneWrap;
 
 	@FXML
 	private ToggleButton populateToolButton;
@@ -92,34 +96,33 @@ public class MainViewController extends ViewController {
 	@FXML
 	private AnchorPane rootPane;
 
+	private HueStewView view;
 	private Stage stage;
-
-	private TrackView trackView;
-
 	private List<TrackActionButton> trackActionButtons;
-
 	private TrackMenuController trackMenuController;
+	private DrumKitController drumKitController;
 
 	@Override
 	public void init() {
 
-		trackView = new TrackView(trackCanvas);
-		HueStew.getInstance().getView().setTrackView(trackView);
+		this.view = new HueStewView();
+		TrackView trackView = new TrackView(trackCanvas);
+		view.setTrackView(trackView);
 		trackView.redraw();
 
-		HueStew.getInstance().getView().getVirtualRoom().setCanvas(previewCanvas);
-		HueStew.getInstance().getView().getVirtualRoom().redraw();
+		view.getVirtualRoom().setCanvas(previewCanvas);
+		view.getVirtualRoom().redraw();
 		
 		trackActionButtons = new ArrayList<>();
 
 		previewCanvasPane.widthProperty().addListener((observableValue, oldSceneWidth, newSceneWidth) -> {
 			previewCanvas.setWidth((double) newSceneWidth);
-			HueStew.getInstance().getView().getVirtualRoom().redraw();
+			view.getVirtualRoom().redraw();
 		});
 
 		previewCanvasPane.heightProperty().addListener((observableValue, oldSceneHeight, newSceneHeight) -> {
 			previewCanvas.setHeight((double) newSceneHeight);
-			HueStew.getInstance().getView().getVirtualRoom().redraw();
+			view.getVirtualRoom().redraw();
 		});
 
 		trackCanvasPane.widthProperty().addListener((observableValue, oldWidth, newWidth) -> {
@@ -177,7 +180,9 @@ public class MainViewController extends ViewController {
 		selectToolButton.setSelected(true);
 
 		trackMenuController = (TrackMenuController) Util.loadFxml("/trackmenu.fxml");
-		rootPane.getChildren().add(0, trackMenuController.getView());
+		rootPane.getChildren().add(0, trackMenuController.getParent());
+		
+		drumKitController = new DrumKitController(drumKitPaneWrap, this);
 		
 	}
 
@@ -248,26 +253,26 @@ public class MainViewController extends ViewController {
 
 	@FXML
 	private void zoomInButtonPressed() {
-		trackView.adjustZoom(TrackView.ZOOM_IN);
-		trackView.redraw();
+		view.getTrackView().adjustZoom(TrackView.ZOOM_IN);
+		view.getTrackView().redraw();
 		updateZoomButtons();
 	}
 
 	@FXML
 	private void zoomOutButtonPressed() {
-		trackView.adjustZoom(TrackView.ZOOM_OUT);
-		trackView.redraw();
+		view.getTrackView().adjustZoom(TrackView.ZOOM_OUT);
+		view.getTrackView().redraw();
 		updateZoomButtons();
 	}
 
 	public void updateZoomButtons() {
-		zoomInMenuItem.setDisable(trackView.getZoom() == TrackView.MAXIMUM_ZOOM);
-		zoomOutMenuItem.setDisable(trackView.getZoom() == TrackView.MINIMUM_ZOOM);
+		zoomInMenuItem.setDisable(view.getTrackView().getZoom() == TrackView.MAXIMUM_ZOOM);
+		zoomOutMenuItem.setDisable(view.getTrackView().getZoom() == TrackView.MINIMUM_ZOOM);
 	}
 
 	@FXML
 	private void addSequencePressed(){
-		System.out.println("add sequence!");
+		drumKitController.addButtonPressed();
 	}
 
 	public void openColorPickerPane(KeyFrame hoveringKeyFrame) {
@@ -277,7 +282,7 @@ public class MainViewController extends ViewController {
 		cpc.setKeyFrame(hoveringKeyFrame);
 
 		colorPickerPane.getChildren().clear();
-		colorPickerPane.getChildren().add(cpc.getView());
+		colorPickerPane.getChildren().add(cpc.getParent());
 
 	}
 
@@ -389,7 +394,7 @@ public class MainViewController extends ViewController {
 		colorPickerPane.getChildren().add(imgView);
 	}
 	
-	public void updateTrackActionPane(){
+	public void updateTracks(){
 		Platform.runLater(new Runnable(){
 
 			@Override
@@ -404,7 +409,7 @@ public class MainViewController extends ViewController {
 				for(LightTrack track : HueStew.getInstance().getShow().getLightTracks()){
 					TrackActionButton trackBtn = new TrackActionButton(track);
 					trackBtn.setToggleGroup(actionGroup);
-					trackBtn.setLayoutY(Math.round(trackView.getTrackPositionY(track)));
+					trackBtn.setLayoutY(Math.round(view.getTrackView().getTrackPositionY(track)));
 					trackBtn.setGraphic(new ImageView(lightImg));
 					trackBtn.setTooltip(new Tooltip("Configure lights"));
 					trackBtn.setOnAction((e) -> {
@@ -425,7 +430,7 @@ public class MainViewController extends ViewController {
 			public void run() {
 								
 				for(TrackActionButton btn : trackActionButtons){
-					btn.setLayoutY(Math.round(trackView.getTrackPositionY(btn.getTrack())));
+					btn.setLayoutY(Math.round(view.getTrackView().getTrackPositionY(btn.getTrack())));
 					
 				}
 			}
@@ -433,8 +438,26 @@ public class MainViewController extends ViewController {
 		});
 	}
 
+	private boolean sequencePossible(List<KeyFrame> selectedKeyFrames, int tracksInSelection){
+		return !(selectedKeyFrames == null || selectedKeyFrames.isEmpty() || tracksInSelection > 1 || selectedKeyFrames.size() < 2);
+	}
+	
+	public void notifySelectionChange(List<KeyFrame> selectedKeyFrames, int tracksInSelection) {
+			setSequencePossible(sequencePossible(selectedKeyFrames, tracksInSelection));
+	}
+
 	public void setSequencePossible(boolean b) {
 		addSequenceButton.setDisable(!b);
 	}
 
+	public HueStewView getView() {
+		return view;
+	}
+	public String getWindowDimensions(){
+		return getStageSize();
+	}
+	
+	public void setWindowDimensions(String dimensions){
+		setStageSize(dimensions);
+	}
 }

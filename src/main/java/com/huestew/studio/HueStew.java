@@ -3,6 +3,7 @@ package com.huestew.studio;
 import java.io.File;
 import java.nio.file.AccessDeniedException;
 
+import com.huestew.studio.controller.MainViewController;
 import com.huestew.studio.controller.Player;
 import com.huestew.studio.controller.tools.Toolbox;
 import com.huestew.studio.model.Audio;
@@ -15,7 +16,6 @@ import com.huestew.studio.plugin.PluginLoader;
 import com.huestew.studio.util.FileHandler;
 import com.huestew.studio.util.FileUtil;
 import com.huestew.studio.util.WaveBuilder;
-import com.huestew.studio.view.HueStewView;
 import com.huestew.studio.view.Light;
 import com.huestew.studio.view.LightBank;
 import com.huestew.studio.view.TrackView;
@@ -29,7 +29,7 @@ import com.huestew.studio.view.VirtualLight;
 public enum HueStew {
 	INSTANCE;
 
-	private HueStewView view;
+	private MainViewController controller;
 	private LightBank lightBank;
 	private Toolbox toolbox;
 	private Show show;
@@ -53,7 +53,6 @@ public enum HueStew {
 		System.out.println(pluginFolder);
 		new PluginLoader(pluginFolder, pluginHandler);
 		
-		this.view = new HueStewView();
 		this.lightBank = LightBank.getInstance();
 		this.toolbox = new Toolbox();
 		this.tickDuration = 33;
@@ -74,7 +73,7 @@ public enum HueStew {
 		if (!musicFile.exists())
 			return;
 
-		view.updateFooterStatus("Loading last session...");
+		controller.updateFooterStatus("Loading last session...");
 		initShow(musicFile);
 
 	}
@@ -90,7 +89,7 @@ public enum HueStew {
 		setCursor(player.getCurrentTime());
 
 		// Update track view canvas
-		getView().updateTrackView();
+		controller.getView().updateTrackView();
 	}
 
 	public void initShow(File audioFile) {
@@ -114,7 +113,7 @@ public enum HueStew {
 			Light light = new VirtualLight(bulb, "Virtual Light " + i);
 			lightBank.addLight(light, track);
 
-			view.getVirtualRoom().addBulb(bulb);
+			controller.getView().getVirtualRoom().addBulb(bulb);
 
 			track.addListener(light);		
 			i++;
@@ -126,10 +125,10 @@ public enum HueStew {
 		player = new Player(show);
 		player.setVolume(config.getVolume());
 
-		view.updateTitle(audioFile.getName() + " - HueStew Studio");
-		view.enableControls();
+		controller.updateTitle(audioFile.getName() + " - HueStew Studio");
+		controller.enableControls();
 		
-		view.updateTracks();
+		controller.updateTracks();
 	}
 
 	private void createEmptyTracks() {
@@ -142,9 +141,9 @@ public enum HueStew {
 	public void playerReady() {
 
 		int width = (int) ((show.getDuration() / 1000.0) * TrackView.PIXELS_PER_SECOND);
-		getView().updateTrackView();
+		controller.getView().updateTrackView();
 
-		view.updateFooterStatus("Generating waveform...");
+		controller.updateFooterStatus("Generating waveform...");
 		createWave(width);
 
 	}
@@ -165,8 +164,8 @@ public enum HueStew {
 				String tmpWaveFile = fileHandler.getTempFilePath("wave");
 				WaveBuilder builder = new WaveBuilder(tmpSongFile, tmpWaveFile, width, 400);
 
-				HueStew.getInstance().getView().updateWaveImage(builder.getImagePaths());
-				view.updateFooterStatus("Ready");
+				controller.getView().updateWaveImage(builder.getImagePaths());
+				controller.updateFooterStatus("Ready");
 			}
 
 		});
@@ -177,7 +176,7 @@ public enum HueStew {
 	public void autoSave() {
 		save();
 		System.out.println("AUTO SAVING");
-		config.setWindowDimensions(view.getWindowDimensions());
+		config.setWindowDimensions(controller.getWindowDimensions());
 		fileHandler.saveConfig(config);
 	}
 
@@ -193,14 +192,6 @@ public enum HueStew {
 	 */
 	public Player getPlayer() {
 		return player;
-	}
-
-	public HueStewView getView() {
-		return view;
-	}
-
-	public void setView(HueStewView view) {
-		this.view = view;
 	}
 
 	public LightBank getLightBank() {
@@ -230,7 +221,7 @@ public enum HueStew {
 		show.updateCursor(cursor);
 
 		// TODO this should probably not be here
-		getView().getVirtualRoom().redraw();
+		controller.getView().getVirtualRoom().redraw();
 	}
 
 	public int getTickDuration() {
@@ -264,6 +255,14 @@ public enum HueStew {
 	 */
 	public HueStewConfig getConfig() {
 		return config;
+	}
+
+	public void setController(MainViewController controller) {
+		this.controller = controller;
+	}
+
+	public MainViewController getController() {
+		return controller;
 	}
 
 }

@@ -40,7 +40,7 @@ public class SelectTool extends Tool {
 			frame.remove();
 		}
 
-		HueStew.getInstance().getView().updateTrackView();
+		HueStew.getInstance().getController().getView().updateTrackView();
 
 	}
 
