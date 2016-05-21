@@ -112,7 +112,7 @@ public enum HueStew {
 			Light light = new VirtualLight(bulb, "Virtual Light " + i);
 			LightBank.getInstance().addLight(light, track);
 
-			controller.getView().getVirtualRoom().addBulb(bulb);
+			controller.getVirtualRoom().addBulb(bulb);
 
 			track.addListener(light);		
 			i++;
@@ -212,7 +212,7 @@ public enum HueStew {
 		show.updateCursor(cursor);
 
 		// TODO this should probably not be here
-		controller.getView().getVirtualRoom().redraw();
+		controller.getVirtualRoom().redraw();
 	}
 
 	public int getTickDuration() {

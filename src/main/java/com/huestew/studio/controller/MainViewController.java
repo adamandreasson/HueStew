@@ -9,9 +9,9 @@ import com.huestew.studio.model.Color;
 import com.huestew.studio.model.KeyFrame;
 import com.huestew.studio.model.LightTrack;
 import com.huestew.studio.util.Util;
-import com.huestew.studio.view.HueStewView;
 import com.huestew.studio.view.TrackActionButton;
 import com.huestew.studio.view.TrackView;
+import com.huestew.studio.view.VirtualRoom;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -26,6 +26,7 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -97,7 +98,7 @@ public class MainViewController extends ViewController {
 	@FXML
 	private AnchorPane rootPane;
 
-	private HueStewView view;
+	private VirtualRoom virtualRoom;
 	private Stage stage;
 	private List<TrackActionButton> trackActionButtons;
 	private TrackViewController trackViewController;
@@ -108,25 +109,25 @@ public class MainViewController extends ViewController {
 	@Override
 	public void init() {
 
-		this.view = new HueStewView();
 		this.toolbox = new Toolbox(this);
+		this.virtualRoom = new VirtualRoom();
 
 		trackViewController = new TrackViewController(trackCanvas, this);
 		trackViewController.redraw();
 
-		view.getVirtualRoom().setCanvas(previewCanvas);
-		view.getVirtualRoom().redraw();
+		virtualRoom.setCanvas(previewCanvas);
+		virtualRoom.redraw();
 
 		trackActionButtons = new ArrayList<>();
 
 		previewCanvasPane.widthProperty().addListener((observableValue, oldSceneWidth, newSceneWidth) -> {
 			previewCanvas.setWidth((double) newSceneWidth);
-			view.getVirtualRoom().redraw();
+			virtualRoom.redraw();
 		});
 
 		previewCanvasPane.heightProperty().addListener((observableValue, oldSceneHeight, newSceneHeight) -> {
 			previewCanvas.setHeight((double) newSceneHeight);
-			view.getVirtualRoom().redraw();
+			virtualRoom.redraw();
 		});
 
 		trackCanvasPane.widthProperty().addListener((observableValue, oldWidth, newWidth) -> {
@@ -443,10 +444,6 @@ public class MainViewController extends ViewController {
 		addSequenceButton.setDisable(!b);
 	}
 
-	public HueStewView getView() {
-		return view;
-	}
-
 	/**
 	 * @return the toolbox
 	 */
@@ -460,6 +457,14 @@ public class MainViewController extends ViewController {
 
 	public void updateWaveImage(List<String> imagePaths) {
 		trackViewController.loadWaves(imagePaths);
+	}
+
+	public void handleKeyboardEvent(KeyEvent event) {
+		trackViewController.keyboardEvent(event);
+	}
+
+	public VirtualRoom getVirtualRoom() {
+		return virtualRoom;
 	}
 
 }

@@ -27,11 +27,11 @@ public class Main extends Application {
 		primaryStage.show();
 
 		primaryStage.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
-			controller.getView().handleKeyboardEvent(event);
+			controller.handleKeyboardEvent(event);
 			controller.getToolbox().getSelectedTool().doAction(event);
 		});
 		primaryStage.addEventFilter(KeyEvent.KEY_RELEASED, event -> {
-			controller.getView().handleKeyboardEvent(event);
+			controller.handleKeyboardEvent(event);
 			controller.getToolbox().getSelectedTool().doAction(event);
 		});
 
