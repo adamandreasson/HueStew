@@ -40,13 +40,17 @@ public class TrackMenuController extends ViewController {
 		HashMap<Light, LightTrack> lights = LightBank.getInstance().getLights();
 		
 		VBox box = new VBox();
+		AnchorPane.setTopAnchor(box, 8.0);
+		AnchorPane.setLeftAnchor(box, 8.0);
+		AnchorPane.setRightAnchor(box, 8.0);
+		AnchorPane.setBottomAnchor(box, 0.0);
 
 		for (Entry<Light, LightTrack> entry : lights.entrySet()) {
 			Light light = entry.getKey();
 			LightTrack track = entry.getValue();
 			
 			AnchorPane listEntryPane = new AnchorPane();
-			listEntryPane.setPrefHeight(25.0);
+			listEntryPane.setPrefHeight(28.0);
 			listEntryPane.setPrefWidth(150.0);
 			Label label = new Label(light.getName());
 			CheckBox check = new CheckBox();
@@ -69,10 +73,10 @@ public class TrackMenuController extends ViewController {
 			
 			listEntryPane.getChildren().add(label);
 			listEntryPane.getChildren().add(check);
-			AnchorPane.setTopAnchor(label, 4.0);
-			AnchorPane.setLeftAnchor(label, 4.0);
-			AnchorPane.setTopAnchor(check, 4.0);
-			AnchorPane.setRightAnchor(check, 4.0);
+			AnchorPane.setTopAnchor(label, 0.0);
+			AnchorPane.setLeftAnchor(label, 0.0);
+			AnchorPane.setTopAnchor(check, 0.0);
+			AnchorPane.setRightAnchor(check, 0.0);
 			box.getChildren().add(listEntryPane);
 		}
 		

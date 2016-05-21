@@ -75,5 +75,5 @@
 .trackmenu {
 	-fx-background-color: #303030;
 	-fx-border-color: #222222;
-	-fx-border-width: 1px;
+	-fx-border-width: 0;
 }
