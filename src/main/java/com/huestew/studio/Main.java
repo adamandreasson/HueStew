@@ -16,7 +16,6 @@ public class Main extends Application {
 	public void start(Stage primaryStage) throws Exception {
 
 		MainViewController controller = (MainViewController) ViewController.loadFxml("/main.fxml");
-		HueStew.getInstance().setController(controller);
 		primaryStage.setTitle("HueStew Studio");
 		controller.setStage(primaryStage);
 		Scene scene = new Scene(controller.getParent(),1280,720);

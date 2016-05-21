@@ -20,6 +20,8 @@ public class Player {
 	private Thread playingThread;
 
 	private int pauseTime;
+	
+	private ShowController controller;
 
 	/**
 	 * Creates a new player object with a specified show to play.
@@ -28,6 +30,8 @@ public class Player {
 	 */
 	public Player(ShowController controller) {
 
+		this.controller = controller;
+		
 		try {
 
 			Media media = controller.getShow().getAudio().getFxMedia();
@@ -71,7 +75,7 @@ public class Player {
 				// Keep updating unless the thread is interrupted
 				while (keepRunning) {
 
-					HueStew.getInstance().tick();
+					controller.tick();
 
 					try {
 						// Sleep for 33 ms (Run at 30 fps)
@@ -126,7 +130,7 @@ public class Player {
 
 		if (!isPlaying()) {
 			pauseTime = time;
-			HueStew.getInstance().tick();
+			controller.tick();
 		}
 	}
 
