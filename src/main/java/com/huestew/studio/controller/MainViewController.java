@@ -10,13 +10,14 @@ import com.huestew.studio.model.KeyFrame;
 import com.huestew.studio.model.LightTrack;
 import com.huestew.studio.model.Show;
 import com.huestew.studio.util.Util;
-import com.huestew.studio.view.TrackActionButton;
+import com.huestew.studio.view.TrackActionPane;
 import com.huestew.studio.view.TrackView;
 import com.huestew.studio.view.VirtualRoom;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
+import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -108,7 +109,7 @@ public class MainViewController extends ViewController {
 	private ShowController showController;
 	private VirtualRoom virtualRoom;
 	private Stage stage;
-	private List<TrackActionButton> trackActionButtons;
+	private List<TrackActionPane> trackActionPanes;
 	private TrackViewController trackViewController;
 	private TrackMenuController trackMenuController;
 	private DrumKitController drumKitController;
@@ -125,7 +126,7 @@ public class MainViewController extends ViewController {
 		virtualRoom.setCanvas(previewCanvas);
 		virtualRoom.redraw();
 
-		trackActionButtons = new ArrayList<>();
+		trackActionPanes = new ArrayList<>();
 
 		previewCanvasPane.widthProperty().addListener((observableValue, oldSceneWidth, newSceneWidth) -> {
 			previewCanvas.setWidth((double) newSceneWidth);
@@ -442,22 +443,16 @@ public class MainViewController extends ViewController {
 			public void run() {
 
 				trackActionPane.getChildren().clear();
-				trackActionButtons.clear();
-
-				Image lightImg = new Image("icon_light.png");
+				trackActionPanes.clear();
 				ToggleGroup actionGroup = new ToggleGroup();
 
 				for (LightTrack track : showController.getShow().getLightTracks()) {
-					TrackActionButton trackBtn = new TrackActionButton(track);
-					trackBtn.setToggleGroup(actionGroup);
-					trackBtn.setLayoutY(Math.round(trackViewController.getTrackPositionY(track)));
-					trackBtn.setGraphic(new ImageView(lightImg));
-					trackBtn.setTooltip(new Tooltip("Configure lights"));
-					trackBtn.setOnAction((e) -> {
-						trackMenuController.openFor(trackBtn);
-					});
-					trackActionPane.getChildren().add(trackBtn);
-					trackActionButtons.add(trackBtn);
+					TrackActionPane trackPane = new TrackActionPane(track, actionGroup, trackMenuController);
+					
+					
+					AnchorPane.setTopAnchor((Node)trackPane, Math.round(trackViewController.getTrackPositionY(track))+0.0);
+					trackActionPane.getChildren().add(trackPane);
+					trackActionPanes.add(trackPane);
 				}
 				
 				trackViewController.redraw();
@@ -472,8 +467,8 @@ public class MainViewController extends ViewController {
 			@Override
 			public void run() {
 
-				for (TrackActionButton btn : trackActionButtons) {
-					btn.setLayoutY(Math.round(trackViewController.getTrackPositionY(btn.getTrack())));
+				for (TrackActionPane pane : trackActionPanes) {
+					AnchorPane.setTopAnchor((Node)pane, Math.round(trackViewController.getTrackPositionY(pane.getTrack()))+0.0);
 
 				}
 			}

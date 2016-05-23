@@ -5,12 +5,11 @@ import java.util.Map.Entry;
 
 import com.huestew.studio.model.LightTrack;
 import com.huestew.studio.view.Light;
-import com.huestew.studio.view.TrackActionButton;
-
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 
@@ -22,9 +21,9 @@ public class TrackMenuController extends ViewController {
 	@FXML
 	private AnchorPane coverPane;
 	
-	TrackActionButton activeButton;
+	ToggleButton activeButton;
 	
-	public void openFor(TrackActionButton trackBtn) {
+	public void openFor(ToggleButton trackBtn, LightTrack clickedTrack) {
 		
 		activeButton = trackBtn;
 		
@@ -53,21 +52,21 @@ public class TrackMenuController extends ViewController {
 			listEntryPane.setPrefWidth(150.0);
 			Label label = new Label(light.getName());
 			CheckBox check = new CheckBox();
-			check.setSelected(trackBtn.getTrack() != null && trackBtn.getTrack() == track);
+			check.setSelected(clickedTrack != null && clickedTrack == track);
 
 			check.setOnAction((e)->{
 				
 				if(check.isSelected()){
-					trackBtn.getTrack().addListener(light);
-					LightBank.getInstance().updateLight(light, trackBtn.getTrack());
+					clickedTrack.addListener(light);
+					LightBank.getInstance().updateLight(light, clickedTrack);
 				}else{
-					trackBtn.getTrack().removeListener(light);
+					clickedTrack.removeListener(light);
 					LightBank.getInstance().updateLight(light, null);
 				}
 				
 			});
 
-			if(track != null && track != trackBtn.getTrack())
+			if(track != null && track != clickedTrack)
 				check.setDisable(true);
 			
 			listEntryPane.getChildren().add(label);
