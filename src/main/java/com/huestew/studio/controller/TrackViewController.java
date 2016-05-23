@@ -219,7 +219,7 @@ public class TrackViewController {
 
 	private void selectKeyFrames() {
 
-		int tracksInSelection = view.selectKeyFrames();
+		int tracksInSelection = view.selectKeyFrames(ctrlDown);
 
 		controller.notifySelectionChange(view.getSelectedKeyFrames(), tracksInSelection);
 	}

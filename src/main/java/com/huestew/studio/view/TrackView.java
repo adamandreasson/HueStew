@@ -32,7 +32,7 @@ import javafx.scene.text.TextAlignment;
  *
  */
 public class TrackView {
-	
+
 	private static final int KEY_FRAME_SIZE = 5;
 	private static final int TRACK_SPACER = 10;
 	private static final int MINIMUM_TRACK_HEIGHT = 80;
@@ -67,7 +67,7 @@ public class TrackView {
 	public TrackView(Canvas canvas, Show show) {
 		this.canvas = canvas;
 		this.show = show;
-		
+
 		this.selectedKeyFrames = new ArrayList<>();
 
 		this.verticalScrollbar = new Scrollbar(() -> getTotalVisibleTrackHeight(), () -> getTotalTrackHeight());
@@ -103,19 +103,19 @@ public class TrackView {
 
 		// Perform drawing on javafx main thread
 		Platform.runLater(() -> {
-				GraphicsContext gc = canvas.getGraphicsContext2D();
-				gc.setFont(new Font(11.0));
-				gc.setFill(BACKGROUND_COLOR);
-				gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+			GraphicsContext gc = canvas.getGraphicsContext2D();
+			gc.setFont(new Font(11.0));
+			gc.setFill(BACKGROUND_COLOR);
+			gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
-				drawWave(gc);
-				drawLightTracks(gc);
-				drawTimeline(gc);
-				drawSelection(gc);
-				drawCursor(gc);
-				drawScrollbars(gc);
-			}
-		);
+			drawWave(gc);
+			drawLightTracks(gc);
+			drawTimeline(gc);
+			drawSelection(gc);
+			drawCursor(gc);
+			drawScrollbars(gc);
+		}
+				);
 	}
 
 	private void drawTimeline(GraphicsContext gc) {
@@ -411,10 +411,15 @@ public class TrackView {
 		selectRectangle = null;
 	}
 
-	public int selectKeyFrames() {
-		
-		List<KeyFrame> selection = new ArrayList<KeyFrame>();
+	public int selectKeyFrames(boolean ctrlDown) {
 
+		List<KeyFrame> selection = new ArrayList<KeyFrame>();
+		int tracksInSelection = 0;
+		
+		if(ctrlDown){
+			selection = selectedKeyFrames;
+			tracksInSelection = 1; // TODO maybe rewrite this part
+		}
 		double x1 = selectRectangle.getX();
 		double x2 = selectRectangle.getX() + selectRectangle.getWidth();
 		double minX = Math.min(x1, x2);
@@ -425,7 +430,6 @@ public class TrackView {
 		double minY = Math.min(y1, y2);
 		double maxY = Math.max(y1, y2);
 
-		int tracksInSelection = 0;
 		int i = -1;
 
 		for (LightTrack track : show.getLightTracks()) {
@@ -466,7 +470,7 @@ public class TrackView {
 		}
 
 		selectedKeyFrames = selection;
-		
+
 		return tracksInSelection;
 	}
 
