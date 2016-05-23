@@ -46,32 +46,42 @@ public class ShowController {
 
 	public void save() {
 
-		fileHandler.saveTrackData(show.getLightTracks());
+		fileHandler.saveShow(show);
+		updateTitle();
 
 	}
 
-
-	public void loadAutoSave() {
-
-		if (HueStew.getInstance().getConfig().getMusicFilePath().isEmpty())
-			return;
-
-		File musicFile = new File(HueStew.getInstance().getConfig().getMusicFilePath());
-		if (!musicFile.exists())
-			return;
-
-		controller.updateFooterStatus("Loading last session...");
-		initShow(musicFile);
-
-	}
-
-	public void initShow(File audioFile) {
+	public void createShow(File musicFile) {
 
 		this.show = new Show();
-		
-		fileHandler.loadTrackData(show);
 
-		// TEST CODE PLS REMOVE LATER
+		show.setAudio(new Audio(musicFile));
+
+		HueStew.getInstance().getConfig().setMusicDirectory(musicFile.getParent());
+		HueStew.getInstance().getConfig().setSaveFile("");
+
+		initShow();
+
+	}
+
+	public void loadShow() {
+
+		this.show = new Show();
+
+		try {
+			fileHandler.loadTrackData(show);
+		} catch (IllegalArgumentException e) {
+			// TODO Replace song
+		}
+
+		controller.updateFooterStatus("Loading project...");
+		initShow();
+
+	}
+
+	public void initShow() {
+
+		// TODO? TEST CODE PLS REMOVE LATER
 		
 		if(show.getLightTracks().size() < 1){
 			createEmptyTracks();
@@ -89,13 +99,13 @@ public class ShowController {
 		}
 		controller.getVirtualRoom().calculateBulbPositions();
 
-		show.setAudio(new Audio(audioFile));
 		if (player != null)
 			player.stop();
 		player = new Player(this);
 		player.setVolume(HueStew.getInstance().getConfig().getVolume());
 
-		controller.initShow(audioFile.getName() + " - HueStew Studio");
+		updateTitle();
+
 	}
 
 	private void createEmptyTracks() {
@@ -136,7 +146,7 @@ public class ShowController {
 		String tmpSongFile = fileHandler.getTempFilePath("song.wav");
 		System.out.println(tmpSongFile);
 
-		// THIS SHOULD ALL BE ELSEWHERE
+		// TODO? THIS SHOULD ALL BE ELSEWHERE
 		Thread thread = new Thread(new Runnable() {
 
 			@Override
@@ -181,6 +191,14 @@ public class ShowController {
 
 	public Show getShow() {
 		return show;
+	}
+	
+	private void updateTitle() {
+		String title = HueStew.getInstance().getConfig().getSaveFile();
+		if (title.isEmpty()) {
+			title = show.getAudio().getFile().getName();
+		}
+		controller.initShow(title + " - HueStew Studio");
 	}
 	
 }

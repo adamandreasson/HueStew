@@ -14,7 +14,6 @@ public class HueStewConfig {
 	private String saveDirectory;
 	private String saveFile;
 	private String musicDirectory;
-	private String musicFilePath;
 	private double volume;
 	private String windowDimensions;
 
@@ -26,17 +25,13 @@ public class HueStewConfig {
 	 * 						the file used to store the show
 	 * @param musicDirectory
 	 * 						the default directory to look for music files
-	 * @param musicFilePath
-	 * 						the path for the music file most recently used in the show
 	 * @param volume
 	 * 						the volume at which the music will be played at. (double between 0 and 1)
 	 */
-	public HueStewConfig(String saveDirectory, String saveFile, String musicDirectory, String musicFilePath,
-			double volume, String windowDimensions){
+	public HueStewConfig(String saveDirectory, String saveFile, String musicDirectory, double volume, String windowDimensions) {
 		this.saveDirectory = saveDirectory;
 		this.saveFile = saveFile;
 		this.musicDirectory = musicDirectory;
-		this.musicFilePath = musicFilePath;
 		this.volume = volume;
 		this.windowDimensions = windowDimensions;
 	}
@@ -81,20 +76,6 @@ public class HueStewConfig {
 	 */
 	public void setMusicDirectory(String musicDirectory) {
 		this.musicDirectory = musicDirectory;
-	}
-
-	/**
-	 * @return the musicFilePath
-	 */
-	public String getMusicFilePath() {
-		return musicFilePath;
-	}
-
-	/**
-	 * @param musicFilePath the musicFilePath to set
-	 */
-	public void setMusicFilePath(String musicFilePath) {
-		this.musicFilePath = musicFilePath;
 	}
 
 	/**

@@ -121,7 +121,7 @@ public class MainViewController extends ViewController {
 		this.virtualRoom = new VirtualRoom();
 		this.showController = new ShowController(this);
 		this.colorPickerController = new ColorPickerController(colorPickerPane);
-		showController.loadAutoSave();
+		showController.loadShow();
 
 		virtualRoom.setCanvas(previewCanvas);
 		virtualRoom.redraw();
@@ -253,17 +253,31 @@ public class MainViewController extends ViewController {
 		File file = fileChooser.showOpenDialog(Util.createStage());
 
 		if (file != null) {
-			HueStew.getInstance().getConfig().setMusicDirectory(file.getParent());
-			HueStew.getInstance().getConfig().setMusicFilePath(file.toString());
-			showController.initShow(file);
+			showController.createShow(file);
 		}
 
 	}
 
 	@FXML
-	private void saveButtonPressed() {
-		System.out.println("saving");
+	private void openButtonPressed() {
+		FileChooser fileChooser = new FileChooser();
 
+		File initialDir = new File(HueStew.getInstance().getConfig().getSaveDirectory());
+		fileChooser.setInitialDirectory(initialDir);
+		fileChooser.setTitle("Open project");
+		fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("JSON", "*.json"));
+
+		File file = fileChooser.showOpenDialog(Util.createStage());
+
+		if (file != null) {
+			HueStew.getInstance().getConfig().setSaveFile(file.getAbsolutePath());
+			HueStew.getInstance().getConfig().setSaveDirectory(file.getParentFile().getAbsolutePath());
+			showController.loadShow();
+		}
+	}
+
+	@FXML
+	private void saveButtonPressed() {
 		if (HueStew.getInstance().getConfig().getSaveFile().isEmpty()) {
 			saveAsButtonPressed();
 			return;
@@ -282,7 +296,6 @@ public class MainViewController extends ViewController {
 		File file = fileChooser.showSaveDialog(Util.createStage());
 
 		if (file != null) {
-			System.out.println("SAVING TO " + file.getAbsolutePath());
 			HueStew.getInstance().getConfig().setSaveFile(file.getAbsolutePath());
 			HueStew.getInstance().getConfig().setSaveDirectory(file.getParentFile().getAbsolutePath());
 			showController.save();
@@ -351,12 +364,7 @@ public class MainViewController extends ViewController {
 	 *            New title
 	 */
 	public void updateTitle(String title) {
-		Platform.runLater(new Runnable() {
-			@Override
-			public void run() {
-				stage.setTitle(title);
-			}
-		});
+		Platform.runLater(() -> stage.setTitle(title));
 	}
 
 	public void enableControls() {
