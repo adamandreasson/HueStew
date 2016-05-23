@@ -246,17 +246,29 @@ public class MainViewController extends ViewController {
 	private void saveButtonPressed() {
 		System.out.println("saving");
 
+		if (HueStew.getInstance().getConfig().getSaveFile().isEmpty()) {
+			saveAsButtonPressed();
+			return;
+		}
+
 		showController.save();
-		/*
-		 * FileChooser fileChooser = new FileChooser();
-		 * fileChooser.setInitialDirectory(new
-		 * File(System.getProperty("user.home")));
-		 * fileChooser.getExtensionFilters().addAll(new
-		 * FileChooser.ExtensionFilter("JSON", "*.json")); fileChooser.setTitle(
-		 * "Choose save location"); File file =
-		 * fileChooser.showSaveDialog(Util.createStage()); if (file != null) {
-		 * System.out.println("SAVING TO " + file.getAbsolutePath()); }
-		 */
+	}
+	
+	@FXML
+	private void saveAsButtonPressed() {
+		FileChooser fileChooser = new FileChooser();
+		fileChooser.setInitialDirectory(new File(HueStew.getInstance().getConfig().getSaveDirectory()));
+		fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("JSON", "*.json"));
+		fileChooser.setTitle("Choose save location");
+
+		File file = fileChooser.showSaveDialog(Util.createStage());
+
+		if (file != null) {
+			System.out.println("SAVING TO " + file.getAbsolutePath());
+			HueStew.getInstance().getConfig().setSaveFile(file.getAbsolutePath());
+			HueStew.getInstance().getConfig().setSaveDirectory(file.getParentFile().getAbsolutePath());
+			showController.save();
+		}
 	}
 
 	@FXML

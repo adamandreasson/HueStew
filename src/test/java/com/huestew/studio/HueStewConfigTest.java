@@ -17,7 +17,7 @@ public class HueStewConfigTest {
 	@Before
 	public void before() {
 		config = new HueStewConfig(System.getProperty("user.home") + File.separator 
-				+ "HueStew", System.getProperty("user.home"), "", 1.0, "");
+				+ "HueStew", "", System.getProperty("user.home"), "", 1.0, "");
 		random = UUID.randomUUID().toString();
 	}
 

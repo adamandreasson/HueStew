@@ -19,6 +19,7 @@ import java.util.Properties;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import com.huestew.studio.model.Audio;
 import com.huestew.studio.model.Color;
 import com.huestew.studio.model.HueStewConfig;
 import com.huestew.studio.model.KeyFrame;
@@ -28,8 +29,9 @@ import com.huestew.studio.model.Show;
 
 public class FileHandler {
 
-	Path tmpDir;
-	String appDir;
+	private Path tmpDir;
+	private String appDir;
+	private HueStewConfig config;
 
 	public FileHandler() throws AccessDeniedException {
 
@@ -62,11 +64,11 @@ public class FileHandler {
 	public void saveConfig(HueStewConfig config) {
 
 		Properties prop = new Properties();
-		
 
 		try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(getAppFilePath("config.properties")), "utf-8")) {
 
 			prop.setProperty("saveDir", config.getSaveDirectory());
+			prop.setProperty("saveFile", config.getSaveFile());
 			prop.setProperty("musicDir", config.getMusicDirectory());
 			prop.setProperty("musicFilePath", config.getMusicFilePath());
 			prop.setProperty("volume", String.valueOf(config.getVolume()));
@@ -90,19 +92,34 @@ public class FileHandler {
 
 				prop.load(reader);
 
-				return new HueStewConfig(prop.getProperty("saveDir", appDir), prop.getProperty("musicDir", System.getProperty("user.home")),
-						prop.getProperty("musicFilePath", ""), Double.parseDouble(prop.getProperty("volume", "1.0")), prop.getProperty("window", ""));
+				config = new HueStewConfig(prop.getProperty("saveDir", System.getProperty("user.home")), prop.getProperty("saveFile", ""),
+						prop.getProperty("musicDir", System.getProperty("user.home")), prop.getProperty("musicFilePath", ""),
+						Double.parseDouble(prop.getProperty("volume", "1.0")), prop.getProperty("window", ""));
+				return config;
 
 			} catch (IOException ex) {
+				System.out.println("Failed to load config, using defaults");
 				ex.printStackTrace();
 			}
 		}
 
-		return new HueStewConfig(appDir, System.getProperty("user.home"), "", 1.0, "");
+		config = new HueStewConfig(System.getProperty("user.home"), "", System.getProperty("user.home"), "", 1.0, "");
+		return config;
 
 	}
 
 	public void saveTrackData(List<LightTrack> tracks) {
+
+		String path = config.getSaveFile();
+		if (path.isEmpty()) {
+			path = getAppFilePath("autosave.json");
+		}
+
+		saveTrackData(tracks, path);
+
+	}
+
+	public void saveTrackData(List<LightTrack> tracks, String path) {
 
 		JSONObject obj = new JSONObject();
 
@@ -116,8 +133,9 @@ public class FileHandler {
 		}
 
 		obj.put("tracks", tracksJson);
+		obj.put("audio", config.getMusicFilePath());
 
-		try (PrintWriter out = new PrintWriter(getAppFilePath("autosave.json"), "utf-8")) {
+		try (PrintWriter out = new PrintWriter(path, "utf-8")) {
 			out.println(obj.toString(2));
 		} catch (FileNotFoundException | UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
@@ -175,11 +193,18 @@ public class FileHandler {
 
 		}
 
+		// TODO handle exception, prompt to replace file if missing
+		try {
+			show.setAudio(new Audio(new File(obj.getString("audio"))));
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		}
+
 	}
 	
 	public void clean(){
 	    for(File filePath : tmpDir.toFile().listFiles()) {
-	    	filePath.delete();
+			filePath.delete();
 	    }
 		tmpDir.toFile().delete();
 	}

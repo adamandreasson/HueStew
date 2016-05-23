@@ -12,15 +12,18 @@ package com.huestew.studio.model;
 public class HueStewConfig {
 
 	private String saveDirectory;
+	private String saveFile;
 	private String musicDirectory;
 	private String musicFilePath;
 	private double volume;
 	private String windowDimensions;
-	
+
 	/**
 	 * Creates a new HueStewConfig object with the specified values.
 	 * @param saveDirectory
 	 * 						the directory used to store the show.
+	 * @param saveFile
+	 * 						the file used to store the show
 	 * @param musicDirectory
 	 * 						the default directory to look for music files
 	 * @param musicFilePath
@@ -28,44 +31,65 @@ public class HueStewConfig {
 	 * @param volume
 	 * 						the volume at which the music will be played at. (double between 0 and 1)
 	 */
-	public HueStewConfig(String saveDirectory, String musicDirectory, String musicFilePath, double volume, String windowDimensions){
+	public HueStewConfig(String saveDirectory, String saveFile, String musicDirectory, String musicFilePath,
+			double volume, String windowDimensions){
 		this.saveDirectory = saveDirectory;
+		this.saveFile = saveFile;
 		this.musicDirectory = musicDirectory;
 		this.musicFilePath = musicFilePath;
 		this.volume = volume;
 		this.windowDimensions = windowDimensions;
 	}
-	
+
 	/**
 	 * @return the saveDirectory
 	 */
 	public String getSaveDirectory() {
 		return saveDirectory;
 	}
+
 	/**
 	 * @param saveDirectory the saveDirectory to set
 	 */
 	public void setSaveDirectory(String saveDirectory) {
 		this.saveDirectory = saveDirectory;
 	}
+
+	/**
+	 * @return the saveFile
+	 */
+	public String getSaveFile() {
+		return saveFile;
+	}
+
+	/**
+	 * @param saveFile the saveFile to set
+	 */
+	public void setSaveFile(String saveFile) {
+		this.saveFile = saveFile;
+	}
+
 	/**
 	 * @return the musicDirectory
 	 */
 	public String getMusicDirectory() {
 		return musicDirectory;
 	}
+
 	/**
 	 * @param musicDirectory the musicDirectory to set
 	 */
 	public void setMusicDirectory(String musicDirectory) {
 		this.musicDirectory = musicDirectory;
 	}
+
 	/**
 	 * @return the musicFilePath
 	 */
 	public String getMusicFilePath() {
 		return musicFilePath;
 	}
+
 	/**
 	 * @param musicFilePath the musicFilePath to set
 	 */
@@ -100,5 +124,5 @@ public class HueStewConfig {
 	public void setWindowDimensions(String windowDimensions) {
 		this.windowDimensions = windowDimensions;
 	}
-	
+
 }
