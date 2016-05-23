@@ -41,14 +41,20 @@ public class ColorPickerController {
 
 		redraw();
 		colorWheelCanvas.setCursor(Cursor.CROSSHAIR);
-
+		
+		colorWheelCanvas.setOnMouseDragged(event -> {
+			Color c = getColorFromX(event.getX());
+			pickColor(c);
+			
+		});
+		
 		colorWheelCanvas.setOnMouseClicked(event -> {
 			Color c = getColorFromX(event.getX());
 
 			pickColor(c);
 
 		});
-
+		
 		colorPickerPane.getChildren().add(colorWheelCanvas);
 	}
 
