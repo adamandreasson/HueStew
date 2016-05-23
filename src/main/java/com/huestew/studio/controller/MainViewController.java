@@ -53,7 +53,7 @@ public class MainViewController extends ViewController {
 	private AnchorPane trackCanvasPane;
 
 	@FXML
-	private AnchorPane trackActionPane;
+	private AnchorPane trackActionParentPane;
 
 	@FXML
 	public AnchorPane colorPickerPane;
@@ -138,7 +138,7 @@ public class MainViewController extends ViewController {
 			virtualRoom.redraw();
 		});
 
-		trackActionPane.heightProperty().addListener((observableValue, oldHeight, newHeight) -> {
+		trackActionParentPane.heightProperty().addListener((observableValue, oldHeight, newHeight) -> {
 			updateTrackActionPanePosition();
 		});
 
@@ -197,12 +197,12 @@ public class MainViewController extends ViewController {
 	private void initTrackCanvas(){
 
 		trackViewController = new TrackViewController(trackCanvas, this);
-		trackCanvas.setWidth(trackCanvasPane.getWidth() - trackActionPane.getWidth());
+		trackCanvas.setWidth(trackCanvasPane.getWidth() - trackActionParentPane.getWidth());
 		trackCanvas.setHeight(trackCanvasPane.getHeight());
 		trackViewController.redraw();
 
 		trackCanvasPane.widthProperty().addListener((observableValue, oldWidth, newWidth) -> {
-			trackCanvas.setWidth(newWidth.doubleValue() - trackActionPane.getWidth());
+			trackCanvas.setWidth(newWidth.doubleValue() - trackActionParentPane.getWidth());
 			trackViewController.redraw();
 		});
 
@@ -442,7 +442,7 @@ public class MainViewController extends ViewController {
 			@Override
 			public void run() {
 
-				trackActionPane.getChildren().clear();
+				trackActionParentPane.getChildren().clear();
 				trackActionPanes.clear();
 				ToggleGroup actionGroup = new ToggleGroup();
 
@@ -451,7 +451,7 @@ public class MainViewController extends ViewController {
 					
 					
 					AnchorPane.setTopAnchor((Node)trackPane, Math.round(trackViewController.getTrackPositionY(track))+0.0);
-					trackActionPane.getChildren().add(trackPane);
+					trackActionParentPane.getChildren().add(trackPane);
 					trackActionPanes.add(trackPane);
 				}
 				
