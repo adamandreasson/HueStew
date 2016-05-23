@@ -6,7 +6,7 @@ package com.huestew.hue;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.huestew.studio.view.LightBank;
+import com.huestew.studio.controller.LightBank;
 import com.philips.lighting.hue.sdk.PHAccessPoint;
 import com.philips.lighting.hue.sdk.PHBridgeSearchManager;
 import com.philips.lighting.hue.sdk.PHHueSDK;

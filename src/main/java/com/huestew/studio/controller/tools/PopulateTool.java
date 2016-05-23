@@ -28,7 +28,7 @@ public class PopulateTool extends Tool {
 			return;
 
 		if (event.getEventType() == MouseEvent.MOUSE_RELEASED && event.getButton() == MouseButton.PRIMARY) {
-			lightTrack.addKeyFrame(new KeyFrame(timestamp, new LightState(new Color(1, 1, 1), (int) (255 * normalizedY), 0), lightTrack));
+			lightTrack.addKeyFrame(new KeyFrame(timestamp, new LightState(new Color(1, 1, 1), (int) (255 * normalizedY), 255), lightTrack));
 		}
 	}
 

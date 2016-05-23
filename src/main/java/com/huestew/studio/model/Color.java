@@ -15,6 +15,7 @@ public class Color {
 	private double red;
 	private double green;
 	private double blue;
+	private int hue = -1;
 
 	/**
 	 * Creates a new color object with the specified values.
@@ -42,6 +43,7 @@ public class Color {
 		this.red = color.getRed();
 		this.green = color.getGreen();
 		this.blue = color.getBlue();
+		this.hue = color.getHue();
 	}
 
 	/**
@@ -54,6 +56,8 @@ public class Color {
 		this.red = color.getRed();
 		this.green = color.getGreen();
 		this.blue = color.getBlue();
+		this.hue = (int)((color.getHue()/360.0)*65535.0);
+		System.out.println(hue +" WAOW HUE");
 	}
 
 	/**
@@ -122,6 +126,14 @@ public class Color {
 		}
 	}
 
+	public void setHue(int hue) {
+		this.hue = hue;
+	}
+
+	public int getHue() {
+		return hue;
+	}
+	
 	@Override
 	public String toString() {
 		return "Color [red=" + red + ", green=" + green + ", blue=" + blue + "]";

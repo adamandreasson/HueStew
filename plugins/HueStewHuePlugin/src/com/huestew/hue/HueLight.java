@@ -55,70 +55,74 @@ public class HueLight implements Light {
 			LightState state = transition.getTo().getState();
 			Color color = state.getColor();
 			PHLightState lightState = new PHLightState();
-			float xy[] = PHUtilities.calculateXYFromRGB((int) color.getRed() * 255, (int) color.getGreen() * 255,
-					(int) color.getBlue() * 255, "LCT001");
+			System.out.println(color.getHue());
+			if (color.getHue() < 0) {
+				float xy[] = PHUtilities.calculateXYFromRGB((int) color.getRed() * 255, (int) color.getGreen() * 255,
+						(int) color.getBlue() * 255, "LCT001");
 
-			lightState.setX(xy[0]);
-			lightState.setY(xy[1]);
+				lightState.setX(xy[0]);
+				lightState.setY(xy[1]);
+			} else {
+				lightState.setHue(color.getHue());
+			}
 
 			int brightness = state.getBrightness();
-			if(brightness > 254)
+			if (brightness > 254)
 				brightness = 254;
 
-			if (brightness > 1){
+			if (brightness > 1) {
 				lightState.setOn(true);
 				lightState.setBrightness(brightness);
-			}else{
+			} else {
 				lightState.setOn(false);
 			}
 
 			int saturation = state.getSaturation();
-			if(saturation > 254)
+			if (saturation > 254)
 				saturation = 254;
 			lightState.setSaturation(saturation);
-			
-			if(transition.getFrom() != null){
+
+			if (transition.getFrom() != null) {
 				int timeDiff = transition.getTo().getTimestamp() - transition.getFrom().getTimestamp();
-				int transitionTime = (int)Math.ceil(timeDiff/100.0);
+				int transitionTime = (int) Math.ceil(timeDiff / 100.0);
 				lightState.setTransitionTime(transitionTime);
 			}
-			
+
 			System.out.println(System.currentTimeMillis() + " Seinding update!");
 
 			PHHueSDK.getInstance().getSelectedBridge().updateLightState(phLight, lightState, new PHLightListener() {
-				
+
 				@Override
 				public void onSuccess() {
 				}
-				
+
 				@Override
 				public void onStateUpdate(Map<String, String> arg0, List<PHHueError> arg1) {
-					// TODO Auto-generated method stub
-					
+					System.out.println(arg0);
 				}
-				
+
 				@Override
 				public void onError(int code, String message) {
 					System.err.println("oh no");
 					System.err.println(message);
 				}
-				
+
 				@Override
 				public void onSearchComplete() {
 					// TODO Auto-generated method stub
-					
+
 				}
-				
+
 				@Override
 				public void onReceivingLights(List<PHBridgeResource> arg0) {
 					// TODO Auto-generated method stub
-					
+
 				}
-				
+
 				@Override
 				public void onReceivingLightDetails(PHLight arg0) {
 					// TODO Auto-generated method stub
-					
+
 				}
 			});
 
