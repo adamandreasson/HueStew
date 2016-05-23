@@ -63,15 +63,6 @@ public class KeyFrameTest {
 	}
 
 	@Test
-	public void hashCodeTest() {
-		KeyFrame same = new KeyFrame(0);
-		assertTrue(keyFrame.hashCode() == same.hashCode());
-
-		KeyFrame notSame = new KeyFrame(5);
-		assertNotSame(keyFrame.hashCode(), notSame.hashCode());
-	}
-
-	@Test
 	public void equals() {
 		assertEquals(keyFrame, keyFrame);
 		assertEquals(keyFrame, new KeyFrame(keyFrame));
