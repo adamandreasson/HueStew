@@ -57,7 +57,6 @@ public class Color {
 		this.green = color.getGreen();
 		this.blue = color.getBlue();
 		this.hue = (int)((color.getHue()/360.0)*65535.0);
-		System.out.println(hue +" WAOW HUE");
 	}
 
 	/**

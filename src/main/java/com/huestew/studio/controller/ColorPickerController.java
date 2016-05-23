@@ -4,8 +4,6 @@
 package com.huestew.studio.controller;
 
 import java.util.List;
-import java.util.Random;
-
 import com.huestew.studio.model.KeyFrame;
 import com.huestew.studio.model.LightState;
 
@@ -41,35 +39,38 @@ public class ColorPickerController {
 
 		redraw();
 		colorWheelCanvas.setCursor(Cursor.CROSSHAIR);
-		
-		colorWheelCanvas.setOnMouseDragged(event -> {
-			Color c = getColorFromX(event.getX());
-			pickColor(c);
-			
-		});
-		
-		colorWheelCanvas.setOnMouseClicked(event -> {
-			Color c = getColorFromX(event.getX());
 
-			pickColor(c);
+		colorWheelCanvas.setOnMouseDragged(event -> pickColor(event.getX(), event.getY()));
 
-		});
-		
+		colorWheelCanvas.setOnMouseClicked(event -> pickColor(event.getX(), event.getY()));
+
 		colorPickerPane.getChildren().add(colorWheelCanvas);
 	}
 
 	private Color getColorFromX(double x) {
-		double hue = (x / colorWheelCanvas.getWidth()) * 360.0;
+		double hue = ((x-10) / getColorBoxWidth()) * 360.0;
 		return Color.hsb(hue, 1, 1);
 	}
 
-	private void pickColor(Color c) {
+	private double getSaturationFromY(double y) {
+		return ((getColorBoxHeight()-y) + 10) / getColorBoxHeight();
+	}
+
+	private void pickColor(double x, double y) {
 		if (selectedKeyFrames == null || selectedKeyFrames.isEmpty())
 			return;
 
+		Color c = getColorFromX(x);
+
+		int saturation = (int) (getSaturationFromY(y) * 255.0);
+		if(saturation < 0)
+			saturation = 0;
+		if(saturation > 255)
+			saturation = 255;
+
 		for (KeyFrame frame : selectedKeyFrames) {
 			frame.setState(new LightState(new com.huestew.studio.model.Color(c), frame.getState().getBrightness(),
-					frame.getState().getSaturation()));
+					saturation));
 		}
 		redraw();
 	}
@@ -89,11 +90,15 @@ public class ColorPickerController {
 			gc.setFill(new LinearGradient(0, 0, 1.0, 0, true, CycleMethod.REFLECT, new Stop(0.0, Color.RED),
 					new Stop(1.0 / 6.0, Color.YELLOW), new Stop(2.0 / 6.0, Color.LIME), new Stop(3.0 / 6.0, Color.AQUA),
 					new Stop(4.0 / 6.0, Color.BLUE), new Stop(5.0 / 6.0, Color.MAGENTA), new Stop(1.0, Color.RED)));
-			gc.fillRect(0, 0, colorWheelCanvas.getWidth(), colorWheelCanvas.getHeight() / 2);
+			gc.fillRect(10, 10, getColorBoxWidth(), getColorBoxHeight());
 
-			if(selectedKeyFrames == null)
+			gc.setFill(new LinearGradient(0, 0, 0, 1.0, true, CycleMethod.REFLECT, new Stop(0.0, Color.TRANSPARENT),
+					new Stop(1.0, Color.WHITE)));
+			gc.fillRect(10, 10, getColorBoxWidth(), getColorBoxHeight());
+
+			if (selectedKeyFrames == null)
 				return;
-			
+
 			for (KeyFrame frame : selectedKeyFrames) {
 				drawColorPoint(gc, frame);
 				gc.setFill(frame.getState().getColor().toFxColor());
@@ -105,15 +110,26 @@ public class ColorPickerController {
 
 	private void drawColorPoint(GraphicsContext gc, KeyFrame frame) {
 		Color c = frame.getState().getColor().toFxColor();
+		double saturation = 1.0 - (frame.getState().getSaturation() / 255.0);
 		double degree = c.getHue();
-		double x = (degree / 360.0) * colorWheelCanvas.getWidth();
+		double x = 10 + ((degree / 360.0) * getColorBoxWidth());
 
-		Random rand = new Random(frame.getTimestamp());
-		double y = rand.nextInt((int) colorWheelCanvas.getHeight() / 2);
+		double y = 10 + (saturation * (getColorBoxHeight()));
 
+		gc.setStroke(Color.GRAY);
 		gc.setFill(Color.WHITE);
+		gc.strokePolygon(new double[] { x - KEY_FRAME_SIZE, x, x + KEY_FRAME_SIZE, x },
+				new double[] { y, y + KEY_FRAME_SIZE, y, y - KEY_FRAME_SIZE }, 4);
 		gc.fillPolygon(new double[] { x - KEY_FRAME_SIZE, x, x + KEY_FRAME_SIZE, x },
 				new double[] { y, y + KEY_FRAME_SIZE, y, y - KEY_FRAME_SIZE }, 4);
+	}
+
+	private double getColorBoxWidth() {
+		return colorWheelCanvas.getWidth() - 20;
+	}
+
+	private double getColorBoxHeight() {
+		return colorWheelCanvas.getHeight() / 2 - 20;
 	}
 
 	public void setFrames(List<KeyFrame> selectedKeyFrames) {
