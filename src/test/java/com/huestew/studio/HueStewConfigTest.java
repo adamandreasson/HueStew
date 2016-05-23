@@ -17,7 +17,7 @@ public class HueStewConfigTest {
 	@Before
 	public void before() {
 		config = new HueStewConfig(System.getProperty("user.home") + File.separator 
-				+ "HueStew", "", System.getProperty("user.home"), "", 1.0, "");
+				+ "HueStew", "", System.getProperty("user.home"), 1.0, "");
 		random = UUID.randomUUID().toString();
 	}
 
@@ -31,12 +31,6 @@ public class HueStewConfigTest {
 	public void setMusicDirectory() {
 		config.setMusicDirectory(random);
 		assertEquals(config.getMusicDirectory(), random);
-	}
-
-	@Test
-	public void setMusicFilePath() {
-		config.setMusicFilePath(random);
-		assertEquals(config.getMusicFilePath(), random);
 	}
 
 	@Test
