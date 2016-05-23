@@ -87,10 +87,10 @@ public class MainViewController extends ViewController {
 
 	@FXML
 	private Button saveAsButton;
-	
+
 	@FXML
 	private Button insertLightTrackButton;
-	
+
 	@FXML
 	private Button insertVirtualLightButton;
 
@@ -141,9 +141,8 @@ public class MainViewController extends ViewController {
 			updateTrackActionPanePosition();
 		});
 
-		colorPickerPane.widthProperty().addListener((observableValue, oldHeight, newHeight) -> {
-			colorPickerController.redraw();
-		});
+		colorPickerPane.heightProperty().addListener((a, b, c) -> colorPickerController.updateSize());
+		colorPickerPane.widthProperty().addListener((a, b, c) -> colorPickerController.updateSize());
 
 		volumeSlider.valueProperty().addListener((observableValue, oldValue, newValue) -> {
 			double normalizedVolume = newValue.doubleValue() / 100;
@@ -193,7 +192,7 @@ public class MainViewController extends ViewController {
 
 	}
 
-	private void initTrackCanvas(){
+	private void initTrackCanvas() {
 
 		trackViewController = new TrackViewController(trackCanvas, this);
 		trackCanvas.setWidth(trackCanvasPane.getWidth() - trackActionParentPane.getWidth());
@@ -284,7 +283,7 @@ public class MainViewController extends ViewController {
 
 		showController.save();
 	}
-	
+
 	@FXML
 	private void saveAsButtonPressed() {
 		FileChooser fileChooser = new FileChooser();
@@ -324,17 +323,17 @@ public class MainViewController extends ViewController {
 	private void addSequencePressed() {
 		drumKitController.addButtonPressed();
 	}
-	
+
 	@FXML
-	private void insertLightTrackPressed(){
+	private void insertLightTrackPressed() {
 		showController.addTrack();
 	}
-	
+
 	@FXML
-	private void insertVirtualLightPressed(){
+	private void insertVirtualLightPressed() {
 		showController.addVirtualLight();
 	}
-	
+
 	public void setVolume(double volume) {
 		volumeSlider.setValue(volume * 100);
 	}
@@ -423,13 +422,13 @@ public class MainViewController extends ViewController {
 
 				for (LightTrack track : showController.getShow().getLightTracks()) {
 					TrackActionPane trackPane = new TrackActionPane(track, actionGroup, trackMenuController);
-					
-					
-					AnchorPane.setTopAnchor((Node)trackPane, Math.round(trackViewController.getTrackPositionY(track))+0.0);
+
+					AnchorPane.setTopAnchor((Node) trackPane,
+							Math.round(trackViewController.getTrackPositionY(track)) + 0.0);
 					trackActionParentPane.getChildren().add(trackPane);
 					trackActionPanes.add(trackPane);
 				}
-				
+
 				trackViewController.redraw();
 			}
 
@@ -443,7 +442,8 @@ public class MainViewController extends ViewController {
 			public void run() {
 
 				for (TrackActionPane pane : trackActionPanes) {
-					AnchorPane.setTopAnchor((Node)pane, Math.round(trackViewController.getTrackPositionY(pane.getTrack()))+0.0);
+					AnchorPane.setTopAnchor((Node) pane,
+							Math.round(trackViewController.getTrackPositionY(pane.getTrack())) + 0.0);
 
 				}
 			}
@@ -499,15 +499,15 @@ public class MainViewController extends ViewController {
 	public Player getPlayer() {
 		return showController.getPlayer();
 	}
-	
-	public Show getShow(){
+
+	public Show getShow() {
 		return showController.getShow();
 	}
 
 	public void initShow(String title) {
 
 		updateTitle(title);
-		
+
 		initTrackCanvas();
 		enableControls();
 		updateTracks();

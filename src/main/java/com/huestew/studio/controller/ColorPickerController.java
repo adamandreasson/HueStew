@@ -36,24 +36,23 @@ public class ColorPickerController {
 		colorPickerPane.getChildren().clear();
 
 		colorWheelCanvas = new Canvas();
-
-		redraw();
 		colorWheelCanvas.setCursor(Cursor.CROSSHAIR);
 
 		colorWheelCanvas.setOnMouseDragged(event -> pickColor(event.getX(), event.getY()));
-
 		colorWheelCanvas.setOnMouseClicked(event -> pickColor(event.getX(), event.getY()));
 
 		colorPickerPane.getChildren().add(colorWheelCanvas);
+		
+		updateSize();
 	}
 
 	private Color getColorFromX(double x) {
-		double hue = ((x-10) / getColorBoxWidth()) * 360.0;
+		double hue = ((x - 10) / getColorBoxWidth()) * 360.0;
 		return Color.hsb(hue, 1, 1);
 	}
 
 	private double getSaturationFromY(double y) {
-		return ((getColorBoxHeight()-y) + 10) / getColorBoxHeight();
+		return ((getColorBoxHeight() - y) + 10) / getColorBoxHeight();
 	}
 
 	private void pickColor(double x, double y) {
@@ -63,9 +62,9 @@ public class ColorPickerController {
 		Color c = getColorFromX(x);
 
 		int saturation = (int) (getSaturationFromY(y) * 255.0);
-		if(saturation < 0)
+		if (saturation < 0)
 			saturation = 0;
-		if(saturation > 255)
+		if (saturation > 255)
 			saturation = 255;
 
 		for (KeyFrame frame : selectedKeyFrames) {
@@ -75,14 +74,14 @@ public class ColorPickerController {
 		redraw();
 	}
 
+	public void updateSize() {
+		colorWheelCanvas.setWidth(colorPickerPane.getWidth());
+		colorWheelCanvas.setHeight(colorPickerPane.getHeight());
+		redraw();
+	}
+
 	public void redraw() {
 		Platform.runLater(() -> {
-			double maxDimension = colorPickerPane.getWidth();
-			if (colorPickerPane.getHeight() < colorPickerPane.getWidth())
-				maxDimension = colorPickerPane.getHeight();
-
-			colorWheelCanvas.setWidth(maxDimension);
-			colorWheelCanvas.setHeight(maxDimension);
 			GraphicsContext gc = colorWheelCanvas.getGraphicsContext2D();
 			gc.clearRect(0, 0, colorWheelCanvas.getWidth(), colorWheelCanvas.getHeight());
 			// gc.drawImage(img, 0, 0, colorWheelCanvas.getWidth(),
@@ -102,8 +101,7 @@ public class ColorPickerController {
 			for (KeyFrame frame : selectedKeyFrames) {
 				drawColorPoint(gc, frame);
 				gc.setFill(frame.getState().getColor().toFxColor());
-				gc.fillRect(0, colorWheelCanvas.getHeight() / 2, colorWheelCanvas.getWidth(),
-						colorWheelCanvas.getHeight() / 2);
+				gc.fillRect(10, colorWheelCanvas.getHeight() - 40, colorWheelCanvas.getWidth() - 20, 30);
 			}
 		});
 	}
@@ -129,7 +127,7 @@ public class ColorPickerController {
 	}
 
 	private double getColorBoxHeight() {
-		return colorWheelCanvas.getHeight() / 2 - 20;
+		return colorWheelCanvas.getHeight() - 60;
 	}
 
 	public void setFrames(List<KeyFrame> selectedKeyFrames) {
