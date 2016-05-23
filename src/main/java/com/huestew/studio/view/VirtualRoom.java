@@ -53,6 +53,17 @@ public class VirtualRoom {
 	public void setCanvas(Canvas canvas) {
 		this.canvas = canvas;
 	}
+	
+	public void calculateBulbPositions(){
+		int size = bulbs.size();
+		
+		int i = 0;
+		for(VirtualBulb bulb : bulbs){
+			double x = (i + 1) * (1.0 / (size + 1));
+			bulb.setPosition(x, 1.0 / 2);
+			i++;
+		}
+	}
 
 	/**
 	 * Redraws the entire virtual room including the bulbs.
@@ -83,6 +94,11 @@ public class VirtualRoom {
 				}
 			}
 		});
+	}
+
+	public String getNextBulbName() {
+		// TODO Auto-generated method stub
+		return "Virtual light " + (bulbs.size()+1);
 	}
 
 }

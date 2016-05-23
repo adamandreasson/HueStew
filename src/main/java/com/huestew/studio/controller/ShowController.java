@@ -13,6 +13,7 @@ import com.huestew.studio.util.WaveBuilder;
 import com.huestew.studio.view.Light;
 import com.huestew.studio.view.TrackView;
 import com.huestew.studio.view.VirtualLight;
+import com.huestew.studio.view.VirtualRoom;
 
 public class ShowController {
 
@@ -76,20 +77,17 @@ public class ShowController {
 			createEmptyTracks();
 		}
 		
-		int i = 0;
 		for (LightTrack track : show.getLightTracks()) {
 			VirtualBulb bulb = new VirtualBulb();
-			double x = (i + 1) * (1.0 / (show.getLightTracks().size() + 1));
-			bulb.setPosition(x, 1.0 / 2);
 
-			Light light = new VirtualLight(bulb, "Virtual Light " + i, show);
+			Light light = new VirtualLight(bulb, controller.getVirtualRoom().getNextBulbName(), show);
 			LightBank.getInstance().addLight(light, track);
 
 			controller.getVirtualRoom().addBulb(bulb);
 
-			track.addListener(light);		
-			i++;
+			track.addListener(light);
 		}
+		controller.getVirtualRoom().calculateBulbPositions();
 
 		show.setAudio(new Audio(audioFile));
 		if (player != null)
@@ -97,10 +95,7 @@ public class ShowController {
 		player = new Player(this);
 		player.setVolume(HueStew.getInstance().getConfig().getVolume());
 
-		controller.updateTitle(audioFile.getName() + " - HueStew Studio");
-		controller.enableControls();
-		
-		controller.updateTracks();
+		controller.initShow(audioFile.getName() + " - HueStew Studio");
 	}
 
 	private void createEmptyTracks() {
@@ -108,6 +103,22 @@ public class ShowController {
 			LightTrack track = new LightTrack();
 			show.addLightTrack(track);
 		}
+	}
+
+	public void addTrack() {
+		show.addLightTrack(new LightTrack());
+		controller.updateTracks();
+	}
+
+	public void addVirtualLight() {
+		VirtualRoom room = controller.getVirtualRoom();
+		
+		VirtualBulb bulb = new VirtualBulb();
+		Light light = new VirtualLight(bulb, room.getNextBulbName(), show);
+		LightBank.getInstance().addLight(light, null);
+		room.addBulb(bulb);
+		room.calculateBulbPositions();
+		room.redraw();
 	}
 
 	public void playerReady() {

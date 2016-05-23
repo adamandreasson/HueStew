@@ -116,9 +116,6 @@ public class MainViewController extends ViewController {
 		this.showController = new ShowController(this);
 		showController.loadAutoSave();
 
-		trackViewController = new TrackViewController(trackCanvas, this);
-		trackViewController.redraw();
-
 		virtualRoom.setCanvas(previewCanvas);
 		virtualRoom.redraw();
 
@@ -132,16 +129,6 @@ public class MainViewController extends ViewController {
 		previewCanvasPane.heightProperty().addListener((observableValue, oldSceneHeight, newSceneHeight) -> {
 			previewCanvas.setHeight((double) newSceneHeight);
 			virtualRoom.redraw();
-		});
-
-		trackCanvasPane.widthProperty().addListener((observableValue, oldWidth, newWidth) -> {
-			trackCanvas.setWidth(newWidth.doubleValue() - trackActionPane.getWidth());
-			trackViewController.redraw();
-		});
-
-		trackCanvasPane.heightProperty().addListener((observableValue, oldHeight, newHeight) -> {
-			trackCanvas.setHeight(newHeight.doubleValue());
-			trackViewController.redraw();
 		});
 
 		trackActionPane.heightProperty().addListener((observableValue, oldHeight, newHeight) -> {
@@ -192,6 +179,24 @@ public class MainViewController extends ViewController {
 
 		drumKitController = new DrumKitController(drumKitPaneWrap, this);
 
+	}
+	
+	private void initTrackCanvas(){
+
+		trackViewController = new TrackViewController(trackCanvas, this);
+		trackCanvas.setWidth(trackCanvasPane.getWidth() - trackActionPane.getWidth());
+		trackCanvas.setHeight(trackCanvasPane.getHeight());
+		trackViewController.redraw();
+
+		trackCanvasPane.widthProperty().addListener((observableValue, oldWidth, newWidth) -> {
+			trackCanvas.setWidth(newWidth.doubleValue() - trackActionPane.getWidth());
+			trackViewController.redraw();
+		});
+
+		trackCanvasPane.heightProperty().addListener((observableValue, oldHeight, newHeight) -> {
+			trackCanvas.setHeight(newHeight.doubleValue());
+			trackViewController.redraw();
+		});
 	}
 
 	@FXML
@@ -294,7 +299,17 @@ public class MainViewController extends ViewController {
 	private void addSequencePressed() {
 		drumKitController.addButtonPressed();
 	}
-
+	
+	@FXML
+	private void insertLightTrackPressed(){
+		showController.addTrack();
+	}
+	
+	@FXML
+	private void insertVirtualLightPressed(){
+		showController.addVirtualLight();
+	}
+	
 	public void setVolume(double volume) {
 		volumeSlider.setValue(volume * 100);
 	}
@@ -432,6 +447,8 @@ public class MainViewController extends ViewController {
 					trackActionPane.getChildren().add(trackBtn);
 					trackActionButtons.add(trackBtn);
 				}
+				
+				trackViewController.redraw();
 			}
 
 		});
@@ -503,6 +520,15 @@ public class MainViewController extends ViewController {
 	
 	public Show getShow(){
 		return showController.getShow();
+	}
+
+	public void initShow(String title) {
+
+		updateTitle(title);
+		
+		initTrackCanvas();
+		enableControls();
+		updateTracks();
 	}
 
 }
