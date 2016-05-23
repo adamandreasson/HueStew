@@ -196,9 +196,15 @@ public class ShowController {
 	private void updateTitle() {
 		String title = HueStew.getInstance().getConfig().getSaveFile();
 		if (title.isEmpty()) {
-			title = show.getAudio().getFile().getName();
+			title = "Untitled (" + removeExtension(show.getAudio().getFile().getName()) + ")";
+		} else {
+			title = removeExtension(new File(title).getName());
 		}
 		controller.initShow(title + " - HueStew Studio");
+	}
+	
+	private String removeExtension(String path) {
+		return path.substring(0, path.lastIndexOf('.'));
 	}
 	
 }

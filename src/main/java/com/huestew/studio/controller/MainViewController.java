@@ -8,7 +8,6 @@ import com.huestew.studio.controller.tools.Toolbox;
 import com.huestew.studio.model.KeyFrame;
 import com.huestew.studio.model.LightTrack;
 import com.huestew.studio.model.Show;
-import com.huestew.studio.util.Util;
 import com.huestew.studio.view.TrackActionPane;
 import com.huestew.studio.view.TrackView;
 import com.huestew.studio.view.VirtualRoom;
@@ -248,9 +247,9 @@ public class MainViewController extends ViewController {
 
 		fileChooser.setInitialDirectory(initialDir);
 		fileChooser.setTitle("Open music file");
-		fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("mp3", "*.mp3"));
+		fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("MP3", "*.mp3"));
 
-		File file = fileChooser.showOpenDialog(Util.createStage());
+		File file = fileChooser.showOpenDialog(rootPane.getScene().getWindow());
 
 		if (file != null) {
 			showController.createShow(file);
@@ -267,7 +266,7 @@ public class MainViewController extends ViewController {
 		fileChooser.setTitle("Open project");
 		fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("JSON", "*.json"));
 
-		File file = fileChooser.showOpenDialog(Util.createStage());
+		File file = fileChooser.showOpenDialog(rootPane.getScene().getWindow());
 
 		if (file != null) {
 			HueStew.getInstance().getConfig().setSaveFile(file.getAbsolutePath());
@@ -293,7 +292,7 @@ public class MainViewController extends ViewController {
 		fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("JSON", "*.json"));
 		fileChooser.setTitle("Choose save location");
 
-		File file = fileChooser.showSaveDialog(Util.createStage());
+		File file = fileChooser.showSaveDialog(rootPane.getScene().getWindow());
 
 		if (file != null) {
 			HueStew.getInstance().getConfig().setSaveFile(file.getAbsolutePath());

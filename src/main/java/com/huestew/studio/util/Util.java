@@ -1,18 +1,9 @@
 package com.huestew.studio.util;
 
-import javafx.scene.image.Image;
-import javafx.stage.Stage;
-
 /**
  * Various utilities.
  */
 public class Util {
-
-	public static Stage createStage() {
-		Stage stage = new Stage();
-		stage.getIcons().add(new Image("/icon_256x256.png"));
-		return stage;
-	}
 	
 	private static String formatTime(int i){
 		if(i >= 10)
