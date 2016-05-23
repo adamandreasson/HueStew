@@ -10,7 +10,7 @@ public class Util {
 
 	public static Stage createStage() {
 		Stage stage = new Stage();
-		stage.getIcons().add(new Image("icon_256x256.png"));
+		stage.getIcons().add(new Image("/icon_256x256.png"));
 		return stage;
 	}
 	

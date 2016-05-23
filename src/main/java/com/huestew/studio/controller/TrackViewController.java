@@ -114,8 +114,8 @@ public class TrackViewController {
 			sendMouseEventToTool(event);
 		}
 
-		if (event.getButton() == MouseButton.SECONDARY && hoveringKeyFrame != null) {
-			controller.openColorPickerPane(view.getSelectedKeyFrames());
+		if (hoveringKeyFrame != null) {
+			controller.openColorPicker(view.getSelectedKeyFrames());
 		}
 
 		clickedSection = TrackSection.NONE;

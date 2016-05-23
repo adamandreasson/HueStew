@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import com.huestew.studio.HueStew;
 import com.huestew.studio.controller.tools.Toolbox;
-import com.huestew.studio.model.Color;
 import com.huestew.studio.model.KeyFrame;
 import com.huestew.studio.model.LightTrack;
 import com.huestew.studio.model.Show;
@@ -16,7 +15,6 @@ import com.huestew.studio.view.VirtualRoom;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
@@ -113,6 +111,7 @@ public class MainViewController extends ViewController {
 	private TrackViewController trackViewController;
 	private TrackMenuController trackMenuController;
 	private DrumKitController drumKitController;
+	private ColorPickerController colorPickerController;
 	private Toolbox toolbox;
 
 	@Override
@@ -121,6 +120,7 @@ public class MainViewController extends ViewController {
 		this.toolbox = new Toolbox(this);
 		this.virtualRoom = new VirtualRoom();
 		this.showController = new ShowController(this);
+		this.colorPickerController = new ColorPickerController(colorPickerPane);
 		showController.loadAutoSave();
 
 		virtualRoom.setCanvas(previewCanvas);
@@ -143,7 +143,7 @@ public class MainViewController extends ViewController {
 		});
 
 		colorPickerPane.widthProperty().addListener((observableValue, oldHeight, newHeight) -> {
-			System.out.println("color picker pane resizxed to " + newHeight);
+			colorPickerController.redraw();
 		});
 
 		volumeSlider.valueProperty().addListener((observableValue, oldValue, newValue) -> {
@@ -193,7 +193,7 @@ public class MainViewController extends ViewController {
 		drumKitController = new DrumKitController(drumKitPaneWrap, this);
 
 	}
-	
+
 	private void initTrackCanvas(){
 
 		trackViewController = new TrackViewController(trackCanvas, this);
@@ -400,40 +400,8 @@ public class MainViewController extends ViewController {
 		stage.setHeight(Double.parseDouble(split[4]));
 	}
 
-	public void openColorPickerPane(List<KeyFrame> selectedKeyFrames) {
-
-		colorPickerPane.getChildren().clear();
-
-		double maxDimension = colorPickerPane.getWidth();
-		if (colorPickerPane.getHeight() > colorPickerPane.getWidth())
-			maxDimension = colorPickerPane.getHeight();
-
-		System.out.println("max dimension is " + maxDimension);
-
-		maxDimension -= 20;
-
-		Image img = new Image("color_circle.png");
-		ImageView imgView = new ImageView(img);
-
-		double imgScale = img.getWidth() / maxDimension;
-		imgView.setFitWidth(maxDimension);
-		imgView.setFitHeight(maxDimension);
-		imgView.setCursor(Cursor.CROSSHAIR);
-
-		imgView.setOnMouseClicked(event -> {
-			int imgX = (int) (event.getX() * imgScale);
-			int imgY = (int) (event.getY() * imgScale);
-			System.out.println("MOUSE DONW");
-			Color c = new Color(img.getPixelReader().getColor(imgX, imgY));
-			System.out.println(c);
-
-			for (KeyFrame frame : selectedKeyFrames) {
-				frame.getState().setColor(c);
-			}
-
-		});
-
-		colorPickerPane.getChildren().add(imgView);
+	public void openColorPicker(List<KeyFrame> selectedKeyFrames) {
+		colorPickerController.setFrames(selectedKeyFrames);
 	}
 
 	public void updateTracks() {

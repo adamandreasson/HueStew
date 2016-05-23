@@ -102,8 +102,7 @@ public class TrackView {
 		}
 
 		// Perform drawing on javafx main thread
-		Platform.runLater(new Runnable() {
-			public void run() {
+		Platform.runLater(() -> {
 				GraphicsContext gc = canvas.getGraphicsContext2D();
 				gc.setFont(new Font(11.0));
 				gc.setFill(BACKGROUND_COLOR);
@@ -116,7 +115,7 @@ public class TrackView {
 				drawCursor(gc);
 				drawScrollbars(gc);
 			}
-		});
+		);
 	}
 
 	private void drawTimeline(GraphicsContext gc) {

@@ -80,7 +80,6 @@
 
 .separator{
     -fx-background-color: transparent;
-    -fx-border-color: #444;
 }
 
 .separator:vertical .line {
