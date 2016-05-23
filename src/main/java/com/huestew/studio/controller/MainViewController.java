@@ -89,6 +89,12 @@ public class MainViewController extends ViewController {
 
 	@FXML
 	private Button saveAsButton;
+	
+	@FXML
+	private Button insertLightTrackButton;
+	
+	@FXML
+	private Button insertVirtualLightButton;
 
 	@FXML
 	private MenuItem zoomInMenuItem;
@@ -166,6 +172,12 @@ public class MainViewController extends ViewController {
 
 		addSequenceButton.setGraphic(new ImageView(new Image("icon_sequence.png")));
 		addSequenceButton.setTooltip(new Tooltip("Create sequence"));
+
+		insertVirtualLightButton.setGraphic(new ImageView(new Image("icon_light_add.png")));
+		insertVirtualLightButton.setTooltip(new Tooltip("Insert virtual light"));
+
+		insertLightTrackButton.setGraphic(new ImageView(new Image("icon_track_add.png")));
+		insertLightTrackButton.setTooltip(new Tooltip("Insert virtual light"));
 
 		addSequenceButton.setDisable(true);
 
