@@ -179,7 +179,7 @@ public class FileHandler {
 				JSONObject frameObj = (JSONObject) frames.get(j);
 				JSONObject stateObj = frameObj.getJSONObject("state");
 				JSONObject colorObj = stateObj.getJSONObject("color");
-				Color color = new Color(colorObj.getDouble("red"), colorObj.getDouble("blue"), colorObj.getDouble("green"));
+				Color color = new Color(colorObj.getDouble("red"), colorObj.getDouble("green"), colorObj.getDouble("blue"), colorObj.getInt("hue"));
 				LightState state = new LightState(color, stateObj.getInt("brightness"), stateObj.getInt("saturation"));
 				KeyFrame frame = new KeyFrame(frameObj.getInt("timestamp"), state, track);
 				track.addKeyFrame(frame);

@@ -59,6 +59,13 @@ public class Color {
 		this.hue = (int)((color.getHue()/360.0)*65535.0);
 	}
 
+	public Color(double red, double green, double blue, int hue) {
+		setRed(red);
+		setGreen(green);
+		setBlue(blue);
+		setHue(hue);
+	}
+
 	/**
 	 * Converts the color to a JavaFX color with the opacity 1.
 	 * 
