@@ -193,6 +193,7 @@ public class MainViewController extends ViewController {
 		rootPane.getChildren().add(0, trackMenuController.getParent());
 
 		drumKitController = new DrumKitController(drumKitPaneWrap, this);
+		drumKitPaneWrap.widthProperty().addListener((a, b, c) -> drumKitController.updateSize());
 
 	}
 

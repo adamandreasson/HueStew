@@ -24,76 +24,97 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.AnchorPane;
 
 public class DrumConfigController extends ViewController {
 
-    @FXML
-    private ChoiceBox<String> trackDropdown;
+	@FXML
+	private AnchorPane wrapPane;
+	
+	@FXML
+	private ChoiceBox<String> trackDropdown;
 
-    @FXML
-    private TextField keyField;
+	@FXML
+	private TextField keyField;
 
-    @FXML
-    private Label label;
-    
-    @FXML
-    private Button copyButton;
-    
-    private DrumKitController controller;
-    private List<LightTrack> tracks;
-    private Drum drum;
+	@FXML
+	private Label label;
+
+	@FXML
+	private Button copyButton;
+
+	@FXML
+	private Button removeButton;
+
+	private DrumKitController controller;
+	private List<LightTrack> tracks;
+	private Drum drum;
 
 	@Override
 	public void init() {
 
 		copyButton.setGraphic(new ImageView(new Image("icon_copy.png")));
 		copyButton.setTooltip(new Tooltip("Create copy"));
-    }
+
+		removeButton.setGraphic(new ImageView(new Image("icon_trash.png")));
+		removeButton.setTooltip(new Tooltip("Remove"));
+		
+	}
 
 	@FXML
 	private void onCopyPressed() {
 		System.out.println("coppy");
 	}
-	
+
+	@FXML
+	private void onRemovePressed() {
+		System.out.println("remove");
+	}
+
 	public void setDrumKitController(DrumKitController controller) {
 		this.controller = controller;
 	}
-	
+
 	public void initDrum(Drum drum, List<LightTrack> tracks) {
 		this.drum = drum;
-		
+
 		label.setText(drum.getName());
-		
+
 		keyField.addEventFilter(KeyEvent.KEY_RELEASED, event -> {
 			KeyCode code = event.getCode();
-			if(code == KeyCode.UNDEFINED)
+			if (code == KeyCode.UNDEFINED)
 				return;
 			keyField.setText(code.toString());
 			drum.setKey(code);
-			
+
 			event.consume();
 		});
-		trackDropdown.getSelectionModel().selectedIndexProperty().addListener((ov, oldValue, newValue) -> {
-
-			System.out.println("chaning drum track to " + newValue.intValue());
-			drum.setTrack(tracks.get(newValue.intValue()));
-
-		});
 		
+		trackDropdown.getSelectionModel().selectedIndexProperty().addListener((ov, oldValue, newValue) -> {
+			drum.setTrack(tracks.get(newValue.intValue()));
+		});
+
 		updateTrackDropdown(tracks);
 	}
-	
-	public void updateTrackDropdown(List<LightTrack> tracks){
+
+	public void updateTrackDropdown(List<LightTrack> tracks) {
 		this.tracks = tracks;
+
+		ArrayList<String> trackNames = new ArrayList<String>();
 		
-		ArrayList<String> trackNames = new ArrayList<String>();	
-		int i = 1;
-		for(LightTrack track : tracks){
+		for (int i = 0; i < tracks.size(); i++) {
 			trackNames.add("Track " + i);
-			i++;
 		}
-		
+
 		trackDropdown.setItems(FXCollections.observableArrayList(trackNames));
+	}
+
+	public void updateSize(double width) {
+		wrapPane.setMaxWidth(width);
+	}
+
+	public void setWidth(double width) {
+		wrapPane.setMaxWidth(width);
 	}
 
 }
