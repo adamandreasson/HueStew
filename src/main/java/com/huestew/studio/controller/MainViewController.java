@@ -9,6 +9,7 @@ import com.huestew.studio.model.KeyFrame;
 import com.huestew.studio.model.LightTrack;
 import com.huestew.studio.model.Sequence;
 import com.huestew.studio.model.Show;
+import com.huestew.studio.util.FileUtil;
 import com.huestew.studio.view.TrackActionPane;
 import com.huestew.studio.view.TrackView;
 import com.huestew.studio.view.VirtualRoom;
@@ -26,7 +27,9 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.Dragboard;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.TransferMode;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -118,8 +121,8 @@ public class MainViewController extends ViewController {
 	@Override
 	public void init() {
 
-		this.toolbox = new Toolbox(this);
 		this.virtualRoom = new VirtualRoom();
+		this.toolbox = new Toolbox(this);
 		this.showController = new ShowController(this);
 		this.colorPickerController = new ColorPickerController(colorPickerPane);
 		showController.loadShow();
@@ -153,8 +156,8 @@ public class MainViewController extends ViewController {
 			}
 			HueStew.getInstance().getConfig().setVolume(normalizedVolume);
 		});
-		
-		volumeSlider.setValue(HueStew.getInstance().getConfig().getVolume()*100);
+
+		volumeSlider.setValue(HueStew.getInstance().getConfig().getVolume() * 100);
 
 		footerStatus.setText("");
 
@@ -195,6 +198,41 @@ public class MainViewController extends ViewController {
 		drumKitController = new DrumKitController(drumKitPaneWrap, this);
 		drumKitPaneWrap.widthProperty().addListener((a, b, c) -> drumKitController.updateSize());
 
+		initDragDropFiles();
+		
+	}
+
+	private void initDragDropFiles() {
+
+		rootPane.setOnDragOver(event -> {
+			
+			Dragboard db = event.getDragboard();
+			if (db.hasFiles()) {
+				event.acceptTransferModes(TransferMode.COPY);
+			} else {
+				event.consume();
+			}
+			
+		});
+
+		rootPane.setOnDragDropped(event -> {
+
+			Dragboard db = event.getDragboard();
+			boolean success = false;
+			if (db.hasFiles()) {
+				if (db.getFiles().size() < 2){
+					File file = db.getFiles().get(0);
+					System.out.println(file.getAbsolutePath());
+					if(FileUtil.isMusicFile(file)){
+						showController.createShow(file);
+					}
+				}
+			}
+
+			event.setDropCompleted(success);
+			event.consume();
+			
+		});
 	}
 
 	private void initTrackCanvas() {
@@ -345,29 +383,29 @@ public class MainViewController extends ViewController {
 	}
 
 	private void setClipboard(List<KeyFrame> selection) {
-		if(selection == null || selection.isEmpty())
+		if (selection == null || selection.isEmpty())
 			return;
-		
+
 		clipBoard = new Sequence(selection);
 	}
 
 	@FXML
-	private void pastePressed() {		
+	private void pastePressed() {
 		paste();
 	}
-	
+
 	private void paste() {
-		if(clipBoard == null)
+		if (clipBoard == null)
 			return;
-		
+
 		int cursor = getShow().getCursor();
-		
-		for(KeyFrame frame : clipBoard.getFrames()){
+
+		for (KeyFrame frame : clipBoard.getFrames()) {
 			LightTrack track = frame.track();
 			KeyFrame pastedFrame = new KeyFrame(cursor + frame.getTimestamp(), frame.getState(), track);
 			track.addKeyFrame(pastedFrame);
 		}
-		
+
 		trackViewController.redraw();
 	}
 
@@ -510,7 +548,7 @@ public class MainViewController extends ViewController {
 	}
 
 	public void handleKeyboardEvent(KeyEvent event) {
-		if(event.getEventType() == KeyEvent.KEY_PRESSED){
+		if (event.getEventType() == KeyEvent.KEY_PRESSED) {
 			drumKitController.keyboardEvent(event);
 		}
 		trackViewController.keyboardEvent(event);

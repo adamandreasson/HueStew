@@ -26,4 +26,19 @@ public class FileUtil {
 
 		while (mediaReader.readPacket() == null);
 	}
+
+	public static boolean isMusicFile(File file) {
+		String extension = "";
+		String fileName = file.getAbsolutePath();
+
+		int i = fileName.lastIndexOf('.');
+		if (i > 0) {
+		    extension = fileName.substring(i+1);
+		    
+		    if(extension.equalsIgnoreCase("mp3"))
+		    	return true;
+		}
+		
+		return false;
+	}
 }

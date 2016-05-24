@@ -40,6 +40,7 @@ public class Toolbox {
 	}
 	
 	public void setSelectedTool(Tool tool) {
+		System.out.println("set setlectied tool");
 		if (tool == null) {
 			throw new IllegalArgumentException("Tool may not be null");
 		}
