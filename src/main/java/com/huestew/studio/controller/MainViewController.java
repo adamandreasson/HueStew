@@ -522,9 +522,7 @@ public class MainViewController extends ViewController {
 		return showController.getShow();
 	}
 
-	public void initShow(String title) {
-
-		updateTitle(title);
+	public void initShow() {
 
 		initTrackCanvas();
 		enableControls();

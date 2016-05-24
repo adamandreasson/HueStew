@@ -112,6 +112,7 @@ public class ShowController {
 		player.setVolume(HueStew.getInstance().getConfig().getVolume());
 
 		updateTitle();
+		controller.initShow();
 
 	}
 
@@ -204,7 +205,7 @@ public class ShowController {
 		} else {
 			title = removeExtension(new File(title).getName());
 		}
-		controller.initShow(title + " - HueStew Studio");
+		controller.updateTitle(title + " - HueStew Studio");
 	}
 	
 	private String removeExtension(String path) {
