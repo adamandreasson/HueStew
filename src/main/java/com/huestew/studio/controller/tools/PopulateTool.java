@@ -1,7 +1,9 @@
 package com.huestew.studio.controller.tools;
 
 import java.util.List;
+import java.util.TreeSet;
 
+import com.huestew.studio.HueStew;
 import com.huestew.studio.model.Color;
 import com.huestew.studio.model.KeyFrame;
 import com.huestew.studio.model.LightState;
@@ -28,7 +30,8 @@ public class PopulateTool extends Tool {
 			return;
 
 		if (event.getEventType() == MouseEvent.MOUSE_RELEASED && event.getButton() == MouseButton.PRIMARY) {
-			lightTrack.addKeyFrame(new KeyFrame(timestamp, new LightState(new Color(1, 1, 1), (int) (255 * normalizedY), 255), lightTrack));
+			if (canPlace(lightTrack, timestamp))
+				lightTrack.addKeyFrame(new KeyFrame(timestamp, new LightState(new Color(1, 1, 1), (int) (255 * normalizedY), 255), lightTrack));
 		}
 	}
 
@@ -43,5 +46,16 @@ public class PopulateTool extends Tool {
 			return Cursor.HAND;
 		else
 			return cursor;
+	}
+	
+	private boolean canPlace(LightTrack track, int timestamp) {
+		TreeSet<KeyFrame> keyFrames = track.getKeyFrames();
+		KeyFrame target = new KeyFrame(timestamp);
+		
+		KeyFrame left = keyFrames.floor(target);
+		KeyFrame right = keyFrames.ceiling(target);
+		
+		return !(left != null && timestamp - left.getTimestamp() < HueStew.getInstance().getTickDuration()
+				|| right != null && right.getTimestamp() - timestamp < HueStew.getInstance().getTickDuration());
 	}
 }
