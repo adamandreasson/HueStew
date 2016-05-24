@@ -7,7 +7,7 @@ import java.util.TreeSet;
 /**
  * A light track representing a timeline of key frames.
  * 
- * @author Patrik Olson
+ * @author Patrik
  */
 public class LightTrack {
 	private TreeSet<KeyFrame> keyFrames;

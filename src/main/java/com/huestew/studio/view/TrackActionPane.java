@@ -1,10 +1,8 @@
-/**
- * 
- */
 package com.huestew.studio.view;
 
 import com.huestew.studio.controller.TrackMenuController;
 import com.huestew.studio.model.LightTrack;
+import com.huestew.studio.util.Task;
 
 import javafx.scene.control.Button;
 import javafx.scene.control.ToggleButton;
@@ -20,7 +18,10 @@ import javafx.scene.layout.VBox;
  */
 public class TrackActionPane extends VBox {
 
-	LightTrack track;
+	private LightTrack track;
+	
+	private Button removeBtn;
+	private Task<Void> removeTask;
 	
 	public TrackActionPane(LightTrack track, ToggleGroup actionGroup, TrackMenuController trackMenuController) {
 		this.track = track;
@@ -46,13 +47,17 @@ public class TrackActionPane extends VBox {
 		});
 		this.getChildren().add(hideBtn);
 		
-		Button removeBtn = new Button();
+		removeBtn = new Button();
 		removeBtn.setGraphic(new ImageView(trashImg));
 		removeBtn.setTooltip(new Tooltip("Remove track"));
-		removeBtn.setOnAction((e) -> {
-			System.out.println("todohehe");
-		});
+		removeBtn.setDisable(true);
+		removeBtn.setOnAction((e) -> removeTask.execute());
 		this.getChildren().add(removeBtn);
+	}
+
+	public void setOnRemove(Task<Void> task) {
+		removeTask = task;
+		removeBtn.setDisable(false);
 	}
 
 	public LightTrack getTrack() {

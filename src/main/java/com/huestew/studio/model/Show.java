@@ -16,20 +16,20 @@ public class Show {
 	private int duration;
 
 	private Audio audio;
-	
+
 	private int cursor;
 
 	public Show() {
 		this.lightTracks = new ArrayList<LightTrack>();
 	}
-	
+
 	public Show(Show other) {
 		List<LightTrack> temp = other.getLightTracks();
-		
+
 		for (LightTrack lt : temp) {
 			this.lightTracks.add(new LightTrack(lt));
 		}
-		
+
 		this.duration = other.getDuration();
 		this.audio = other.getAudio();
 	}
@@ -48,9 +48,14 @@ public class Show {
 	 * Remove a lighttrack from the show.
 	 * 
 	 * @param track
-	 *            the lighttrack to remove.
+	 *            the lighttrack to remove
+	 * @throws IllegalStateException
+	 *             if this is the only light track in the show
 	 */
-	public void removeLightTrack(LightTrack track) {
+	public void removeLightTrack(LightTrack track) throws IllegalStateException {
+		if (lightTracks.size() <= 1) {
+			throw new IllegalStateException("Cannot remove the last light track.");
+		}
 		lightTracks.remove(track);
 	}
 
@@ -86,14 +91,14 @@ public class Show {
 	 *            the timestamp at which the cursor is currently at.
 	 */
 	public void updateCursor(int cursor) {
-		
+
 		this.cursor = cursor;
-		
+
 		// Update cursor in each light track
 		for (LightTrack track : lightTracks) {
 			track.updateCursor(cursor);
 		}
-		
+
 	}
 
 	/**
@@ -104,8 +109,10 @@ public class Show {
 	}
 
 	/**
-	 * @param duration the duration to set
-	 * @throws IllegalArgumentException if duration is negative
+	 * @param duration
+	 *            the duration to set
+	 * @throws IllegalArgumentException
+	 *             if duration is negative
 	 */
 	public void setDuration(int duration) {
 		if (duration < 0) {

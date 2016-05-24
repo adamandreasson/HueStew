@@ -16,6 +16,11 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 
+/**
+ * A tool for adding new key frames to a light track.
+ * 
+ * @author Patrik
+ */
 public class PopulateTool extends Tool {
 
 	private Cursor cursor = new ImageCursor(new Image("/cursor_pencil_add.png"), 4, 0);

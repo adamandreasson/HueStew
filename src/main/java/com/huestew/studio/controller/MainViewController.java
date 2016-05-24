@@ -446,9 +446,17 @@ public class MainViewController extends ViewController {
 			trackActionParentPane.getChildren().clear();
 			trackActionPanes.clear();
 			ToggleGroup actionGroup = new ToggleGroup();
+			List<LightTrack> tracks = showController.getShow().getLightTracks();
 
-			for (LightTrack track : showController.getShow().getLightTracks()) {
+			for (LightTrack track : tracks) {
 				TrackActionPane trackPane = new TrackActionPane(track, actionGroup, trackMenuController);
+				if (tracks.size() > 1) {
+					trackPane.setOnRemove(() -> {
+						showController.getShow().removeLightTrack(track);
+						updateTracks();
+						return null;
+					});
+				}
 
 				AnchorPane.setTopAnchor((Node) trackPane,
 						Math.round(trackViewController.getTrackPositionY(track)) + 0.0);
