@@ -25,7 +25,8 @@ public class Sequence {
 		}
 
 		for (KeyFrame frame : originalFrames) {
-			KeyFrame sequenceFrame = new KeyFrame(frame.getTimestamp() - startTime);
+			KeyFrame sequenceFrame = new KeyFrame(frame);
+			sequenceFrame.setTimestamp(frame.getTimestamp() - startTime);
 			sequenceFrame.setState(frame.getState());
 			
 			frames.add(sequenceFrame);

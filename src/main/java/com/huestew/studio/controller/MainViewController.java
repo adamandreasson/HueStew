@@ -7,6 +7,7 @@ import com.huestew.studio.HueStew;
 import com.huestew.studio.controller.tools.Toolbox;
 import com.huestew.studio.model.KeyFrame;
 import com.huestew.studio.model.LightTrack;
+import com.huestew.studio.model.Sequence;
 import com.huestew.studio.model.Show;
 import com.huestew.studio.view.TrackActionPane;
 import com.huestew.studio.view.TrackView;
@@ -112,6 +113,7 @@ public class MainViewController extends ViewController {
 	private DrumKitController drumKitController;
 	private ColorPickerController colorPickerController;
 	private Toolbox toolbox;
+	private Sequence clipBoard;
 
 	@Override
 	public void init() {
@@ -334,6 +336,38 @@ public class MainViewController extends ViewController {
 	@FXML
 	private void insertVirtualLightPressed() {
 		showController.addVirtualLight();
+	}
+
+	@FXML
+	private void copyPressed() {
+		setClipboard(trackViewController.getSelection());
+	}
+
+	private void setClipboard(List<KeyFrame> selection) {
+		if(selection == null || selection.isEmpty())
+			return;
+		
+		clipBoard = new Sequence(selection);
+	}
+
+	@FXML
+	private void pastePressed() {		
+		paste();
+	}
+	
+	private void paste() {
+		if(clipBoard == null)
+			return;
+		
+		int cursor = getShow().getCursor();
+		
+		for(KeyFrame frame : clipBoard.getFrames()){
+			LightTrack track = frame.track();
+			KeyFrame pastedFrame = new KeyFrame(cursor + frame.getTimestamp(), frame.getState(), track);
+			track.addKeyFrame(pastedFrame);
+		}
+		
+		trackViewController.redraw();
 	}
 
 	public void setVolume(double volume) {

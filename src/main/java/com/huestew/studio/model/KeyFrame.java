@@ -128,4 +128,8 @@ public class KeyFrame implements Comparable<KeyFrame> {
 		return true;
 	}
 
+	public LightTrack track() {
+		return track;
+	}
+
 }

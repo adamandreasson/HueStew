@@ -58,8 +58,13 @@ public class DrumKitController {
 		
 		Drum drum = drumKit.addDrum(sequence);
 
+		AnchorPane drumPane = new AnchorPane();
+		
 		Label label = new Label(drum.getName());
-		grid.getChildren().add(label);
+		drumPane.getChildren().add(label);
+		
+		
+		grid.getChildren().add(drumPane);
 		
 	}
 

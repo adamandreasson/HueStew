@@ -153,14 +153,25 @@
                         </Menu>
                         <Menu mnemonicParsing="false" text="Edit">
                            <items>
-                              <MenuItem mnemonicParsing="false" text="Undo">
+                              <MenuItem text="_Undo">
                                  <accelerator>
                                     <KeyCodeCombination alt="UP" code="Z" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                                  </accelerator>
                               </MenuItem>
-                              <MenuItem mnemonicParsing="false" text="Redo">
+                              <MenuItem text="_Redo">
                                  <accelerator>
                                     <KeyCodeCombination alt="UP" code="Y" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                                 </accelerator>
+                              </MenuItem>
+                              <SeparatorMenuItem mnemonicParsing="false" />
+                              <MenuItem onAction="#copyPressed" text="_Copy">
+                                 <accelerator>
+                                    <KeyCodeCombination alt="UP" code="C" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                                 </accelerator>
+                              </MenuItem>
+                              <MenuItem onAction="#pastePressed" text="_Paste">
+                                 <accelerator>
+                                    <KeyCodeCombination alt="UP" code="V" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                                  </accelerator>
                               </MenuItem>
                               <SeparatorMenuItem mnemonicParsing="false" />
