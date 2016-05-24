@@ -122,6 +122,7 @@ public class TrackViewController {
 	private void handleMouseDraggedEvent(MouseEvent event) {
 		if (clickedSection == TrackSection.VERTICAL_SCROLLBAR) {
 			view.getVerticalScrollbar().setBarPosition(event.getY());
+			controller.updateTrackActionPanePosition();
 			redraw();
 		} else if (clickedSection == TrackSection.HORIZONTAL_SCROLLBAR) {
 			view.getHorizontalScrollbar().setBarPosition(event.getX());
@@ -129,6 +130,7 @@ public class TrackViewController {
 		} else if (event.getButton() == MouseButton.MIDDLE) {
 			view.getVerticalScrollbar().setPosition(event.getY());
 			view.getHorizontalScrollbar().setPosition(event.getX());
+			controller.updateTrackActionPanePosition();
 			redraw();
 		} else if (clickedSection == TrackSection.TIMELINE) {
 			view.getHorizontalScrollbar().setPosition(event.getX());

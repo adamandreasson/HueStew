@@ -35,7 +35,7 @@ public class TrackView {
 
 	private static final int KEY_FRAME_SIZE = 5;
 	private static final int TRACK_SPACER = 10;
-	private static final int MINIMUM_TRACK_HEIGHT = 80;
+	private static final int MINIMUM_TRACK_HEIGHT = 90;
 	private static final int SCROLLBAR_SIZE = 8;
 
 	public static final int PIXELS_PER_SECOND = 100;
