@@ -111,7 +111,7 @@ public class SelectTool extends Tool {
 
 					int newTimestamp = keyframe.getTimestamp() + delta;
 
-					if (newTimestamp < minTimestamp || newTimestamp > maxTimestamp)
+					if (newTimestamp < minTimestamp || newTimestamp > maxTimestamp || newTimestamp <= 0)
 						allowedMove = false;
 
 				}
