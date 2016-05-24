@@ -15,9 +15,13 @@ import javafx.collections.FXCollections;
  *
  */
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
@@ -32,10 +36,25 @@ public class DrumConfigController extends ViewController {
     @FXML
     private Label label;
     
+    @FXML
+    private Button copyButton;
+    
     private DrumKitController controller;
     private List<LightTrack> tracks;
     private Drum drum;
 
+	@Override
+	public void init() {
+
+		copyButton.setGraphic(new ImageView(new Image("icon_copy.png")));
+		copyButton.setTooltip(new Tooltip("Create copy"));
+    }
+
+	@FXML
+	private void onCopyPressed() {
+		System.out.println("coppy");
+	}
+	
 	public void setDrumKitController(DrumKitController controller) {
 		this.controller = controller;
 	}

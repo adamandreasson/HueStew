@@ -86,3 +86,7 @@
     -fx-background: #767676;
     -fx-padding: 0;
 }
+
+.cb{
+	-fx-base: black;
+}
