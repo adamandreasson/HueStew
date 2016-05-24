@@ -151,6 +151,8 @@ public class MainViewController extends ViewController {
 			}
 			HueStew.getInstance().getConfig().setVolume(normalizedVolume);
 		});
+		
+		volumeSlider.setValue(HueStew.getInstance().getConfig().getVolume()*100);
 
 		footerStatus.setText("");
 
