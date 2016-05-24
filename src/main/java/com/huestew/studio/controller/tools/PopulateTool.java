@@ -31,12 +31,17 @@ public class PopulateTool extends Tool {
 
 	@Override
 	public void doAction(MouseEvent event, LightTrack lightTrack, KeyFrame keyFrame, List<KeyFrame> selectedKeyFrames, int timestamp, double normalizedY) {
-		if (keyFrame != null)
+		if (keyFrame != null){
 			return;
+		}
+			
 
-		if (event.getEventType() == MouseEvent.MOUSE_RELEASED && event.getButton() == MouseButton.PRIMARY) {
-			if (canPlace(lightTrack, timestamp))
+		if (event.getEventType() == MouseEvent.MOUSE_PRESSED && event.getButton() == MouseButton.PRIMARY) {
+			if (canPlace(lightTrack, timestamp)){
 				lightTrack.addKeyFrame(new KeyFrame(timestamp, new LightState(new Color(1, 1, 1), (int) (255 * normalizedY), 255), lightTrack));
+				selectedKeyFrames.clear();
+			}
+		
 		}
 	}
 
