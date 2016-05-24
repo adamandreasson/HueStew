@@ -278,4 +278,8 @@ public class TrackViewController {
 	public void adjustZoom(double zoom) {
 		view.adjustZoom(zoom);
 	}
+
+	public List<KeyFrame> getSelection() {
+		return view.getSelectedKeyFrames();
+	}
 }

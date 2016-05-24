@@ -323,7 +323,7 @@ public class MainViewController extends ViewController {
 
 	@FXML
 	private void addSequencePressed() {
-		drumKitController.addButtonPressed();
+		drumKitController.addButtonPressed(trackViewController.getSelection());
 	}
 
 	@FXML
