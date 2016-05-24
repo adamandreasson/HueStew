@@ -6,6 +6,8 @@ package com.huestew.studio.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import javafx.scene.input.KeyCode;
+
 /**
  * @author Adam
  *
@@ -26,6 +28,29 @@ public class DrumKit {
 
 	public List<Drum> getDrums() {
 		return drums;
+	}
+
+	public boolean isValidKey(KeyCode key) {
+
+		for (Drum drum : drums) {
+			if (drum.getKey() == key) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	public boolean beat(KeyCode key, Show show) {
+		
+		for (Drum drum : drums) {
+			if (drum.getKey() == key) {
+				return drum.beat(show);
+			}
+		}
+		
+		return false;
+		
 	}
 
 }

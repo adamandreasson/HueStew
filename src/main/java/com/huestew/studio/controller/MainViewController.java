@@ -54,10 +54,10 @@ public class MainViewController extends ViewController {
 	private AnchorPane trackActionParentPane;
 
 	@FXML
-	public AnchorPane colorPickerPane;
+	private AnchorPane colorPickerPane;
 
 	@FXML
-	public AnchorPane drumKitPaneWrap;
+	private AnchorPane drumKitPaneWrap;
 
 	@FXML
 	private ToggleButton populateToolButton;
@@ -509,6 +509,9 @@ public class MainViewController extends ViewController {
 	}
 
 	public void handleKeyboardEvent(KeyEvent event) {
+		if(event.getEventType() == KeyEvent.KEY_PRESSED){
+			drumKitController.keyboardEvent(event);
+		}
 		trackViewController.keyboardEvent(event);
 	}
 

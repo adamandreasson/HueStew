@@ -10,7 +10,8 @@ import com.huestew.studio.model.DrumKit;
 import com.huestew.studio.model.KeyFrame;
 import com.huestew.studio.model.Sequence;
 
-import javafx.scene.control.Label;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.TilePane;
 
@@ -58,14 +59,25 @@ public class DrumKitController {
 		
 		Drum drum = drumKit.addDrum(sequence);
 
-		AnchorPane drumPane = new AnchorPane();
+		DrumConfigController drumConfigController = (DrumConfigController) ViewController.loadFxml("/drumtile.fxml");
+		drumConfigController.setDrumKitController(this);
+		drumConfigController.initDrum(drum, controller.getShow().getLightTracks());
+		grid.getChildren().add(drumConfigController.getParent());
+				
+	}
+
+	public boolean isValidDrumKey(KeyCode key){
 		
-		Label label = new Label(drum.getName());
-		drumPane.getChildren().add(label);
-		
-		
-		grid.getChildren().add(drumPane);
-		
+		return drumKit.isValidKey(key);
+	}
+	
+	public void keyboardEvent(KeyEvent event) {
+		boolean wasDrumBeat = drumKit.beat(event.getCode(), controller.getShow());
+	
+		if(wasDrumBeat){
+			System.out.println("omg drum was beat");
+			controller.updateTrackView();
+		}
 	}
 
 }
