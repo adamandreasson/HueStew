@@ -98,10 +98,8 @@ public class TrackViewController {
 			view.getVerticalScrollbar().setOrigin(event.getY());
 			view.getHorizontalScrollbar().setOrigin(event.getX());
 		} else if (clickedSection == TrackSection.TIMELINE) {
+			seekingEvent(event);
 			view.getHorizontalScrollbar().setOrigin(event.getX());
-		} else if (clickedSection == TrackSection.CURSOR) {
-			int time = view.getTimeFromX(event.getX());
-			controller.getPlayer().seek(time);
 		} else {
 			sendMouseEventToTool(event);
 		}
@@ -133,6 +131,7 @@ public class TrackViewController {
 			controller.updateTrackActionPanePosition();
 			redraw();
 		} else if (clickedSection == TrackSection.TIMELINE) {
+			seekingEvent(event);
 			view.getHorizontalScrollbar().setPosition(event.getX());
 			redraw();
 		} else {
@@ -162,7 +161,7 @@ public class TrackViewController {
 
 	private void sendMouseEventToTool(MouseEvent event) {
 		if (clickedSection != TrackSection.TRACKS) {
-			parseTrackEvent(event);
+			seekingEvent(event);
 			return;
 		}
 
@@ -244,10 +243,14 @@ public class TrackViewController {
 		}
 	}
 
-	private void parseTrackEvent(MouseEvent event) {
+	private void seekingEvent(MouseEvent event) {
 		// TODO refactor different sections into this method?
 		// Seeking event
+		if(clickedSection == TrackSection.TIMELINE){
+			view.updateDesiredCursorPosition();
+		}
 		if (clickedSection == TrackSection.CURSOR) {
+			view.setDesiredCursorPosition(event.getX());
 			int time = view.getTimeFromX(event.getX());
 			controller.getPlayer().seek(time);
 			redraw();

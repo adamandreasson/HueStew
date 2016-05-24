@@ -53,6 +53,8 @@ public class TrackView {
 	private static final Color SCROLLBAR_COLOR = Color.web("#303030");
 
 	private double zoom = 1;
+	private double desiredCursorPosition = 20;
+	private int cursorAtLastDraw = 0;
 
 	private List<Image> backgroundWaveImages;
 	private Scrollbar verticalScrollbar;
@@ -67,6 +69,7 @@ public class TrackView {
 	public TrackView(Canvas canvas, Show show) {
 		this.canvas = canvas;
 		this.show = show;
+		this.desiredCursorPosition = canvas.getWidth() / 2;
 
 		this.selectedKeyFrames = new ArrayList<>();
 
@@ -89,20 +92,18 @@ public class TrackView {
 	public void redraw(boolean isPlaying) {
 
 		// Scroll automatically while playing the show
-		if (isPlaying) {
+		if (show.getCursor() > cursorAtLastDraw) {
 			double x = getXFromTime(show.getCursor());
-			double leftEdge = 10;
-			double rightEdge = canvas.getWidth() - 300;
+			double rightEdge = desiredCursorPosition;
 
 			if (x > rightEdge) {
 				horizontalScrollbar.addOffset(x - rightEdge);
-			} else if (x < leftEdge) {
-				horizontalScrollbar.addOffset(x - leftEdge);
 			}
 		}
 
 		// Perform drawing on javafx main thread
 		Platform.runLater(() -> {
+
 			GraphicsContext gc = canvas.getGraphicsContext2D();
 			gc.setFont(new Font(11.0));
 			gc.setFill(BACKGROUND_COLOR);
@@ -114,8 +115,9 @@ public class TrackView {
 			drawSelection(gc);
 			drawCursor(gc);
 			drawScrollbars(gc);
-		}
-				);
+
+			cursorAtLastDraw = show.getCursor();
+		});
 	}
 
 	private void drawTimeline(GraphicsContext gc) {
@@ -415,8 +417,8 @@ public class TrackView {
 
 		List<KeyFrame> selection = new ArrayList<KeyFrame>();
 		int tracksInSelection = 0;
-		
-		if(ctrlDown){
+
+		if (ctrlDown) {
 			selection = selectedKeyFrames;
 			tracksInSelection = 1; // TODO maybe rewrite this part
 		}
@@ -490,6 +492,16 @@ public class TrackView {
 		} else {
 			return TrackSection.TRACKS;
 		}
+	}
+
+	public void setDesiredCursorPosition(double x) {
+		System.out.println("desired cursor position is " + x);
+		this.desiredCursorPosition = x;
+	}
+
+	public void updateDesiredCursorPosition() {
+		System.out.println("desired cursor position is " + getXFromTime(show.getCursor()));
+		this.desiredCursorPosition = getXFromTime(show.getCursor());
 	}
 
 }
