@@ -147,20 +147,14 @@ public class ShowController {
 		System.out.println(tmpSongFile);
 
 		// TODO? THIS SHOULD ALL BE ELSEWHERE
-		Thread thread = new Thread(new Runnable() {
+		Thread thread = new Thread(() -> {
+			FileUtil.convertAudioFile(show.getAudio().getFile().getPath(), tmpSongFile);
 
-			@Override
-			public void run() {
+			String tmpWaveFile = fileHandler.getTempFilePath("wave");
+			WaveBuilder builder = new WaveBuilder(tmpSongFile, tmpWaveFile, width, 400);
 
-				FileUtil.convertAudioFile(show.getAudio().getFile().getPath(), tmpSongFile);
-
-				String tmpWaveFile = fileHandler.getTempFilePath("wave");
-				WaveBuilder builder = new WaveBuilder(tmpSongFile, tmpWaveFile, width, 400);
-
-				controller.updateWaveImage(builder.getImagePaths());
-				controller.updateFooterStatus("Ready");
-			}
-
+			controller.updateWaveImage(builder.getImagePaths());
+			controller.updateFooterStatus("Ready");
 		});
 		thread.start();
 

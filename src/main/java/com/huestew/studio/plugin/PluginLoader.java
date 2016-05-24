@@ -23,32 +23,27 @@ public class PluginLoader {
 		if(!rootPath.exists())
 			return;
 		
-		Thread thread = new Thread(new Runnable(){
+		Thread thread = new Thread(() -> {
+			for (File file : rootPath.listFiles()) {
 
-			@Override
-			public void run() {
-				for (File file : rootPath.listFiles()) {
+				if (!file.toString().endsWith(".jar"))
+					continue;
 
-					if (!file.toString().endsWith(".jar"))
-						continue;
+				Properties prop = loadPluginProperties(file);
 
-					Properties prop = loadPluginProperties(file);
-
-					if(prop != null){
-						try {
-							Plugin plugin = load(file, prop);
-							
-							if(plugin != null){
-								pluginHandler.addPlugin(plugin);
-							}
-						} catch (MalformedURLException | ClassCastException | ReflectiveOperationException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
+				if(prop != null){
+					try {
+						Plugin plugin = load(file, prop);
+						
+						if(plugin != null){
+							pluginHandler.addPlugin(plugin);
 						}
+					} catch (MalformedURLException | ClassCastException | ReflectiveOperationException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
 					}
 				}
 			}
-			
 		});
 		
 		thread.start();

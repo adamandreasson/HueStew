@@ -348,12 +348,7 @@ public class MainViewController extends ViewController {
 	 *            New status
 	 */
 	public void updateFooterStatus(String label) {
-		Platform.runLater(new Runnable() {
-			@Override
-			public void run() {
-				footerStatus.setText(label);
-			}
-		});
+		Platform.runLater(() -> footerStatus.setText(label));
 	}
 
 	/**
@@ -413,43 +408,30 @@ public class MainViewController extends ViewController {
 	}
 
 	public void updateTracks() {
-		Platform.runLater(new Runnable() {
+		Platform.runLater(() -> {
+			trackActionParentPane.getChildren().clear();
+			trackActionPanes.clear();
+			ToggleGroup actionGroup = new ToggleGroup();
 
-			@Override
-			public void run() {
+			for (LightTrack track : showController.getShow().getLightTracks()) {
+				TrackActionPane trackPane = new TrackActionPane(track, actionGroup, trackMenuController);
 
-				trackActionParentPane.getChildren().clear();
-				trackActionPanes.clear();
-				ToggleGroup actionGroup = new ToggleGroup();
-
-				for (LightTrack track : showController.getShow().getLightTracks()) {
-					TrackActionPane trackPane = new TrackActionPane(track, actionGroup, trackMenuController);
-
-					AnchorPane.setTopAnchor((Node) trackPane,
-							Math.round(trackViewController.getTrackPositionY(track)) + 0.0);
-					trackActionParentPane.getChildren().add(trackPane);
-					trackActionPanes.add(trackPane);
-				}
-
-				trackViewController.redraw();
+				AnchorPane.setTopAnchor((Node) trackPane,
+						Math.round(trackViewController.getTrackPositionY(track)) + 0.0);
+				trackActionParentPane.getChildren().add(trackPane);
+				trackActionPanes.add(trackPane);
 			}
 
+			trackViewController.redraw();
 		});
 	}
 
-	private void updateTrackActionPanePosition() {
-		Platform.runLater(new Runnable() {
-
-			@Override
-			public void run() {
-
-				for (TrackActionPane pane : trackActionPanes) {
-					AnchorPane.setTopAnchor((Node) pane,
-							Math.round(trackViewController.getTrackPositionY(pane.getTrack())) + 0.0);
-
-				}
+	public void updateTrackActionPanePosition() {
+		Platform.runLater(() -> {
+			for (TrackActionPane pane : trackActionPanes) {
+				AnchorPane.setTopAnchor((Node) pane,
+						Math.round(trackViewController.getTrackPositionY(pane.getTrack())) + 0.0);
 			}
-
 		});
 	}
 

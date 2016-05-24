@@ -38,14 +38,9 @@ public class Player {
 			mediaPlayer = new MediaPlayer(media);
 			mediaPlayer.setAutoPlay(false);
 			
-			mediaPlayer.setOnReady(new Runnable() {
-
-				@Override
-				public void run() {
-					controller.getShow().setDuration((int) media.getDuration().toMillis());
-
-					controller.playerReady();
-				}
+			mediaPlayer.setOnReady(() -> {
+				controller.getShow().setDuration((int) media.getDuration().toMillis());
+				controller.playerReady();
 			});
 
 		} catch (Exception e) {
@@ -66,30 +61,25 @@ public class Player {
 		mediaPlayer.play();
 
 		// TODO Put runnable in new class?
-		playingThread = new Thread(new Runnable() {
+		playingThread = new Thread(() -> {
+			boolean keepRunning = true;
 
-			@Override
-			public void run() {
-				boolean keepRunning = true;
+			// Keep updating unless the thread is interrupted
+			while (keepRunning) {
 
-				// Keep updating unless the thread is interrupted
-				while (keepRunning) {
+				controller.tick();
 
-					controller.tick();
-
-					try {
-						// Sleep for 33 ms (Run at 30 fps)
-						Thread.sleep(HueStew.getInstance().getTickDuration());
-					} catch (InterruptedException e) {
-						// If the thread is interrupted, stop the loop and kill
-						// it safely
-						keepRunning = false;
-					}
+				try {
+					// Sleep for 33 ms (Run at 30 fps)
+					Thread.sleep(HueStew.getInstance().getTickDuration());
+				} catch (InterruptedException e) {
+					// If the thread is interrupted, stop the loop and kill
+					// it safely
+					keepRunning = false;
 				}
-
-				pauseTime = 0;
 			}
 
+			pauseTime = 0;
 		});
 
 		playingThread.setDaemon(true);

@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.huestew.studio.controller;
 
 import java.util.HashMap;
