@@ -223,8 +223,7 @@ public class TrackView {
 			double y = startY + getTrackHeight() - getRelativeYFromBrightness(frame.getState().getBrightness());
 			boolean selected = false;
 
-			// TODO use a different collection?
-			if (selectedKeyFrames.stream().anyMatch(e -> e == frame))
+			if (selectedKeyFrames.contains(frame))
 				selected = true;
 
 			drawKeyFrame(gc, x, y, selected);
@@ -254,8 +253,8 @@ public class TrackView {
 	}
 
 	private void drawSelection(GraphicsContext gc) {
-		// TODO limit to track area?
 		if (selectRectangle != null) {
+			gc.beginPath();
 			gc.rect(selectRectangle.getX(), selectRectangle.getY(), selectRectangle.getWidth(),
 					selectRectangle.getHeight());
 			gc.setFill(new Color(0.2, 0.0, 1.0, 0.1));
@@ -267,7 +266,6 @@ public class TrackView {
 	}
 
 	private void drawScrollbars(GraphicsContext gc) {
-		// TODO
 		gc.setFill(SCROLLBAR_COLOR);
 		gc.fillRoundRect(getVisibleTrackWidth(), getTotalTrackPositionY() + verticalScrollbar.getBarPosition(),
 				SCROLLBAR_SIZE, verticalScrollbar.getBarSize(), SCROLLBAR_SIZE, SCROLLBAR_SIZE);
