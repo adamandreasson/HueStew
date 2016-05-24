@@ -1,6 +1,5 @@
 package com.huestew.studio.view;
 
-import com.huestew.studio.controller.TrackMenuController;
 import com.huestew.studio.model.LightTrack;
 import com.huestew.studio.util.Task;
 
@@ -20,23 +19,21 @@ public class TrackActionPane extends VBox {
 
 	private LightTrack track;
 	
+	ToggleButton trackBtn;
 	private Button removeBtn;
 	private Task<Void> removeTask;
 	
-	public TrackActionPane(LightTrack track, ToggleGroup actionGroup, TrackMenuController trackMenuController) {
+	public TrackActionPane(LightTrack track, ToggleGroup actionGroup) {
 		this.track = track;
 
 		Image lightImg = new Image("icon_light.png");
 		Image eyeImg = new Image("icon_eye.png");
 		Image trashImg = new Image("icon_trash.png");
 		
-		ToggleButton trackBtn = new ToggleButton();
+		trackBtn = new ToggleButton();
 		trackBtn.setToggleGroup(actionGroup);
 		trackBtn.setGraphic(new ImageView(lightImg));
 		trackBtn.setTooltip(new Tooltip("Configure lights"));
-		trackBtn.setOnAction((e) -> {
-			trackMenuController.openFor(trackBtn, track);
-		});
 		this.getChildren().add(trackBtn);
 		
 		Button hideBtn = new Button();
@@ -62,6 +59,10 @@ public class TrackActionPane extends VBox {
 
 	public LightTrack getTrack() {
 		return track;
+	}
+	
+	public ToggleButton getTrackBtn() {
+		return trackBtn;
 	}
 	
 }

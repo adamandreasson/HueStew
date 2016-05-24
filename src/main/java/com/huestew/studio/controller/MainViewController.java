@@ -449,7 +449,7 @@ public class MainViewController extends ViewController {
 			List<LightTrack> tracks = showController.getShow().getLightTracks();
 
 			for (LightTrack track : tracks) {
-				TrackActionPane trackPane = new TrackActionPane(track, actionGroup, trackMenuController);
+				TrackActionPane trackPane = new TrackActionPane(track, actionGroup);
 				if (tracks.size() > 1) {
 					trackPane.setOnRemove(() -> {
 						showController.getShow().removeLightTrack(track);
@@ -457,6 +457,9 @@ public class MainViewController extends ViewController {
 						return null;
 					});
 				}
+				trackPane.getTrackBtn().setOnAction((e) -> {
+					trackMenuController.openFor(trackPane.getTrackBtn(), track);
+				});
 
 				AnchorPane.setTopAnchor((Node) trackPane,
 						Math.round(trackViewController.getTrackPositionY(track)) + 0.0);
