@@ -15,6 +15,8 @@ import com.huestew.studio.view.TrackView;
 import com.huestew.studio.view.VirtualLight;
 import com.huestew.studio.view.VirtualRoom;
 
+import javafx.application.Platform;
+
 public class ShowController {
 
 	private MainViewController controller;
@@ -72,6 +74,11 @@ public class ShowController {
 			fileHandler.loadTrackData(show);
 		} catch (IllegalArgumentException e) {
 			// TODO Replace song
+		}
+
+		if (show.getAudio() == null) {
+			Platform.runLater(() -> controller.newButtonPressed());
+			return;
 		}
 
 		controller.updateFooterStatus("Loading project...");
@@ -190,7 +197,10 @@ public class ShowController {
 	private void updateTitle() {
 		String title = HueStew.getInstance().getConfig().getSaveFile();
 		if (title.isEmpty()) {
-			title = "Untitled (" + removeExtension(show.getAudio().getFile().getName()) + ")";
+			title = "Untitled";
+			if (show.getAudio() != null) {
+				title += " (" + removeExtension(show.getAudio().getFile().getName()) + ")";
+			}
 		} else {
 			title = removeExtension(new File(title).getName());
 		}

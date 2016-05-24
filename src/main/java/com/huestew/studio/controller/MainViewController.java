@@ -239,7 +239,7 @@ public class MainViewController extends ViewController {
 	}
 
 	@FXML
-	private void newButtonPressed() {
+	protected void newButtonPressed() {
 		FileChooser fileChooser = new FileChooser();
 
 		File initialDir = new File(HueStew.getInstance().getConfig().getMusicDirectory());

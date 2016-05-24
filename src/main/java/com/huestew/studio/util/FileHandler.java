@@ -126,7 +126,9 @@ public class FileHandler {
 		}
 
 		obj.put("tracks", tracksJson);
-		obj.put("audio", show.getAudio().getFile().getAbsolutePath());
+
+		if (show.getAudio() != null)
+			obj.put("audio", show.getAudio().getFile().getAbsolutePath());
 
 		System.out.println("saving to " + getSaveFile());
 		try (PrintWriter out = new PrintWriter(getSaveFile(), "utf-8")) {
@@ -187,11 +189,13 @@ public class FileHandler {
 
 		}
 
-		// TODO handle exception, prompt to replace file if missing
-		try {
-			show.setAudio(new Audio(new File(obj.getString("audio"))));
-		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
+		if (obj.has("audio")) {
+			// TODO handle exception, prompt to replace file if missing
+			try {
+				show.setAudio(new Audio(new File(obj.getString("audio"))));
+			} catch (IllegalArgumentException e) {
+				e.printStackTrace();
+			}
 		}
 
 	}
