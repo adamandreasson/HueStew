@@ -133,25 +133,25 @@
                                  </accelerator>
                               </MenuItem>
                               <SeparatorMenuItem mnemonicParsing="false" />
-                              <MenuItem onAction="#saveButtonPressed" text="_Save">
+                              <MenuItem fx:id="saveMenuItem" disable="true" onAction="#saveButtonPressed" text="_Save">
                                  <accelerator>
                                     <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                                  </accelerator>
                               </MenuItem>
-                              <MenuItem mnemonicParsing="false" onAction="#saveAsButtonPressed" text="Save As...">
+                              <MenuItem fx:id="saveAsMenuItem" disable="true" mnemonicParsing="false" onAction="#saveAsButtonPressed" text="Save As...">
                                  <accelerator>
                                     <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
                                  </accelerator>
                               </MenuItem>
                               <SeparatorMenuItem />
-                              <MenuItem text="E_xit">
+                              <MenuItem onAction="#exitButtonPressed" text="E_xit">
                                  <accelerator>
                                     <KeyCodeCombination alt="DOWN" code="F4" control="UP" meta="UP" shift="UP" shortcut="UP" />
                                  </accelerator>
                               </MenuItem>
                            </items>
                         </Menu>
-                        <Menu mnemonicParsing="false" text="Edit">
+                        <Menu fx:id="editMenu" disable="true" mnemonicParsing="false" text="Edit">
                            <items>
                               <MenuItem text="_Undo">
                                  <accelerator>
@@ -178,7 +178,7 @@
                               <MenuItem mnemonicParsing="false" text="Delete" />
                            </items>
                         </Menu>
-                        <Menu mnemonicParsing="false" text="View">
+                        <Menu fx:id="viewMenu" disable="true" mnemonicParsing="false" text="View">
                            <items>
                               <MenuItem fx:id="zoomInMenuItem" mnemonicParsing="false" onAction="#zoomInButtonPressed" text="Zoom In">
                                  <accelerator>
@@ -192,10 +192,10 @@
                               </MenuItem>
                            </items>
                         </Menu>
-                        <Menu mnemonicParsing="false" text="Insert">
+                        <Menu fx:id="insertMenu" disable="true" mnemonicParsing="false" text="Insert">
                            <items>
-                              <MenuItem mnemonicParsing="false" onAction="#insertLightTrackPressed" text="Light Track" />
-                              <MenuItem mnemonicParsing="false" onAction="#insertVirtualLightPressed" text="Virtual Light" />
+                              <MenuItem fx:id="insertLightTrackMenuItem" mnemonicParsing="false" onAction="#insertLightTrackPressed" text="Light Track" />
+                              <MenuItem fx:id="insertVirtualLightMenuItem" mnemonicParsing="false" onAction="#insertVirtualLightPressed" text="Virtual Light" />
                            </items>
                         </Menu>
                         <Menu mnemonicParsing="false" text="Help">
@@ -232,12 +232,12 @@
                               <Insets left="2.0" />
                            </padding>
                         </Separator>
-                        <Button fx:id="insertLightTrackButton" mnemonicParsing="false" onAction="#insertLightTrackPressed">
+                        <Button fx:id="insertLightTrackButton" disable="true" mnemonicParsing="false" onAction="#insertLightTrackPressed">
                            <FlowPane.margin>
                               <Insets bottom="1.0" left="1.0" right="1.0" top="1.0" />
                            </FlowPane.margin>
                         </Button>
-                        <Button fx:id="insertVirtualLightButton" mnemonicParsing="false" onAction="#insertVirtualLightPressed">
+                        <Button fx:id="insertVirtualLightButton" disable="true" mnemonicParsing="false" onAction="#insertVirtualLightPressed">
                            <FlowPane.margin>
                               <Insets bottom="1.0" left="1.0" right="1.0" top="1.0" />
                            </FlowPane.margin>

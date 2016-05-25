@@ -20,6 +20,7 @@ import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Slider;
 import javafx.scene.control.ToggleButton;
@@ -33,6 +34,7 @@ import javafx.scene.input.TransferMode;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 /**
  * Controller class for the Main JavaFX view
@@ -99,6 +101,21 @@ public class MainViewController extends ViewController {
 	private Button insertVirtualLightButton;
 
 	@FXML
+	private Menu editMenu;
+
+	@FXML
+	private Menu viewMenu;
+
+	@FXML
+	private Menu insertMenu;
+
+	@FXML
+	private MenuItem saveMenuItem;
+
+	@FXML
+	private MenuItem saveAsMenuItem;
+
+	@FXML
 	private MenuItem zoomInMenuItem;
 
 	@FXML
@@ -125,10 +142,14 @@ public class MainViewController extends ViewController {
 		this.toolbox = new Toolbox(this);
 		this.showController = new ShowController(this);
 		this.colorPickerController = new ColorPickerController(colorPickerPane);
-		showController.loadShow();
+		
+		Platform.runLater(() -> {
+			showController.loadShow();
 
-		virtualRoom.setCanvas(previewCanvas);
-		virtualRoom.redraw();
+			virtualRoom.setCanvas(previewCanvas);
+			virtualRoom.redraw();
+		});
+		
 
 		trackActionPanes = new ArrayList<>();
 
@@ -282,18 +303,13 @@ public class MainViewController extends ViewController {
 	}
 
 	@FXML
+	private void exitButtonPressed() {
+		stage.fireEvent(new WindowEvent(stage, WindowEvent.WINDOW_CLOSE_REQUEST));
+	}
+
+	@FXML
 	protected void newButtonPressed() {
-		FileChooser fileChooser = new FileChooser();
-
-		File initialDir = new File(HueStew.getInstance().getConfig().getMusicDirectory());
-		if (!initialDir.exists())
-			initialDir = new File(System.getProperty("user.home"));
-
-		fileChooser.setInitialDirectory(initialDir);
-		fileChooser.setTitle("Open music file");
-		fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("MP3", "*.mp3"));
-
-		File file = fileChooser.showOpenDialog(rootPane.getScene().getWindow());
+		File file = showController.browseForSong();
 
 		if (file != null) {
 			showController.createShow(file);
@@ -310,7 +326,7 @@ public class MainViewController extends ViewController {
 		fileChooser.setTitle("Open project");
 		fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("JSON", "*.json"));
 
-		File file = fileChooser.showOpenDialog(rootPane.getScene().getWindow());
+		File file = fileChooser.showOpenDialog(stage);
 
 		if (file != null) {
 			HueStew.getInstance().getConfig().setSaveFile(file.getAbsolutePath());
@@ -336,7 +352,7 @@ public class MainViewController extends ViewController {
 		fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("JSON", "*.json"));
 		fileChooser.setTitle("Choose save location");
 
-		File file = fileChooser.showSaveDialog(rootPane.getScene().getWindow());
+		File file = fileChooser.showSaveDialog(stage);
 
 		if (file != null) {
 			HueStew.getInstance().getConfig().setSaveFile(file.getAbsolutePath());
@@ -444,6 +460,11 @@ public class MainViewController extends ViewController {
 		playButton.setDisable(false);
 		pauseButton.setDisable(false);
 		volumeSlider.setDisable(false);
+		saveMenuItem.setDisable(false);
+		saveAsMenuItem.setDisable(false);
+		editMenu.setDisable(false);
+		viewMenu.setDisable(false);
+		insertMenu.setDisable(false);
 	}
 
 	/**
@@ -553,7 +574,8 @@ public class MainViewController extends ViewController {
 		if (event.getEventType() == KeyEvent.KEY_PRESSED) {
 			drumKitController.keyboardEvent(event);
 		}
-		trackViewController.keyboardEvent(event);
+		if (trackViewController != null)
+			trackViewController.keyboardEvent(event);
 	}
 
 	public VirtualRoom getVirtualRoom() {
@@ -582,6 +604,10 @@ public class MainViewController extends ViewController {
 		initTrackCanvas();
 		enableControls();
 		updateTracks();
+	}
+
+	public Stage getStage() {
+		return stage;
 	}
 
 }

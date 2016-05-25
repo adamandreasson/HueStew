@@ -24,6 +24,7 @@ import com.huestew.studio.model.HueStewConfig;
 import com.huestew.studio.model.KeyFrame;
 import com.huestew.studio.model.LightState;
 import com.huestew.studio.model.LightTrack;
+import com.huestew.studio.model.MissingSongException;
 import com.huestew.studio.model.Show;
 
 public class FileHandler {
@@ -140,7 +141,7 @@ public class FileHandler {
 
 	}
 
-	public void loadTrackData(Show show) {
+	public void loadTrackData(Show show) throws MissingSongException {
 
 		String everything = "";
 
@@ -190,14 +191,14 @@ public class FileHandler {
 		}
 
 		if (obj.has("audio")) {
-			// TODO handle exception, prompt to replace file if missing
+			String songPath = obj.getString("audio");
+
 			try {
-				show.setAudio(new Audio(new File(obj.getString("audio"))));
+				show.setAudio(new Audio(songPath));
 			} catch (IllegalArgumentException e) {
-				e.printStackTrace();
+				throw new MissingSongException(songPath);
 			}
 		}
-
 	}
 	
 	public void clean(){

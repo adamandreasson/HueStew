@@ -5,17 +5,19 @@ import java.io.File;
 import com.huestew.studio.HueStew;
 import com.huestew.studio.model.Audio;
 import com.huestew.studio.model.LightTrack;
+import com.huestew.studio.model.MissingSongException;
 import com.huestew.studio.model.Show;
 import com.huestew.studio.model.VirtualBulb;
 import com.huestew.studio.util.FileHandler;
 import com.huestew.studio.util.FileUtil;
 import com.huestew.studio.util.WaveBuilder;
 import com.huestew.studio.view.Light;
+import com.huestew.studio.view.MissingSongAlert;
 import com.huestew.studio.view.TrackView;
 import com.huestew.studio.view.VirtualLight;
 import com.huestew.studio.view.VirtualRoom;
 
-import javafx.application.Platform;
+import javafx.stage.FileChooser;
 
 public class ShowController {
 
@@ -72,14 +74,19 @@ public class ShowController {
 
 		try {
 			fileHandler.loadTrackData(show);
-		} catch (IllegalArgumentException e) {
+		} catch (MissingSongException e) {
 			// TODO Replace song
+			MissingSongAlert alert = new MissingSongAlert(e.getPath());
+			alert.showAndWait();
+			
+			File file = browseForSong();
+			if (file != null && file.exists()) {
+				show.setAudio(new Audio(file));
+			}
 		}
 
-		if (show.getAudio() == null) {
-			Platform.runLater(() -> controller.newButtonPressed());
+		if (show.getAudio() == null)
 			return;
-		}
 
 		controller.updateFooterStatus("Loading project...");
 		initShow();
@@ -116,6 +123,20 @@ public class ShowController {
 		updateTitle();
 		controller.initShow();
 
+	}
+	
+	public File browseForSong() {
+		FileChooser fileChooser = new FileChooser();
+
+		File initialDir = new File(HueStew.getInstance().getConfig().getMusicDirectory());
+		if (!initialDir.exists())
+			initialDir = new File(System.getProperty("user.home"));
+
+		fileChooser.setInitialDirectory(initialDir);
+		fileChooser.setTitle("Open music file");
+		fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("MP3", "*.mp3"));
+
+		return fileChooser.showOpenDialog(controller.getStage());
 	}
 
 	private void createEmptyTracks() {
