@@ -107,10 +107,14 @@ public class ShowController {
 			createEmptyTracks();
 		}
 
+		// Remove old virtual lights
+		removeVirtualLights();
+
 		// Re-assign virtual lights from file
 		for (Entry<String, LightTrack> entry : virtualLightQueue.entrySet()) {
 			createVirtualLight(controller.getVirtualRoom().getNextBulbName(), entry.getValue());
 		}
+		virtualLightQueue.clear();
 
 		// Make sure each track has at least one virtual light
 		for (LightTrack track : show.getLightTracks()) {
@@ -251,5 +255,13 @@ public class ShowController {
 	
 	private String removeExtension(String path) {
 		return path.substring(0, path.lastIndexOf('.'));
+	}
+
+	private void removeVirtualLights() {
+		for (Light light : LightBank.getInstance().getLights().keySet()) {
+			if (light instanceof VirtualLight) {
+				LightBank.getInstance().removeLight(light);
+			}
+		}
 	}
 }

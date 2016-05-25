@@ -236,6 +236,11 @@ public class FileHandler {
 				String type = lightObj.getString("type");
 				int trackIndex = lightObj.getInt("track");
 
+				if (trackIndex < 0) {
+					// TODO figure out why this happens
+					continue;
+				}
+
 				if (type.equals("VirtualLight")) {
 					// Let ShowController create and assign virtual light
 					virtualLightQueue.put(name, show.getLightTracks().get(trackIndex));

@@ -76,4 +76,7 @@ public enum LightBank {
 		return lightSet;
 	}
 
+	public void removeLight(Light light) {
+		lights.remove(light);
+	}
 }
