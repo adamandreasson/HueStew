@@ -465,6 +465,8 @@ public class MainViewController extends ViewController {
 		editMenu.setDisable(false);
 		viewMenu.setDisable(false);
 		insertMenu.setDisable(false);
+		insertLightTrackButton.setDisable(false);
+		insertVirtualLightButton.setDisable(false);
 	}
 
 	/**
