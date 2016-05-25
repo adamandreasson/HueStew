@@ -517,12 +517,11 @@ public class MainViewController extends ViewController {
 			for (LightTrack track : tracks) {
 				TrackActionPane trackPane = new TrackActionPane(track, actionGroup);
 				if (tracks.size() > 1) {
-					trackPane.setOnRemove(() -> {
+					trackPane.setOnRemove((e) -> {
 						showController.getShow().removeLightTrack(track);
 						removeVirtualLights(track);
 						LightBank.getInstance().updateAvailableLights(showController.getShow().getLightTracks());
 						updateTracks();
-						return null;
 					});
 				}
 				trackPane.getTrackBtn().setOnAction((e) -> {
