@@ -515,6 +515,7 @@ public class MainViewController extends ViewController {
 				if (tracks.size() > 1) {
 					trackPane.setOnRemove(() -> {
 						showController.getShow().removeLightTrack(track);
+						LightBank.getInstance().updateAvailableLights(showController.getShow().getLightTracks());
 						updateTracks();
 						return null;
 					});

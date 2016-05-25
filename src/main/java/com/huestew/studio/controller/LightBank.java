@@ -1,5 +1,7 @@
 package com.huestew.studio.controller;
 
+import java.util.List;
+import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import com.huestew.studio.model.LightTrack;
@@ -38,8 +40,12 @@ public enum LightBank {
 		lights.put(light, track);
 	}
 
-	public void update() {
-		// TODO update all the available
+	public void updateAvailableLights(List<LightTrack> tracks) {
+		for (Entry<Light, LightTrack> entry : lights.entrySet()) {
+			if (entry.getValue() != null && !tracks.contains(entry.getValue())) {
+				entry.setValue(null);
+			}
+		}
 	}
 
 	public void updateLight(Light light, LightTrack track) {
