@@ -26,6 +26,12 @@ public class HueStewConfigTest {
 		config.setSaveDirectory(random);
 		assertEquals(config.getSaveDirectory(), random);
 	}
+	
+	@Test
+	public void setSaveFile() {
+		config.setSaveFile(random);
+		assertEquals(config.getSaveFile(), random);
+	}
 
 	@Test
 	public void setMusicDirectory() {

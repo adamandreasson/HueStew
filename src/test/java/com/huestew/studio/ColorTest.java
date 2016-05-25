@@ -9,6 +9,7 @@ import com.huestew.studio.model.Color;
 
 public class ColorTest {
 	private double r, g, b;
+	private int hue;
 	private Color color;
 
 	@Before
@@ -16,8 +17,9 @@ public class ColorTest {
 		r = Math.random();
 		g = Math.random();
 		b = Math.random();
+		hue = (int) (Math.random() * 65535);
 
-		color = new Color(r, g, b);
+		color = new Color(r, g, b, hue);
 	}
 
 	@Test
@@ -25,6 +27,7 @@ public class ColorTest {
 		assertTrue(Math.abs(color.getRed() - r) < 0.0001);
 		assertTrue(Math.abs(color.getGreen() - g) < 0.0001);
 		assertTrue(Math.abs(color.getBlue() - b) < 0.0001);
+		assertTrue(color.getHue() == hue);
 
 		Color copy = new Color(color);
 		assertNotSame(color, copy);
@@ -34,6 +37,7 @@ public class ColorTest {
 		Color fromFx = new Color(fx);
 		assertEquals(color, fromFx);
 		assertEquals(color.toFxColor(), fx);
+		
 	}
 
 	@Test
@@ -52,7 +56,7 @@ public class ColorTest {
 		assertTrue(color.hashCode() == copy.hashCode());
 
 		Color notEqual = new Color(r, g, Math.abs(b - 1));
-		assertNotSame(color.hashCode(), notEqual.hashCode());
+		assertFalse(color.hashCode() == notEqual.hashCode());
 	}
 
 	@Test
@@ -64,6 +68,8 @@ public class ColorTest {
 			color.setGreen(1D);
 			color.setBlue(0D);
 			color.setBlue(1D);
+			color.setHue(0);
+			color.setHue(65535);
 		} catch (IllegalArgumentException e) {
 			fail();
 		}

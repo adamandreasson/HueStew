@@ -56,8 +56,7 @@ public class KeyFrame implements Comparable<KeyFrame> {
 	 * @return previous KeyFrame
 	 */
 	public KeyFrame previous() {
-		KeyFrame temp = new KeyFrame(timestamp - 1);
-		return track.getKeyFrames().floor(temp);
+		return track.getKeyFrames().lower(this);
 	}
 
 	/**
@@ -65,8 +64,7 @@ public class KeyFrame implements Comparable<KeyFrame> {
 	 * @return next KeyFrame
 	 */
 	public KeyFrame next() {
-		KeyFrame temp = new KeyFrame(timestamp + 1);
-		return track.getKeyFrames().ceiling(temp);
+		return track.getKeyFrames().higher(this);
 	}
 
 	/**

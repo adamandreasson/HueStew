@@ -145,14 +145,14 @@ public class Color {
 		return "Color [red=" + red + ", green=" + green + ", blue=" + blue + "]";
 	}
 
-	@Override
 	/**
 	 * @super
 	 */
+	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + (int) (red * 73) + (int) (green * 13) + (int) (blue * 11);
+		result = prime * result + (int) (red * 269) + (int) (green * 263) + (int) (blue * 257);
 		return result;
 	}
 

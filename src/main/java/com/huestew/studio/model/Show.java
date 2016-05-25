@@ -24,6 +24,7 @@ public class Show {
 	}
 
 	public Show(Show other) {
+		this.lightTracks = new ArrayList<>();
 		List<LightTrack> temp = other.getLightTracks();
 
 		for (LightTrack lt : temp) {

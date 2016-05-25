@@ -17,16 +17,18 @@ public class LightTrack {
 		keyFrames = new TreeSet<>();
 		pcs = new PropertyChangeSupport(this);
 	}
-	
+
 	public LightTrack(LightTrack other) {
+		keyFrames = new TreeSet<>();
 		TreeSet<KeyFrame> temp = other.getKeyFrames();
-		
+
 		for (KeyFrame k : temp) {
-			keyFrames.add(k);
+			keyFrames.add(new KeyFrame(k));
 		}
-		
-		this.pcs = other.getPropertyChangeSupport();
+
+		this.pcs = other.pcs;
 	}
+
 	/**
 	 * Add a key frame to this light track.
 	 * 
@@ -79,10 +81,6 @@ public class LightTrack {
 	 */
 	public void removeListener(PropertyChangeListener listener) {
 		pcs.removePropertyChangeListener("keyFrameTransition", listener);
-	}
-	
-	public PropertyChangeSupport getPropertyChangeSupport() {
-		return pcs;
 	}
 
 	/**

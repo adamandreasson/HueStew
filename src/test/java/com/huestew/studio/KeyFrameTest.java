@@ -27,13 +27,29 @@ public class KeyFrameTest {
 	@Test
 	public void remove() {
 		LightTrack track = new LightTrack();
-		keyFrame = new KeyFrame(0, null, track);
+		keyFrame = new KeyFrame(0, state, track);
 
 		track.addKeyFrame(keyFrame);
 		assertFalse(track.getKeyFrames().isEmpty());
 
 		keyFrame.remove();
 		assertTrue(track.getKeyFrames().isEmpty());
+	}
+	
+	@Test
+	public void track() {
+		assertSame(track, keyFrame.track());
+	}
+	
+	@Test
+	public void order() {
+		KeyFrame later = new KeyFrame(1000, state, track);
+		
+		track.addKeyFrame(keyFrame);
+		track.addKeyFrame(later);
+		
+		assertSame(keyFrame.next(), later);
+		assertSame(later.previous(), keyFrame);
 	}
 
 	@Test
@@ -52,7 +68,8 @@ public class KeyFrameTest {
 	public void setState() {
 		LightState state = new LightState(new Color(0, 0, 0), 0, 0);
 		keyFrame.setState(state);
-		assertSame(state, keyFrame.getState());
+		assertNotSame(state, keyFrame.getState());
+		assertEquals(state, keyFrame.getState());
 	}
 
 	@Test
@@ -72,7 +89,7 @@ public class KeyFrameTest {
 		KeyFrame notSame = new KeyFrame(5);
 		assertNotEquals(keyFrame, notSame);
 
-		notSame = new KeyFrame(0, null, new LightTrack());
+		notSame = new KeyFrame(0, state, new LightTrack());
 		assertNotEquals(keyFrame, notSame);
 
 		KeyFrame same = new KeyFrame(0, state, track);
