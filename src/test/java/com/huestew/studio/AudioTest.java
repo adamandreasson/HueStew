@@ -39,11 +39,14 @@ public class AudioTest {
 	@Test
 	public void constructor() {
 		File nonexistent = new File(folder.getRoot(), "hi.mp3");
-
 		try {
 			audio = new Audio(nonexistent);
 			fail();
 		} catch (IllegalArgumentException e) {}
+
+		String path = file.getAbsolutePath();
+		audio = new Audio(path);
+		assertEquals(file, audio.getFile());
 	}
 
 	@Test
