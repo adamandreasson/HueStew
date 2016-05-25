@@ -232,6 +232,20 @@ public class TrackView {
 
 	}
 
+	private void drawKeyFrame(GraphicsContext gc, double x, double y, Color color, boolean selected) {
+		double[] xPoints = new double[] { x - KEY_FRAME_SIZE, x, x + KEY_FRAME_SIZE, x };
+		double[] yPoints = new double[] { y, y + KEY_FRAME_SIZE, y, y - KEY_FRAME_SIZE };
+
+		if (selected) {
+			gc.setStroke(Color.WHITESMOKE);
+			gc.setLineWidth(2.0);
+			gc.strokePolygon(xPoints, yPoints, 4);
+		}
+
+		gc.setFill(color);
+		gc.fillPolygon(xPoints, yPoints, 4);
+	}
+
 	private void drawCursor(GraphicsContext gc) {
 		double x = getXFromTime(show.getCursor());
 		double y = 20 + KEY_FRAME_SIZE;
@@ -243,19 +257,6 @@ public class TrackView {
 		gc.setFill(Color.BROWN);
 		gc.fillPolygon(new double[] { x, x - KEY_FRAME_SIZE, x + KEY_FRAME_SIZE, x },
 				new double[] { y, y - KEY_FRAME_SIZE, y - KEY_FRAME_SIZE, y }, 3);
-	}
-
-	private void drawKeyFrame(GraphicsContext gc, double x, double y, Color color, boolean selected) {
-		double[] xPoints = new double[] { x - KEY_FRAME_SIZE, x, x + KEY_FRAME_SIZE, x };
-		double[] yPoints = new double[] { y, y + KEY_FRAME_SIZE, y, y - KEY_FRAME_SIZE };
-
-		if (selected) {
-			gc.setStroke(Color.RED);
-			gc.strokePolygon(xPoints, yPoints, 4);
-		}
-
-		gc.setFill(color);
-		gc.fillPolygon(xPoints, yPoints, 4);
 	}
 
 	private void drawSelection(GraphicsContext gc) {
