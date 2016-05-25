@@ -199,6 +199,10 @@ public class FileHandler {
 				throw new MissingSongException(songPath);
 			}
 		}
+
+		if (obj.has("lights")) {
+			// TODO load lights from file
+		}
 	}
 	
 	public void clean(){

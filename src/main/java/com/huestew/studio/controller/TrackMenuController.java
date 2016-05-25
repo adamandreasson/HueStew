@@ -1,7 +1,7 @@
 package com.huestew.studio.controller;
 
-import java.util.HashMap;
 import java.util.Map.Entry;
+import java.util.TreeMap;
 
 import com.huestew.studio.model.LightTrack;
 import com.huestew.studio.view.Light;
@@ -35,7 +35,7 @@ public class TrackMenuController extends ViewController {
 		// TODO move this to close
 		pane.getChildren().clear();
 		
-		HashMap<Light, LightTrack> lights = LightBank.getInstance().getLights();
+		TreeMap<Light, LightTrack> lights = LightBank.getInstance().getLights();
 		
 		VBox box = new VBox();
 		AnchorPane.setTopAnchor(box, 8.0);

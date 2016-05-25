@@ -124,7 +124,7 @@ public class ShowController {
 		controller.initShow();
 
 	}
-	
+
 	public File browseForSong() {
 		FileChooser fileChooser = new FileChooser();
 
