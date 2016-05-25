@@ -94,6 +94,8 @@ public class ShowController {
 			createEmptyTracks();
 		}
 		
+		controller.getVirtualRoom().clean();
+		
 		for (LightTrack track : show.getLightTracks()) {
 			VirtualBulb bulb = new VirtualBulb();
 

@@ -131,7 +131,6 @@ public class TrackViewController {
 			controller.updateTrackActionPanePosition();
 			redraw();
 		} else if (clickedSection == TrackSection.TIMELINE) {
-			seekingEvent(event);
 			view.getHorizontalScrollbar().setPosition(event.getX());
 			redraw();
 		} else {

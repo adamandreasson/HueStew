@@ -99,4 +99,8 @@ public class VirtualRoom {
 		return "Virtual light " + (bulbs.size()+1);
 	}
 
+	public void clean() {
+		bulbs.clear();
+	}
+
 }
