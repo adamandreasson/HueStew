@@ -2,7 +2,9 @@ package com.huestew.studio.controller;
 
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 import com.huestew.studio.model.LightTrack;
 import com.huestew.studio.view.Light;
@@ -50,6 +52,28 @@ public enum LightBank {
 
 	public void updateLight(Light light, LightTrack track) {
 		lights.replace(light, track);
+	}
+
+	public Light getLight(String name) {
+		for (Light light : lights.keySet()) {
+			if (light.getName().equals(name)) {
+				return light;
+			}
+		}
+		return null;
+	}
+
+	public Set<Light> getLights(LightTrack track) {
+		Set<Light> lightSet = new TreeSet<Light>((light1, light2) -> light1.getName().compareTo(light2.getName()));
+
+		for (Entry<Light, LightTrack> entry : lights.entrySet()) {
+			// TODO undo/redo will probably fuck this up, need to implement equals in LightTrack or just replace keyframes in lighttracks
+			if (track.equals(entry.getValue())) {
+				lightSet.add(entry.getKey());
+			}
+		}
+
+		return lightSet;
 	}
 
 }

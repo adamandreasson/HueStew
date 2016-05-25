@@ -1,6 +1,9 @@
 package com.huestew.studio.controller;
 
 import java.io.File;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.TreeMap;
 
 import com.huestew.studio.HueStew;
 import com.huestew.studio.model.Audio;
@@ -25,11 +28,12 @@ public class ShowController {
 	private Player player;
 	private FileHandler fileHandler;
 	private Show show;
+	Map<String, LightTrack> virtualLightQueue;
 	
 	public ShowController(MainViewController controller){
 		this.controller = controller;
 		this.fileHandler = HueStew.getInstance().getFileHandler();
-		
+		this.virtualLightQueue = new TreeMap<>();
 	}
 
 	public void tick() {
@@ -50,7 +54,7 @@ public class ShowController {
 
 	public void save() {
 
-		fileHandler.saveShow(show);
+		fileHandler.saveShow(show, LightBank.getInstance().getLights());
 		updateTitle();
 
 	}
@@ -73,9 +77,9 @@ public class ShowController {
 		this.show = new Show();
 
 		try {
-			fileHandler.loadTrackData(show);
+			fileHandler.loadTrackData(show, virtualLightQueue);
 		} catch (MissingSongException e) {
-			// TODO Replace song
+			// Replace song
 			MissingSongAlert alert = new MissingSongAlert(e.getPath());
 			alert.showAndWait();
 			
@@ -96,33 +100,47 @@ public class ShowController {
 	public void initShow() {
 
 		// TODO? TEST CODE PLS REMOVE LATER
-		
+
+		controller.getVirtualRoom().clean();
+
 		if(show.getLightTracks().size() < 1){
 			createEmptyTracks();
 		}
-		
-		controller.getVirtualRoom().clean();
-		
-		for (LightTrack track : show.getLightTracks()) {
-			VirtualBulb bulb = new VirtualBulb();
 
-			Light light = new VirtualLight(bulb, controller.getVirtualRoom().getNextBulbName(), show);
-			LightBank.getInstance().addLight(light, track);
-
-			controller.getVirtualRoom().addBulb(bulb);
-
-			track.addListener(light);
+		// Re-assign virtual lights from file
+		for (Entry<String, LightTrack> entry : virtualLightQueue.entrySet()) {
+			createVirtualLight(controller.getVirtualRoom().getNextBulbName(), entry.getValue());
 		}
+
+		// Make sure each track has at least one virtual light
+		for (LightTrack track : show.getLightTracks()) {
+			if (LightBank.getInstance().getLights(track).isEmpty()) {
+				createVirtualLight(controller.getVirtualRoom().getNextBulbName(), track);
+			}
+		}
+
 		controller.getVirtualRoom().calculateBulbPositions();
 
 		if (player != null)
 			player.stop();
+
 		player = new Player(this);
 		player.setVolume(HueStew.getInstance().getConfig().getVolume());
 
 		updateTitle();
 		controller.initShow();
 
+	}
+
+	public void createVirtualLight(String name, LightTrack track) {
+		VirtualBulb bulb = new VirtualBulb();
+
+		Light light = new VirtualLight(bulb, name, show);
+		LightBank.getInstance().addLight(light, track);
+
+		controller.getVirtualRoom().addBulb(bulb);
+
+		track.addListener(light);
 	}
 
 	public File browseForSong() {
@@ -234,5 +252,4 @@ public class ShowController {
 	private String removeExtension(String path) {
 		return path.substring(0, path.lastIndexOf('.'));
 	}
-	
 }
