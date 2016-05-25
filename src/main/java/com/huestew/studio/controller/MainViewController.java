@@ -238,6 +238,8 @@ public class MainViewController extends ViewController {
 	private void initTrackCanvas() {
 
 		trackViewController = new TrackViewController(trackCanvas, this);
+		colorPickerController.setTrackViewController(trackViewController);
+
 		trackCanvas.setWidth(trackCanvasPane.getWidth() - trackActionParentPane.getWidth());
 		trackCanvas.setHeight(trackCanvasPane.getHeight());
 		trackViewController.redraw();

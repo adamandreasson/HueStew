@@ -221,12 +221,13 @@ public class TrackView {
 
 			double x = getXFromTime(frame.getTimestamp());
 			double y = startY + getTrackHeight() - getRelativeYFromBrightness(frame.getState().getBrightness());
+			Color color = frame.getState().getColor().toFxColor();
 			boolean selected = false;
 
 			if (selectedKeyFrames.contains(frame))
 				selected = true;
 
-			drawKeyFrame(gc, x, y, selected);
+			drawKeyFrame(gc, x, y, color, selected);
 		}
 
 	}
@@ -244,12 +245,17 @@ public class TrackView {
 				new double[] { y, y - KEY_FRAME_SIZE, y - KEY_FRAME_SIZE, y }, 3);
 	}
 
-	private void drawKeyFrame(GraphicsContext gc, double x, double y, boolean selected) {
-		gc.setFill(Color.YELLOW);
-		if (selected)
-			gc.setFill(Color.RED);
-		gc.fillPolygon(new double[] { x - KEY_FRAME_SIZE, x, x + KEY_FRAME_SIZE, x },
-				new double[] { y, y + KEY_FRAME_SIZE, y, y - KEY_FRAME_SIZE }, 4);
+	private void drawKeyFrame(GraphicsContext gc, double x, double y, Color color, boolean selected) {
+		double[] xPoints = new double[] { x - KEY_FRAME_SIZE, x, x + KEY_FRAME_SIZE, x };
+		double[] yPoints = new double[] { y, y + KEY_FRAME_SIZE, y, y - KEY_FRAME_SIZE };
+
+		if (selected) {
+			gc.setStroke(Color.RED);
+			gc.strokePolygon(xPoints, yPoints, 4);
+		}
+
+		gc.setFill(color);
+		gc.fillPolygon(xPoints, yPoints, 4);
 	}
 
 	private void drawSelection(GraphicsContext gc) {

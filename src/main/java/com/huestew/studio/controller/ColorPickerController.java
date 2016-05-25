@@ -28,6 +28,7 @@ public class ColorPickerController {
 	private AnchorPane colorPickerPane;
 	private List<KeyFrame> selectedKeyFrames;
 	private Canvas colorWheelCanvas;
+	private TrackViewController trackViewController;
 
 	public ColorPickerController(AnchorPane colorPickerPane) {
 
@@ -72,6 +73,8 @@ public class ColorPickerController {
 					saturation));
 		}
 		redraw();
+		if (trackViewController != null)
+			trackViewController.redraw();
 	}
 
 	public void updateSize() {
@@ -133,6 +136,10 @@ public class ColorPickerController {
 	public void setFrames(List<KeyFrame> selectedKeyFrames) {
 		this.selectedKeyFrames = selectedKeyFrames;
 		redraw();
+	}
+
+	public void setTrackViewController(TrackViewController controller) {
+		this.trackViewController = controller;
 	}
 
 }
