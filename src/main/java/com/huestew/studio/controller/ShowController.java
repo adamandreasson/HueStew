@@ -112,14 +112,14 @@ public class ShowController {
 
 		// Re-assign virtual lights from file
 		for (Entry<String, LightTrack> entry : virtualLightQueue.entrySet()) {
-			createVirtualLight(controller.getVirtualRoom().getNextBulbName(), entry.getValue());
+			addVirtualLight(entry.getValue());
 		}
 		virtualLightQueue.clear();
 
 		// Make sure each track has at least one virtual light
 		for (LightTrack track : show.getLightTracks()) {
 			if (LightBank.getInstance().getLights(track).isEmpty()) {
-				createVirtualLight(controller.getVirtualRoom().getNextBulbName(), track);
+				addVirtualLight(track);
 			}
 		}
 
@@ -134,17 +134,6 @@ public class ShowController {
 		updateTitle();
 		controller.initShow();
 
-	}
-
-	public void createVirtualLight(String name, LightTrack track) {
-		VirtualBulb bulb = new VirtualBulb();
-
-		Light light = new VirtualLight(bulb, name, show);
-		LightBank.getInstance().addLight(light, track);
-
-		controller.getVirtualRoom().addBulb(bulb);
-
-		track.addListener(light);
 	}
 
 	public File browseForSong() {
@@ -169,7 +158,9 @@ public class ShowController {
 	}
 
 	public void addTrack() {
-		show.addLightTrack(new LightTrack());
+		LightTrack track = new LightTrack();
+		show.addLightTrack(track);
+		addVirtualLight(track);
 		controller.updateTracks();
 	}
 
@@ -182,6 +173,17 @@ public class ShowController {
 		room.addBulb(bulb);
 		room.calculateBulbPositions();
 		room.redraw();
+	}
+
+	public void addVirtualLight(LightTrack track) {
+		VirtualBulb bulb = new VirtualBulb();
+
+		Light light = new VirtualLight(bulb, controller.getVirtualRoom().getNextBulbName(), show);
+		LightBank.getInstance().addLight(light, track);
+
+		controller.getVirtualRoom().addBulb(bulb);
+
+		track.addListener(light);
 	}
 
 	public void playerReady() {

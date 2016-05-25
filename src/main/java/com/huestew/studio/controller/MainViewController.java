@@ -10,8 +10,10 @@ import com.huestew.studio.model.LightTrack;
 import com.huestew.studio.model.Sequence;
 import com.huestew.studio.model.Show;
 import com.huestew.studio.util.FileUtil;
+import com.huestew.studio.view.Light;
 import com.huestew.studio.view.TrackActionPane;
 import com.huestew.studio.view.TrackView;
+import com.huestew.studio.view.VirtualLight;
 import com.huestew.studio.view.VirtualRoom;
 
 import javafx.application.Platform;
@@ -517,6 +519,7 @@ public class MainViewController extends ViewController {
 				if (tracks.size() > 1) {
 					trackPane.setOnRemove(() -> {
 						showController.getShow().removeLightTrack(track);
+						removeVirtualLights(track);
 						LightBank.getInstance().updateAvailableLights(showController.getShow().getLightTracks());
 						updateTracks();
 						return null;
@@ -534,6 +537,14 @@ public class MainViewController extends ViewController {
 
 			trackViewController.redraw();
 		});
+	}
+
+	private void removeVirtualLights(LightTrack track) {
+		for (Light light : LightBank.getInstance().getLights(track)) {
+			if (light instanceof VirtualLight) {
+				LightBank.getInstance().removeLight(light);
+			}
+		}
 	}
 
 	public void updateTrackActionPanePosition() {
