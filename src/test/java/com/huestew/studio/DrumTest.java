@@ -2,14 +2,12 @@ package com.huestew.studio;
 
 import static org.junit.Assert.*;
 
-import java.util.TreeSet;
 import java.util.UUID;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import com.huestew.studio.model.Drum;
-import com.huestew.studio.model.KeyFrame;
 import com.huestew.studio.model.LightTrack;
 import com.huestew.studio.model.Sequence;
 import com.huestew.studio.model.Show;

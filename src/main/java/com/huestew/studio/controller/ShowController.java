@@ -1,17 +1,21 @@
 package com.huestew.studio.controller;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
+import org.json.JSONObject;
+
 import com.huestew.studio.HueStew;
+import com.huestew.studio.io.FileHandler;
 import com.huestew.studio.model.Audio;
 import com.huestew.studio.model.LightTrack;
 import com.huestew.studio.model.MissingSongException;
 import com.huestew.studio.model.Show;
 import com.huestew.studio.model.VirtualBulb;
-import com.huestew.studio.util.FileHandler;
 import com.huestew.studio.util.FileUtil;
 import com.huestew.studio.util.WaveBuilder;
 import com.huestew.studio.view.Light;
@@ -27,12 +31,14 @@ public class ShowController {
 	private MainViewController controller;
 	private Player player;
 	private FileHandler fileHandler;
+	private ShowConverter converter;
 	private Show show;
 	Map<String, LightTrack> virtualLightQueue;
 	
 	public ShowController(MainViewController controller){
 		this.controller = controller;
 		this.fileHandler = HueStew.getInstance().getFileHandler();
+		this.converter = new ShowConverter();
 		this.virtualLightQueue = new TreeMap<>();
 	}
 
@@ -54,7 +60,15 @@ public class ShowController {
 
 	public void save() {
 
-		fileHandler.saveShow(show, LightBank.getInstance().getLights());
+		JSONObject json = converter.toJson(show, LightBank.getInstance().getLights());
+
+		try {
+			fileHandler.saveShow(json);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 		updateTitle();
 
 	}
@@ -77,18 +91,28 @@ public class ShowController {
 		this.show = new Show();
 
 		try {
-			fileHandler.loadTrackData(show, virtualLightQueue);
+			JSONObject json = fileHandler.loadShow();
+			converter.fromJson(json, show, virtualLightQueue);
+		} catch (FileNotFoundException e) {
+			// Probably first run
+			// Stop for now and wait for user to click new/open
+			return;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return;
 		} catch (MissingSongException e) {
 			// Replace song
 			MissingSongAlert alert = new MissingSongAlert(e.getPath());
 			alert.showAndWait();
-			
+
 			File file = browseForSong();
 			if (file != null && file.exists()) {
 				show.setAudio(new Audio(file));
 			}
 		}
 
+		// If song is still null, wait for user to create new or load existing project
 		if (show.getAudio() == null)
 			return;
 

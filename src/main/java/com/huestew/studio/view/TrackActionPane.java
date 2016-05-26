@@ -1,7 +1,6 @@
 package com.huestew.studio.view;
 
 import com.huestew.studio.model.LightTrack;
-import com.huestew.studio.util.Task;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;

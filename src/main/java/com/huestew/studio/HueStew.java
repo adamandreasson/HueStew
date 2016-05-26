@@ -3,10 +3,10 @@ package com.huestew.studio;
 import java.io.File;
 import java.nio.file.AccessDeniedException;
 
+import com.huestew.studio.io.FileHandler;
 import com.huestew.studio.model.HueStewConfig;
 import com.huestew.studio.plugin.PluginHandler;
 import com.huestew.studio.plugin.PluginLoader;
-import com.huestew.studio.util.FileHandler;
 
 /**
  * Main class for the HueStew Studio model
