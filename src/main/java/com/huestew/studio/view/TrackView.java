@@ -36,7 +36,7 @@ public class TrackView {
 	private static final int KEY_FRAME_SIZE = 5;
 	private static final int TRACK_SPACER = 10;
 	private static final int MINIMUM_TRACK_HEIGHT = 90;
-	private static final int SCROLLBAR_SIZE = 8;
+	private static final int SCROLLBAR_SIZE = 10;
 
 	public static final int PIXELS_PER_SECOND = 100;
 	public static final double MINIMUM_ZOOM = 0.5;
@@ -488,7 +488,7 @@ public class TrackView {
 	private TrackSection getSection(double x, double y) {
 		if (x > getVisibleTrackWidth() && y >= getTotalTrackPositionY()) {
 			return TrackSection.VERTICAL_SCROLLBAR;
-		} else if (y > getTotalVisibleTrackHeight() + getTotalTrackPositionY()) {
+		} else if (y >= getTotalVisibleTrackHeight() + getTotalTrackPositionY()) {
 			return TrackSection.HORIZONTAL_SCROLLBAR;
 		} else if (y <= 20) {
 			return TrackSection.CURSOR;
