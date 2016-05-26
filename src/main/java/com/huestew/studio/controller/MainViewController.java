@@ -17,6 +17,7 @@ import com.huestew.studio.view.VirtualLight;
 import com.huestew.studio.view.VirtualRoom;
 
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
@@ -214,6 +215,10 @@ public class MainViewController extends ViewController {
 		populateToolButton.setToggleGroup(toolGroup);
 		selectToolButton.setToggleGroup(toolGroup);
 		selectToolButton.setSelected(true);
+
+		// Make sure the buttons cannot be deselected
+		populateToolButton.addEventHandler(ActionEvent.ACTION, e -> populateToolButton.setSelected(true));
+		selectToolButton.addEventHandler(ActionEvent.ACTION, e -> selectToolButton.setSelected(true));
 
 		trackMenuController = (TrackMenuController) ViewController.loadFxml("/trackmenu.fxml");
 		rootPane.getChildren().add(0, trackMenuController.getParent());
