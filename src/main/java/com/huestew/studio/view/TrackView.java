@@ -33,16 +33,16 @@ import javafx.scene.text.TextAlignment;
  */
 public class TrackView {
 
-	private static final int KEY_FRAME_SIZE = 5;
-	private static final int TRACK_SPACER = 10;
-	private static final int MINIMUM_TRACK_HEIGHT = 90;
-	private static final int SCROLLBAR_SIZE = 10;
-
 	public static final int PIXELS_PER_SECOND = 100;
 	public static final double MINIMUM_ZOOM = 0.5;
 	public static final double MAXIMUM_ZOOM = 4;
 	public static final double ZOOM_IN = 0.25;
 	public static final double ZOOM_OUT = -0.25;
+
+	private static final int KEY_FRAME_SIZE = 5;
+	private static final int TRACK_SPACER = 10;
+	private static final int MINIMUM_TRACK_HEIGHT = 90;
+	private static final int SCROLLBAR_SIZE = 10;
 
 	private static final Color TIMELINE_COLOR = Color.web("#303030");
 	private static final Color TIMELINE_TICK_COLOR = Color.web("#616161");
@@ -55,6 +55,7 @@ public class TrackView {
 	private double zoom = 1;
 	private double desiredCursorPosition = 20;
 	private int cursorAtLastDraw = 0;
+	private boolean useDesiredCursor = true;
 
 	private List<Image> backgroundWaveImages;
 	private Scrollbar verticalScrollbar;
@@ -69,7 +70,7 @@ public class TrackView {
 	public TrackView(Canvas canvas, Show show) {
 		this.canvas = canvas;
 		this.show = show;
-		this.desiredCursorPosition = canvas.getWidth() / 2;
+		Platform.runLater(() -> setDesiredCursorPosition(canvas.getWidth() / 2));
 
 		this.selectedKeyFrames = new ArrayList<>();
 
@@ -92,7 +93,7 @@ public class TrackView {
 	public void redraw(boolean isPlaying) {
 
 		// Scroll automatically while playing the show
-		if (show.getCursor() > cursorAtLastDraw) {
+		if (shouldAutoScroll() && show.getCursor() > cursorAtLastDraw) {
 			double x = getXFromTime(show.getCursor());
 			double rightEdge = desiredCursorPosition;
 
@@ -499,14 +500,24 @@ public class TrackView {
 		}
 	}
 
+	private boolean shouldAutoScroll() {
+		double x = getXFromTime(show.getCursor());
+		return useDesiredCursor && x > 0 && x < getVisibleTrackWidth();
+	}
+
+	public void setUseDesiredCursor(boolean enabled) {
+		this.useDesiredCursor = enabled;
+	}
+
 	public void setDesiredCursorPosition(double x) {
 		System.out.println("desired cursor position is " + x);
-		this.desiredCursorPosition = x;
+		if (x >= 0) {
+			this.desiredCursorPosition = x;
+		}
 	}
 
 	public void updateDesiredCursorPosition() {
-		System.out.println("desired cursor position is " + getXFromTime(show.getCursor()));
-		this.desiredCursorPosition = getXFromTime(show.getCursor());
+		setDesiredCursorPosition(getXFromTime(show.getCursor()));
 	}
 
 }

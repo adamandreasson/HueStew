@@ -5,6 +5,7 @@ import java.util.List;
 import com.huestew.studio.controller.tools.SelectTool;
 import com.huestew.studio.model.KeyFrame;
 import com.huestew.studio.model.LightTrack;
+import com.huestew.studio.view.Scrollbar;
 import com.huestew.studio.view.TrackSection;
 import com.huestew.studio.view.TrackView;
 
@@ -94,13 +95,17 @@ public class TrackViewController {
 			view.getVerticalScrollbar().setBarOrigin(event.getY());
 		} else if (clickedSection == TrackSection.HORIZONTAL_SCROLLBAR) {
 			view.getHorizontalScrollbar().setBarOrigin(event.getX());
+			view.setUseDesiredCursor(false);
 		} else if (event.getButton() == MouseButton.MIDDLE) {
 			view.getVerticalScrollbar().setOrigin(event.getY());
 			view.getHorizontalScrollbar().setOrigin(event.getX());
-		} else if (clickedSection == TrackSection.TIMELINE) {
+			view.setUseDesiredCursor(false);
+		} else if (clickedSection == TrackSection.CURSOR) {
 			seekingEvent(event);
+		} else if (clickedSection == TrackSection.TIMELINE) {
 			view.getHorizontalScrollbar().setOrigin(event.getX());
-		} else {
+			view.setUseDesiredCursor(false);
+		} else if (clickedSection == TrackSection.TRACKS) {
 			sendMouseEventToTool(event);
 		}
 	}
@@ -108,7 +113,12 @@ public class TrackViewController {
 	private void handleMouseReleasedEvent(MouseEvent event) {
 		canvas.requestFocus();
 
-		if (clickedTrack != null) {
+		if (clickedSection == TrackSection.TIMELINE || clickedSection == TrackSection.HORIZONTAL_SCROLLBAR
+				|| event.getButton() == MouseButton.MIDDLE) {
+			view.setUseDesiredCursor(true);
+			view.updateDesiredCursorPosition();
+		}
+		if (clickedSection == TrackSection.TRACKS) {
 			sendMouseEventToTool(event);
 		}
 
@@ -130,10 +140,12 @@ public class TrackViewController {
 			view.getHorizontalScrollbar().setPosition(event.getX());
 			controller.updateTrackActionPanePosition();
 			redraw();
+		} else if (clickedSection == TrackSection.CURSOR) {
+			seekingEvent(event);
 		} else if (clickedSection == TrackSection.TIMELINE) {
 			view.getHorizontalScrollbar().setPosition(event.getX());
 			redraw();
-		} else {
+		} else if (clickedSection == TrackSection.TRACKS) {
 			sendMouseEventToTool(event);
 		}
 	}
@@ -159,11 +171,6 @@ public class TrackViewController {
 	}
 
 	private void sendMouseEventToTool(MouseEvent event) {
-		if (clickedSection != TrackSection.TRACKS) {
-			seekingEvent(event);
-			return;
-		}
-
 		// TODO what's that smell?
 		if (controller.getToolbox().getActiveTool() instanceof SelectTool) {
 			updateSelectRectangle(event);
@@ -225,35 +232,23 @@ public class TrackViewController {
 	}
 
 	private void handleScrollEvent(ScrollEvent event) {
-		if (event.getTouchCount() == 0) {
-			// Scroll wheel -> zoom or scroll horizontally
-			if (ctrlDown) {
-				// Zoom
-				view.adjustZoom(event.getDeltaY() > 0 ? TrackView.ZOOM_IN : TrackView.ZOOM_OUT);
-				controller.updateZoomButtons();
-			} else {
-				// Scroll
-				view.getHorizontalScrollbar().addOffset(-event.getDeltaY());
-			}
-			redraw();
+		if (ctrlDown) {
+			// Zoom
+			view.adjustZoom(event.getDeltaY() > 0 ? TrackView.ZOOM_IN : TrackView.ZOOM_OUT);
+			controller.updateZoomButtons();
 		} else {
-			// TODO Touchpad scroll
-
+			// Scroll horizontally
+			view.getHorizontalScrollbar().addOffset(-event.getDeltaY());
+			view.updateDesiredCursorPosition();
 		}
+		redraw();
 	}
 
 	private void seekingEvent(MouseEvent event) {
-		// TODO refactor different sections into this method?
-		// Seeking event
-		if(clickedSection == TrackSection.TIMELINE){
-			view.updateDesiredCursorPosition();
-		}
-		if (clickedSection == TrackSection.CURSOR) {
-			view.setDesiredCursorPosition(event.getX());
-			int time = view.getTimeFromX(event.getX());
-			controller.getPlayer().seek(time);
-			redraw();
-		}
+		view.setDesiredCursorPosition(event.getX());
+		int time = view.getTimeFromX(event.getX());
+		controller.getPlayer().seek(time);
+		redraw();
 	}
 
 	public void redraw() {
@@ -285,5 +280,9 @@ public class TrackViewController {
 
 	public List<KeyFrame> getSelection() {
 		return view.getSelectedKeyFrames();
+	}
+
+	public Scrollbar getHorizontalScrollbar() {
+		return view.getHorizontalScrollbar();
 	}
 }

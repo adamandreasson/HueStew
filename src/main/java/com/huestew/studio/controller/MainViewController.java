@@ -11,6 +11,7 @@ import com.huestew.studio.model.Sequence;
 import com.huestew.studio.model.Show;
 import com.huestew.studio.util.FileUtil;
 import com.huestew.studio.view.Light;
+import com.huestew.studio.view.Scrollbar;
 import com.huestew.studio.view.TrackActionPane;
 import com.huestew.studio.view.TrackView;
 import com.huestew.studio.view.VirtualLight;
@@ -297,6 +298,9 @@ public class MainViewController extends ViewController {
 	private void playStartButtonPressed() {
 		showController.getPlayer().seek(0);
 		showController.getPlayer().play();
+		Scrollbar bar = trackViewController.getHorizontalScrollbar();
+		// TODO Scrollbar+setOffset(double)
+		bar.addOffset(-bar.getOffset());
 	}
 
 	@FXML
