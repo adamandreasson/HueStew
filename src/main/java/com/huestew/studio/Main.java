@@ -18,8 +18,7 @@ public class Main extends Application {
 		MainViewController controller = (MainViewController) ViewController.loadFxml("/main.fxml");
 		primaryStage.setTitle("HueStew Studio");
 		controller.setStage(primaryStage);
-		Scene scene = new Scene(controller.getParent(),1280,720);
-		System.out.println(getClass().getResource("/style.css").toExternalForm());
+		Scene scene = new Scene(controller.getParent(), 1280, 720);
         scene.getStylesheets().add(getClass().getResource("/style.css").toExternalForm());
 		primaryStage.setScene(scene);
 		primaryStage.getIcons().add(new Image("/icon_256x256.png"));
@@ -41,8 +40,7 @@ public class Main extends Application {
             	System.exit(0);
             }
         });
-        
-        
+
 	}
 
 	public static void main(String[] args) {
