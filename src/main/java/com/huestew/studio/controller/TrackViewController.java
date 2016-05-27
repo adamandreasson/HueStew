@@ -1,6 +1,7 @@
 package com.huestew.studio.controller;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.huestew.studio.controller.tools.SelectTool;
 import com.huestew.studio.model.KeyFrame;
@@ -9,6 +10,7 @@ import com.huestew.studio.view.Scrollbar;
 import com.huestew.studio.view.TrackSection;
 import com.huestew.studio.view.TrackView;
 
+import javafx.application.Platform;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
@@ -23,9 +25,14 @@ import javafx.scene.input.ScrollEvent;
  */
 public class TrackViewController {
 
+	private static final int REDRAW_INTERVAL = 16;
+
 	private Canvas canvas;
 	private MainViewController controller;
 	private TrackView view;
+
+	private Thread redrawThread;
+	private AtomicBoolean redraw;
 
 	private TrackSection clickedSection = TrackSection.NONE;
 	private LightTrack clickedTrack;
@@ -44,6 +51,7 @@ public class TrackViewController {
 		this.canvas = canvas;
 		this.controller = controller;
 		this.view = new TrackView(canvas, controller.getShow());
+		this.redraw = new AtomicBoolean();
 
 		// Register mouse event handlers
 		canvas.addEventHandler(MouseEvent.MOUSE_RELEASED, event -> handleMouseReleasedEvent(event));
@@ -252,14 +260,39 @@ public class TrackViewController {
 	}
 
 	public void redraw() {
+		redraw.set(true);
+	}
+
+	private void performRedraw() {
 		if (controller.getShow() == null || controller.getShow().getDuration() == 0)
 			return;
 
 		view.redraw(controller.getPlayer().isPlaying());
 	}
-	/*
-	 * public TrackView getView(){ return view; }
-	 */
+
+	public void startRedrawThread() {
+		stopRedrawThread();
+
+		redrawThread = new Thread(() -> {
+			while (true) {
+				if (redraw.getAndSet(false))
+					Platform.runLater(() -> performRedraw());
+				
+				// Sleep until next frame should be drawn
+				try {
+					Thread.sleep(REDRAW_INTERVAL);
+				} catch (InterruptedException e) {
+					break;
+				}
+			}
+		});
+		redrawThread.start();
+	}
+
+	public void stopRedrawThread() {
+		if (redrawThread != null)
+			redrawThread.interrupt();
+	}
 
 	public void loadWaves(List<String> imagePaths) {
 		view.loadWaves(imagePaths);

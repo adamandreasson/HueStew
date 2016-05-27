@@ -102,23 +102,19 @@ public class TrackView {
 			}
 		}
 
-		// Perform drawing on javafx main thread
-		Platform.runLater(() -> {
+		GraphicsContext gc = canvas.getGraphicsContext2D();
+		gc.setFont(new Font(11.0));
+		gc.setFill(BACKGROUND_COLOR);
+		gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
-			GraphicsContext gc = canvas.getGraphicsContext2D();
-			gc.setFont(new Font(11.0));
-			gc.setFill(BACKGROUND_COLOR);
-			gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+		drawWave(gc);
+		drawLightTracks(gc);
+		drawTimeline(gc);
+		drawSelection(gc);
+		drawCursor(gc);
+		drawScrollbars(gc);
 
-			drawWave(gc);
-			drawLightTracks(gc);
-			drawTimeline(gc);
-			drawSelection(gc);
-			drawCursor(gc);
-			drawScrollbars(gc);
-
-			cursorAtLastDraw = show.getCursor();
-		});
+		cursorAtLastDraw = show.getCursor();
 	}
 
 	private void drawTimeline(GraphicsContext gc) {
