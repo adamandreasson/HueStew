@@ -102,7 +102,8 @@ public class ShowConverter {
 	 *            the show to export data from
 	 * @param lights
 	 *            light mappings to export data from
-	 * @return
+	 * 
+	 * @return the resulting JSON object.
 	 */
 	public JSONObject toJson(Show show, Map<Light, LightTrack> lights) {
 		JSONObject json = new JSONObject();

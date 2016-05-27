@@ -103,4 +103,8 @@ public class HueStewConfig {
 		this.windowDimensions = windowDimensions;
 	}
 
+	public static HueStewConfig getDefaultConfig() {
+		return new HueStewConfig(System.getProperty("user.home"), "", System.getProperty("user.home"), 1.0, "");
+	}
+
 }

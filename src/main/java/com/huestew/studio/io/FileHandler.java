@@ -15,16 +15,13 @@ import java.util.Properties;
 
 import org.json.JSONObject;
 
-import com.huestew.studio.model.HueStewConfig;
-
 public class FileHandler {
-	
-	private static final String CONFIG_FILE = "config.properties";
-	private static final String AUTOSAVE_FILE = "autosave.json";
+
+	public static final String CONFIG_FILE = "config.properties";
+	public static final String AUTOSAVE_FILE = "autosave.json";
 
 	private Path tmpDir;
 	private String appDir;
-	private HueStewConfig config;
 
 	public FileHandler() throws AccessDeniedException {
 
@@ -54,72 +51,45 @@ public class FileHandler {
 		return appDir + File.separator + file;
 	}
 
-	public void saveConfig(HueStewConfig config) {
+	public void saveConfig(Properties prop) throws IOException {
+
+		try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(getAppFilePath(CONFIG_FILE)), "utf-8")) {
+			prop.store(writer, null);
+		} /*catch (IOException io) {
+			io.printStackTrace();
+		}*/
+
+	}
+
+	public Properties loadConfig() throws IOException {
 
 		Properties prop = new Properties();
 
-		try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(getAppFilePath(CONFIG_FILE)), "utf-8")) {
-
-			prop.setProperty("saveDir", config.getSaveDirectory());
-			prop.setProperty("saveFile", config.getSaveFile());
-			prop.setProperty("musicDir", config.getMusicDirectory());
-			prop.setProperty("volume", String.valueOf(config.getVolume()));
-			prop.setProperty("window", config.getWindowDimensions());
-
-			prop.store(writer, null);
-
-		} catch (IOException io) {
-			io.printStackTrace();
+		try (InputStreamReader reader = new InputStreamReader(new FileInputStream(getAppFilePath(CONFIG_FILE)), "utf-8")) {
+			prop.load(reader);
 		}
+
+		return prop;
 
 	}
 
-	public HueStewConfig loadConfig() {
-
-		if (new File(getAppFilePath(CONFIG_FILE)).exists()) {
-
-			Properties prop = new Properties();
-
-			try (InputStreamReader reader = new InputStreamReader(new FileInputStream(getAppFilePath(CONFIG_FILE)), "utf-8")) {
-
-				prop.load(reader);
-
-				config = new HueStewConfig(
-						prop.getProperty("saveDir", System.getProperty("user.home")),
-						prop.getProperty("saveFile", ""),
-						prop.getProperty("musicDir", System.getProperty("user.home")),
-						Double.parseDouble(prop.getProperty("volume", "1.0")),
-						prop.getProperty("window", ""));
-				return config;
-
-			} catch (IOException ex) {
-				System.out.println("Failed to load config, using defaults");
-				ex.printStackTrace();
-			}
-		}
-
-		config = new HueStewConfig(System.getProperty("user.home"), "", System.getProperty("user.home"), 1.0, "");
-		return config;
-
-	}
-
-	public void saveShow(JSONObject json) throws IOException {
+	public void saveJson(String path, JSONObject json) throws IOException {
 
 		// Write to file
-		System.out.println("saving to " + getSaveFile());
-		try (PrintWriter out = new PrintWriter(getSaveFile(), "utf-8")) {
+		System.out.println("saving to " + path);
+		try (PrintWriter out = new PrintWriter(path, "utf-8")) {
 			out.println(json.toString(2));
 		}
 
 	}
 
-	public JSONObject loadShow() throws IOException {
+	public JSONObject loadJson(String path) throws IOException {
 
 		// Read from file
 		String everything = "";
 
 		try (BufferedReader br = new BufferedReader(new InputStreamReader(
-				new FileInputStream(getLoadFile()), "utf-8"))) {
+				new FileInputStream(path), "utf-8"))) {
 
 			StringBuilder sb = new StringBuilder();
 			String line = br.readLine();
@@ -142,23 +112,6 @@ public class FileHandler {
 			filePath.delete();
 	    }
 		tmpDir.toFile().delete();
-	}
-
-	private String getSaveFile() {
-		return config.getSaveFile().isEmpty() ? getAppFilePath(AUTOSAVE_FILE) : config.getSaveFile();
-	}
-
-	private String getLoadFile() {
-		String path = config.getSaveFile();
-		if (!path.isEmpty()) {
-			if (new File(path).exists()) {
-				return path;
-			} else {
-				config.setSaveFile("");
-			}
-		}
-
-		return getAppFilePath(AUTOSAVE_FILE);
 	}
 
 }
