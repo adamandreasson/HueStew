@@ -43,11 +43,12 @@ public enum SnapshotManager {
 	 * @return
 	 * 			the latest version of show on the undo stack.
 	 */
-	public Show undo(Show show) {
+	public void undo(Show show) {
 		if(canUndo()) {
 			Show s = undoStack.pop();
-			redoStack.push(new Show(s));
-			return s;
+			redoStack.push(new Show(show));
+			
+			transferData(s, show);
 		} else {
 			throw new IllegalStateException("Cannot undo when undostack is zero");
 		}
@@ -62,11 +63,12 @@ public enum SnapshotManager {
 	 * @return
 	 * 			the pre undo version of show.
 	 */
-	public Show redo(Show show) {
+	public void redo(Show show) {
 		if (canRedo()) {
 			Show s = redoStack.pop();
-			undoStack.push(new Show(s));
-			return s;
+			undoStack.push(new Show(show));
+			
+			transferData(s, show);
 		} else {
 			throw new IllegalStateException("Cannot redo when redostack is zero");
 		}
@@ -88,5 +90,13 @@ public enum SnapshotManager {
 	 */
 	public boolean canRedo() {
 		return !redoStack.isEmpty();
+	}
+	
+	private void transferData(Show from, Show to) {
+		// Transfer light tracks
+		to.clearLightTracks();
+		for (LightTrack track : from.getLightTracks()) {
+			to.addLightTrack(track);
+		}
 	}
 }
