@@ -42,15 +42,17 @@ public class DrumKit {
 	}
 
 	public boolean beat(KeyCode key, Show show) {
-		
+
 		for (Drum drum : drums) {
 			if (drum.getKey() == key) {
+				// TODO creates a snapshot even if drum wasn't beat
+				SnapshotManager.getInstance().commandIssued();
 				return drum.beat(show);
 			}
 		}
-		
+
 		return false;
-		
+
 	}
 
 }

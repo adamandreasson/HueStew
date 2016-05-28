@@ -64,6 +64,16 @@ public class LightTrack {
 	}
 
 	/**
+	 * Replace the collection of key frames.
+	 * 
+	 * @param keyFrames
+	 *            The new collection of key frames
+	 */
+	public void setKeyFrames(TreeSet<KeyFrame> keyFrames) {
+		this.keyFrames = new TreeSet<>(keyFrames);
+	}
+
+	/**
 	 * Add a listener.
 	 * 
 	 * @param listener

@@ -1,5 +1,6 @@
 package com.huestew.studio.model;
 
+import java.util.List;
 import java.util.Stack;
 
 /** 
@@ -13,6 +14,8 @@ public enum SnapshotManager {
 	private Stack<Show> undoStack;
 	
 	private Stack<Show> redoStack;
+
+	private Show show;
 	
 	private SnapshotManager() {
 		undoStack = new Stack<Show>();
@@ -30,7 +33,8 @@ public enum SnapshotManager {
 	 * @param show
 	 * 				the version of the show previous to the command
 	 */
-	public void commandIssued(Show show) {
+	public void commandIssued() {
+		System.out.println("SNAPSHOT");
 		undoStack.push(new Show(show));
 		redoStack.clear();
 	}
@@ -43,7 +47,7 @@ public enum SnapshotManager {
 	 * @return
 	 * 			the latest version of show on the undo stack.
 	 */
-	public void undo(Show show) {
+	public void undo() {
 		if(canUndo()) {
 			Show s = undoStack.pop();
 			redoStack.push(new Show(show));
@@ -63,7 +67,7 @@ public enum SnapshotManager {
 	 * @return
 	 * 			the pre undo version of show.
 	 */
-	public void redo(Show show) {
+	public void redo() {
 		if (canRedo()) {
 			Show s = redoStack.pop();
 			undoStack.push(new Show(show));
@@ -91,12 +95,24 @@ public enum SnapshotManager {
 	public boolean canRedo() {
 		return !redoStack.isEmpty();
 	}
+
+	public void clear() {
+		undoStack.clear();
+		redoStack.clear();
+	}
+
+	public void setShow(Show show) {
+		this.show = show;
+		clear();
+	}
 	
 	private void transferData(Show from, Show to) {
-		// Transfer light tracks
-		to.clearLightTracks();
-		for (LightTrack track : from.getLightTracks()) {
-			to.addLightTrack(track);
+		// Transfer key frames
+		List<LightTrack> fromTracks = from.getLightTracks();
+		List<LightTrack> toTracks = to.getLightTracks();
+
+		for (int i = 0; i < toTracks.size(); i++) {
+			toTracks.get(i).setKeyFrames(fromTracks.get(i).getKeyFrames());
 		}
 	}
 }

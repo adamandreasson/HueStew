@@ -153,12 +153,12 @@
                         </Menu>
                         <Menu fx:id="editMenu" disable="true" mnemonicParsing="false" text="Edit">
                            <items>
-                              <MenuItem text="_Undo">
+                              <MenuItem onAction="#undoPressed" text="_Undo">
                                  <accelerator>
                                     <KeyCodeCombination alt="UP" code="Z" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                                  </accelerator>
                               </MenuItem>
-                              <MenuItem text="_Redo">
+                              <MenuItem onAction="#redoPressed" text="_Redo">
                                  <accelerator>
                                     <KeyCodeCombination alt="UP" code="Y" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                                  </accelerator>

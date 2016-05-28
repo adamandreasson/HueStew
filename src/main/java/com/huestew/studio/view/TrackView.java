@@ -506,7 +506,6 @@ public class TrackView {
 	}
 
 	public void setDesiredCursorPosition(double x) {
-		System.out.println("desired cursor position is " + x);
 		if (x >= 0) {
 			this.desiredCursorPosition = x;
 		}

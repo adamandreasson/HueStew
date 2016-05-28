@@ -59,13 +59,6 @@ public class Show {
 		}
 		lightTracks.remove(track);
 	}
-	
-	/**
-	 * Clear all light tracks from the show.
-	 */
-	public void clearLightTracks() {
-		lightTracks.clear();
-	}
 
 	/**
 	 * @return a list of all the lighttracks.

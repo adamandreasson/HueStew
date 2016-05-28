@@ -17,6 +17,7 @@ import com.huestew.studio.model.HueStewConfig;
 import com.huestew.studio.model.LightTrack;
 import com.huestew.studio.model.MissingSongException;
 import com.huestew.studio.model.Show;
+import com.huestew.studio.model.SnapshotManager;
 import com.huestew.studio.model.VirtualBulb;
 import com.huestew.studio.util.FileUtil;
 import com.huestew.studio.util.WaveBuilder;
@@ -84,6 +85,7 @@ public class ShowController {
 	public void createShow(File musicFile) {
 
 		this.show = new Show();
+		SnapshotManager.getInstance().setShow(show);
 
 		show.setAudio(new Audio(musicFile));
 
@@ -97,6 +99,7 @@ public class ShowController {
 	public void loadShow() {
 
 		this.show = new Show();
+		SnapshotManager.getInstance().setShow(show);
 
 		try {
 			JSONObject json = fileHandler.loadJson(getLoadFile());

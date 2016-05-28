@@ -9,6 +9,7 @@ import com.huestew.studio.model.KeyFrame;
 import com.huestew.studio.model.LightTrack;
 import com.huestew.studio.model.Sequence;
 import com.huestew.studio.model.Show;
+import com.huestew.studio.model.SnapshotManager;
 import com.huestew.studio.util.FileUtil;
 import com.huestew.studio.view.Light;
 import com.huestew.studio.view.Scrollbar;
@@ -404,6 +405,7 @@ public class MainViewController extends ViewController {
 	@FXML
 	private void insertLightTrackPressed() {
 		showController.addTrack();
+		SnapshotManager.getInstance().clear();
 	}
 
 	@FXML
@@ -428,9 +430,27 @@ public class MainViewController extends ViewController {
 		paste();
 	}
 
+	@FXML
+	private void undoPressed() {
+		if (SnapshotManager.getInstance().canUndo()) {
+			SnapshotManager.getInstance().undo();
+			trackViewController.redraw();
+		}
+	}
+
+	@FXML
+	private void redoPressed() {
+		if (SnapshotManager.getInstance().canRedo()) {
+			SnapshotManager.getInstance().redo();
+			trackViewController.redraw();
+		}
+	}
+
 	private void paste() {
 		if (clipBoard == null)
 			return;
+
+		SnapshotManager.getInstance().commandIssued();
 
 		int cursor = getShow().getCursor();
 
@@ -536,6 +556,8 @@ public class MainViewController extends ViewController {
 						removeVirtualLights(track);
 						LightBank.getInstance().updateAvailableLights(showController.getShow().getLightTracks());
 						updateTracks();
+
+						SnapshotManager.getInstance().clear();
 					});
 				}
 				trackPane.getTrackBtn().setOnAction((e) -> {

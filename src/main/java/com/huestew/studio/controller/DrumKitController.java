@@ -74,7 +74,6 @@ public class DrumKitController {
 		boolean wasDrumBeat = drumKit.beat(event.getCode(), controller.getShow());
 
 		if (wasDrumBeat) {
-			System.out.println("omg drum was beat");
 			controller.updateTrackView();
 		}
 	}

@@ -6,6 +6,7 @@ import com.huestew.studio.HueStew;
 import com.huestew.studio.model.KeyFrame;
 import com.huestew.studio.model.LightState;
 import com.huestew.studio.model.LightTrack;
+import com.huestew.studio.model.SnapshotManager;
 
 import javafx.scene.Cursor;
 import javafx.scene.input.KeyEvent;
@@ -23,6 +24,7 @@ public class SelectTool extends Tool {
 	private List<KeyFrame> selectedKeyFrames;
 	private boolean ctrlDown = false;
 	private boolean shiftDown = false;
+	private boolean takeSnapshot = false;
 
 	public SelectTool(Toolbox toolbox) {
 		super(toolbox);
@@ -36,9 +38,13 @@ public class SelectTool extends Tool {
 			return;
 		}
 
+		SnapshotManager.getInstance().commandIssued();
+
 		for (KeyFrame frame : selectedKeyFrames) {
 			frame.remove();
 		}
+
+		selectedKeyFrames.clear();
 
 		toolbox.getController().updateTrackView();
 
@@ -58,6 +64,8 @@ public class SelectTool extends Tool {
 		}
 
 		if (event.getEventType() == MouseEvent.MOUSE_PRESSED) {
+
+			takeSnapshot = true;
 
 			if (keyFramesSelected.isEmpty()) {
 
@@ -81,6 +89,11 @@ public class SelectTool extends Tool {
 			}
 
 		} else if (event.getEventType() == MouseEvent.MOUSE_DRAGGED && !selectedKeyFrames.isEmpty()) {
+
+			if (takeSnapshot) {
+				SnapshotManager.getInstance().commandIssued();
+				takeSnapshot = false;
+			}
 
 			if (!shiftDown) {
 

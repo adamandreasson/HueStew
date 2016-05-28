@@ -8,6 +8,7 @@ import com.huestew.studio.model.Color;
 import com.huestew.studio.model.KeyFrame;
 import com.huestew.studio.model.LightState;
 import com.huestew.studio.model.LightTrack;
+import com.huestew.studio.model.SnapshotManager;
 
 import javafx.scene.Cursor;
 import javafx.scene.ImageCursor;
@@ -34,10 +35,11 @@ public class PopulateTool extends Tool {
 		if (keyFrame != null){
 			return;
 		}
-			
 
 		if (event.getEventType() == MouseEvent.MOUSE_PRESSED && event.getButton() == MouseButton.PRIMARY) {
-			if (canPlace(lightTrack, timestamp)){
+			if (canPlace(lightTrack, timestamp)) {
+				SnapshotManager.getInstance().commandIssued();
+
 				lightTrack.addKeyFrame(new KeyFrame(timestamp, new LightState(new Color(1, 1, 1), (int) (255 * normalizedY), 255), lightTrack));
 				selectedKeyFrames.clear();
 			}
