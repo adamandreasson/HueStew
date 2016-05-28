@@ -121,6 +121,9 @@ public class MainViewController extends ViewController {
 	private MenuItem saveAsMenuItem;
 
 	@FXML
+	private MenuItem pasteMenuItem;
+
+	@FXML
 	private MenuItem zoomInMenuItem;
 
 	@FXML
@@ -416,6 +419,7 @@ public class MainViewController extends ViewController {
 	@FXML
 	private void copyPressed() {
 		setClipboard(trackViewController.getSelection());
+		pasteMenuItem.setDisable(false);
 	}
 
 	private void setClipboard(List<KeyFrame> selection) {

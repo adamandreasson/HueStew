@@ -169,7 +169,7 @@
                                     <KeyCodeCombination alt="UP" code="C" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                                  </accelerator>
                               </MenuItem>
-                              <MenuItem onAction="#pastePressed" text="_Paste">
+                              <MenuItem fx:id="pasteMenuItem" disable="true" onAction="#pastePressed" text="_Paste">
                                  <accelerator>
                                     <KeyCodeCombination alt="UP" code="V" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                                  </accelerator>
