@@ -100,9 +100,15 @@ public class TrackViewController {
 		clickedTrack = view.getTrackFromY(event.getY());
 
 		if (clickedSection == TrackSection.VERTICAL_SCROLLBAR) {
-			view.getVerticalScrollbar().setBarOrigin(event.getY());
+			Scrollbar scrollbar = view.getVerticalScrollbar();
+
+			transferScrollbar(scrollbar, event.getY());
+			scrollbar.setBarOrigin(event.getY());
 		} else if (clickedSection == TrackSection.HORIZONTAL_SCROLLBAR) {
-			view.getHorizontalScrollbar().setBarOrigin(event.getX());
+			Scrollbar scrollbar = view.getHorizontalScrollbar();
+
+			transferScrollbar(scrollbar, event.getX());
+			scrollbar.setBarOrigin(event.getX());
 			view.setUseDesiredCursor(false);
 		} else if (event.getButton() == MouseButton.MIDDLE) {
 			view.getVerticalScrollbar().setOrigin(event.getY());
@@ -309,6 +315,16 @@ public class TrackViewController {
 
 	public void adjustZoom(double zoom) {
 		view.adjustZoom(zoom);
+	}
+
+	private void transferScrollbar(Scrollbar scrollbar, double newPosition) {
+		// TODO this has gone too far...
+		if (!scrollbar.isOnBar(newPosition)) {
+			scrollbar.addOffset(-scrollbar.getOffset());
+			scrollbar.setBarOrigin(0);
+			scrollbar.setBarPosition(newPosition - scrollbar.getBarSize() / 2);
+			redraw();
+		}
 	}
 
 	public List<KeyFrame> getSelection() {

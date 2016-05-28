@@ -43,6 +43,10 @@ public class Scrollbar {
 		return barOffset;
 	}
 
+	public boolean isOnBar(double pos) {
+		return pos >= getBarPosition() && pos <= getBarPosition() + getBarSize();
+	}
+
 	public void setBarOrigin(double barOrigin) {
 		this.barOrigin = barOrigin;
 	}
