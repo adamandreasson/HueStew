@@ -23,12 +23,14 @@
 			</plugins>
 		</pluginManagement>
 	</build>
+	<!--
 	<repositories>
 		<repository>
 			<id>xuggle repo</id>
 			<url>http://xuggle.googlecode.com/svn/trunk/repo/share/java/</url>
 		</repository>
 	</repositories>
+	-->
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
@@ -39,6 +41,13 @@
 			<groupId>xuggle</groupId>
 			<artifactId>xuggle-xuggler</artifactId>
 			<version>5.4</version>
+			<scope>system</scope>
+    		<systemPath>${basedir}/libs/xuggle-xuggler-5.4.jar</systemPath>
+		</dependency>
+		<dependency>
+    		<groupId>org.slf4j</groupId>
+    		<artifactId>slf4j-api</artifactId>
+    		<version>1.6.4</version>
 		</dependency>
 		<dependency>
 			<groupId>org.json</groupId>
