@@ -18,11 +18,14 @@ Clone the repo. If you have Maven properly set up, the project should compile in
 TDA367 has a plugin functionality accessible to developers. Currently existing plugins are:
 
 * PhilipsHuePlugin - for syncing lights to Philips Hue light bulbs
+* TextLights - very basic plugin, mostly for testing plugin functionality. Shows light state changes in the console.
 
-Plugins can be written by making a Java project with TDA367 as a dependency. Write a class that extends the abstract class Plugin. This is the main class, that will interact with the main program. 
+#### Writing plugins
+
+Plugins can be written by making a Java project with TDA367 as a dependency. Write a class that implements the interface Plugin. This is the main class, that will interact with the main program. 
 
 ```
-public class MyPlugin extends Plugin {
+public class MyPlugin implements Plugin {
     ...
 }
 ```
@@ -33,6 +36,12 @@ You also want to create a class that implements Light. This way you can create c
 public class MyCustomLight implements Light {
     ...
 }
+```
+
+A plugin needs to register any lights that it creates/facilitates through the LightBank. This is easily done with:
+
+```
+LightBank.getInstance().addLight(Light light);
 ```
 
 #### plugin.properties
