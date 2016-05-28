@@ -1,6 +1,8 @@
 package com.huestew.studio.controller;
 
 import com.huestew.studio.HueStew;
+
+import javafx.application.Platform;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaPlayer.Status;
@@ -67,7 +69,7 @@ public class Player {
 			// Keep updating unless the thread is interrupted
 			while (keepRunning) {
 
-				controller.tick();
+				Platform.runLater(() -> controller.tick());
 
 				try {
 					// Sleep for 33 ms (Run at 30 fps)
