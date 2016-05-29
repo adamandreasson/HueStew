@@ -6,6 +6,7 @@ package com.huestew.studio.controller;
 import java.util.List;
 import com.huestew.studio.model.KeyFrame;
 import com.huestew.studio.model.LightState;
+import com.huestew.studio.model.SnapshotManager;
 
 import javafx.application.Platform;
 import javafx.scene.Cursor;
@@ -40,10 +41,12 @@ public class ColorPickerController {
 		colorWheelCanvas.setCursor(Cursor.CROSSHAIR);
 
 		colorWheelCanvas.setOnMouseDragged(event -> pickColor(event.getX(), event.getY()));
-		colorWheelCanvas.setOnMouseClicked(event -> pickColor(event.getX(), event.getY()));
-
-		colorPickerPane.getChildren().add(colorWheelCanvas);
+		colorWheelCanvas.setOnMousePressed(event -> {
+			SnapshotManager.getInstance().commandIssued();
+			pickColor(event.getX(), event.getY());
+		});
 		
+		colorPickerPane.getChildren().add(colorWheelCanvas);
 		updateSize();
 	}
 
