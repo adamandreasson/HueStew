@@ -11,6 +11,7 @@ import java.io.PrintWriter;
 import java.nio.file.AccessDeniedException;
 import java.util.Properties;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -111,7 +112,7 @@ public class FileHandler {
 	 * @throws IOException
 	 *             if file was unable to load or corrupt
 	 */
-	public JSONObject loadJson(String path) throws IOException {
+	public JSONObject loadJson(String path) throws IOException, JSONException {
 
 		// Read from file
 		String everything;
