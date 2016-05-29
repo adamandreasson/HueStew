@@ -6,3 +6,6 @@ bin/
 wave.png
 HueStew.jar
 HueStewBugs.jar
+libs/huelocalsdk.jar
+libs/huesdkresources.jar
+libs/tablelayout.jar

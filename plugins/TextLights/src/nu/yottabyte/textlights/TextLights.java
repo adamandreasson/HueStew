@@ -3,8 +3,8 @@
  */
 package nu.yottabyte.textlights;
 
+import com.huestew.studio.controller.LightBank;
 import com.huestew.studio.plugin.Plugin;
-import com.huestew.studio.view.LightBank;
 
 /**
  * @author Adam
