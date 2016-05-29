@@ -8,6 +8,7 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.TreeMap;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.huestew.studio.io.FileHandler;
@@ -123,7 +124,7 @@ public class ShowController {
 	 * @throws IOException
 	 *             If the saved file couldn't be loaded
 	 */
-	public void loadShow() throws IOException {
+	public void loadShow() throws IOException, JSONException {
 
 		this.show = new Show();
 		SnapshotManager.getInstance().setShow(show);

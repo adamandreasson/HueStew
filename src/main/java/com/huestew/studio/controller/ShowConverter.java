@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.huestew.studio.model.Audio;
@@ -30,7 +31,7 @@ public class ShowConverter {
 	 * @throws MissingSongException
 	 *             if the audio file cannot be found
 	 */
-	public void fromJson(JSONObject obj, Show show, Map<String, LightTrack> virtualLights) throws MissingSongException {
+	public void fromJson(JSONObject obj, Show show, Map<String, LightTrack> virtualLights) throws MissingSongException, JSONException {
 		// Load tracks
 		JSONArray tracksJson = obj.getJSONArray("tracks");
 		for (int i = 0; i < tracksJson.length(); i++) {

@@ -6,6 +6,9 @@ import java.io.IOException;
 import java.nio.file.AccessDeniedException;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.json.JSONException;
+
 import com.huestew.studio.controller.tools.Toolbox;
 import com.huestew.studio.io.FileHandler;
 import com.huestew.studio.model.HueStewConfig;
@@ -17,6 +20,7 @@ import com.huestew.studio.model.SnapshotManager;
 import com.huestew.studio.plugin.PluginHandler;
 import com.huestew.studio.plugin.PluginLoader;
 import com.huestew.studio.util.FileUtil;
+import com.huestew.studio.view.ErrorAlert;
 import com.huestew.studio.view.Light;
 import com.huestew.studio.view.Scrollbar;
 import com.huestew.studio.view.TrackActionPane;
@@ -160,7 +164,7 @@ public class MainViewController extends ViewController {
 		try {
 			this.fileHandler = new FileHandler();
 		} catch (AccessDeniedException e) {
-			handleError(e);
+			handleError(e, "Unable to create necessary workspace directories");
 		}
 		loadConfig();
 
@@ -175,10 +179,8 @@ public class MainViewController extends ViewController {
 
 		try {
 			showController.loadShow();
-		} catch (FileNotFoundException e) {
-			// Last known save file was not found, simply don't load anything
-		} catch (IOException e) {
-			handleError(e);
+		} catch (IOException | JSONException e) {
+			handleError(e, "Corrupt save file");
 		}
 
 		virtualRoom.setCanvas(previewCanvas);
@@ -207,7 +209,7 @@ public class MainViewController extends ViewController {
 			HueStewConfig.setDefaults();
 		} catch (IOException e) {
 			// Display error message and use default config
-			handleError(e);
+			handleError(e, "Could not load configuration file");
 			HueStewConfig.setDefaults();
 		}
 
@@ -339,9 +341,12 @@ public class MainViewController extends ViewController {
 		});
 	}
 
-	private void handleError(Exception e) {
-		// TODO
-		System.out.println("ERROR: " + e.getMessage());
+	private void handleError(Exception e, String message) {
+		// Show error dialog
+		ErrorAlert alert = new ErrorAlert(message);
+		alert.show();
+
+		// Print to console
 		e.printStackTrace();
 	}
 
@@ -739,7 +744,7 @@ public class MainViewController extends ViewController {
 			try {
 				showController.loadShow();
 			} catch (IOException e) {
-				handleError(e);
+				handleError(e, "Corrupt save file");
 			}
 		}
 	}
@@ -754,7 +759,7 @@ public class MainViewController extends ViewController {
 		try {
 			showController.save();
 		} catch (IOException e) {
-			handleError(e);
+			handleError(e, "Unable to save show");
 		}
 	}
 
@@ -775,7 +780,7 @@ public class MainViewController extends ViewController {
 			try {
 				showController.save();
 			} catch (IOException e) {
-				handleError(e);
+				handleError(e, "Unable to save show");
 			}
 		}
 	}
