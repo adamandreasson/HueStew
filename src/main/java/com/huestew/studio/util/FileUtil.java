@@ -41,4 +41,8 @@ public class FileUtil {
 		
 		return false;
 	}
+
+	public static String removeExtension(String path) {
+		return path.substring(0, path.lastIndexOf('.'));
+	}
 }

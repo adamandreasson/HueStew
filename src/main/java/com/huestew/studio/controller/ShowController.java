@@ -30,16 +30,20 @@ import javafx.stage.FileChooser;
 
 public class ShowController {
 
+	private static final int DEFAULT_TRACK_COUNT = 3;
 	private MainViewController controller;
 	private Player player;
 	private Show show;
 	private Map<String, LightTrack> virtualLightQueue;
-	
-	public ShowController(MainViewController controller){
+
+	public ShowController(MainViewController controller) {
 		this.controller = controller;
 		this.virtualLightQueue = new TreeMap<>();
 	}
 
+	/**
+	 * Tick the show (update model logics and then redraw track view)
+	 */
 	public void tick() {
 		// Update model logics
 		setCursor(player.getCurrentTime());
@@ -48,50 +52,68 @@ public class ShowController {
 		controller.updateTrackView();
 	}
 
-
-	public void autoSave() {
+	/**
+	 * Save the show and user preferences to file (runs on program exit)
+	 * 
+	 * @throws IOException
+	 *             if the config couldn't be saved to file
+	 */
+	public void autoSave() throws IOException {
 		save();
-		System.out.println("AUTO SAVING");
+
 		HueStewConfig.getInstance().setWindowDimensions(controller.getWindowDimensions());
 		Properties prop = new ConfigConverter().toProperties();
-		try {
-			controller.getFileHandler().saveConfig(prop);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		controller.getFileHandler().saveConfig(prop);
 	}
 
-	public void save() {
+	/**
+	 * Save the show to JSON
+	 * 
+	 * @throws IOException
+	 *             if saving to file was unsuccessful
+	 */
+	public void save() throws IOException {
 
 		JSONObject json = new ShowConverter().toJson(show, LightBank.getInstance().getLights());
 
-		try {
-			controller.getFileHandler().saveJson(getSaveFile(), json);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		controller.getFileHandler().saveJson(getSaveFile(), json);
 
 		updateTitle();
 
 	}
 
+	/**
+	 * Create a new show with the given file
+	 * 
+	 * @param musicFile
+	 *            The music file to base the show around, mp3 format
+	 */
 	public void createShow(File musicFile) {
 
 		this.show = new Show();
+
+		// Init the SnapshotManager with the new show
 		SnapshotManager.getInstance().setShow(show);
 
+		// Assign the music file to the show
 		show.setAudio(new Audio(musicFile));
 
+		// Update user preferences
 		HueStewConfig.getInstance().setMusicDirectory(musicFile.getParent());
 		HueStewConfig.getInstance().setSaveFile("");
 
+		// Initialize the show
 		initShow();
 
 	}
 
-	public void loadShow() {
+	/**
+	 * Load a show from saved file
+	 * 
+	 * @throws IOException
+	 *             If the saved file couldn't be loaded
+	 */
+	public void loadShow() throws IOException {
 
 		this.show = new Show();
 		SnapshotManager.getInstance().setShow(show);
@@ -102,10 +124,6 @@ public class ShowController {
 		} catch (FileNotFoundException e) {
 			// Probably first run
 			// Stop for now and wait for user to click new/open
-			return;
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 			return;
 		} catch (MissingSongException e) {
 			// Replace song
@@ -118,22 +136,25 @@ public class ShowController {
 			}
 		}
 
-		// If song is still null, wait for user to create new or load existing project
+		// If song is still null, wait for user to create new or load existing
+		// project
 		if (show.getAudio() == null)
 			return;
 
 		controller.updateFooterStatus("Loading project...");
+
 		initShow();
 
 	}
 
+	/**
+	 * Initialize the show, create tracks and virtual lights
+	 */
 	public void initShow() {
-
-		// TODO? TEST CODE PLS REMOVE LATER
 
 		controller.getVirtualRoom().clean();
 
-		if(show.getLightTracks().size() < 1){
+		if (show.getLightTracks().size() < 1) {
 			createEmptyTracks();
 		}
 
@@ -153,11 +174,14 @@ public class ShowController {
 			}
 		}
 
+		// Calculate all light positions in the virtual room
 		controller.getVirtualRoom().calculateBulbPositions();
 
+		// If a player already existed, stop it first
 		if (player != null)
 			player.stop();
 
+		// Create a new player
 		player = new Player(this);
 		player.setVolume(HueStewConfig.getInstance().getVolume());
 
@@ -180,13 +204,20 @@ public class ShowController {
 		return fileChooser.showOpenDialog(controller.getStage());
 	}
 
+	/**
+	 * Create empty light tracks and add them to the show
+	 */
 	private void createEmptyTracks() {
-		for (int i = 0; i < 3; i++) {
+		for (int i = 0; i < DEFAULT_TRACK_COUNT; i++) {
 			LightTrack track = new LightTrack();
 			show.addLightTrack(track);
 		}
 	}
 
+	/**
+	 * Create a new {@link LightTrack} and add it to the {@link Show}. Creates a
+	 * {@link VirtualLight} assigned to the track as well
+	 */
 	public void addTrack() {
 		LightTrack track = new LightTrack();
 		show.addLightTrack(track);
@@ -194,9 +225,12 @@ public class ShowController {
 		controller.updateTracks();
 	}
 
+	/**
+	 * Add a new {@link VirtualLight} to the {@link Show}
+	 */
 	public void addVirtualLight() {
 		VirtualRoom room = controller.getVirtualRoom();
-		
+
 		VirtualBulb bulb = new VirtualBulb();
 		Light light = new VirtualLight(bulb, room.getNextBulbName(), show);
 		LightBank.getInstance().addLight(light, null);
@@ -205,6 +239,12 @@ public class ShowController {
 		room.redraw();
 	}
 
+	/**
+	 * Create and add a {@link VirtualLight} to the given {@link LightTrack}
+	 * 
+	 * @param track
+	 *            The track to add the light to
+	 */
 	public void addVirtualLight(LightTrack track) {
 		VirtualBulb bulb = new VirtualBulb();
 
@@ -216,6 +256,10 @@ public class ShowController {
 		track.addListener(light);
 	}
 
+	/**
+	 * Called when the song has been loaded and the player is ready. Enable the
+	 * track canvas and start generating wave form image
+	 */
 	public void playerReady() {
 
 		int width = (int) ((show.getDuration() / 1000.0) * TrackView.PIXELS_PER_SECOND);
@@ -225,13 +269,19 @@ public class ShowController {
 		createWave(width);
 
 	}
-	
+
+	/**
+	 * Generate a waveform image of the show {@link Audio} using the
+	 * {@link WaveBuilder}
+	 * 
+	 * @param width
+	 *            Total width of the waveform in pixels
+	 */
 	private void createWave(int width) {
 
 		String tmpSongFile = controller.getFileHandler().getTempFilePath("song.wav");
-		System.out.println(tmpSongFile);
 
-		// TODO? THIS SHOULD ALL BE ELSEWHERE
+		// Generate the waveform on a separate thread to avoid interrupting user
 		Thread thread = new Thread(() -> {
 			FileUtil.convertAudioFile(show.getAudio().getFile().getPath(), tmpSongFile);
 
@@ -243,6 +293,34 @@ public class ShowController {
 		});
 		thread.start();
 
+	}
+
+	/**
+	 * Update the title of the show. Create an appropriate title and pass it to
+	 * {@link MainViewController} for changing window title
+	 */
+	private void updateTitle() {
+		String title = HueStewConfig.getInstance().getSaveFile();
+		if (title.isEmpty()) {
+			title = "Untitled";
+			if (show.getAudio() != null) {
+				title += " (" + FileUtil.removeExtension(show.getAudio().getFile().getName()) + ")";
+			}
+		} else {
+			title = FileUtil.removeExtension(new File(title).getName());
+		}
+		controller.updateTitle(title + " - HueStew Studio");
+	}
+
+	/**
+	 * Remove all {@link VirtualLight} related to the show
+	 */
+	private void removeVirtualLights() {
+		for (Light light : LightBank.getInstance().getLights().keySet()) {
+			if (light instanceof VirtualLight) {
+				LightBank.getInstance().removeLight(light);
+			}
+		}
 	}
 
 	public int getCursor() {
@@ -257,13 +335,10 @@ public class ShowController {
 		// Update cursor in show
 		show.updateCursor(cursor);
 
-		// TODO this should probably not be here
+		// Redraw the light bulbs in the VirtualRoom
 		controller.getVirtualRoom().redraw();
 	}
 
-	/**
-	 * @return the player
-	 */
 	public Player getPlayer() {
 		return player;
 	}
@@ -272,34 +347,10 @@ public class ShowController {
 		return show;
 	}
 	
-	private void updateTitle() {
-		String title = HueStewConfig.getInstance().getSaveFile();
-		if (title.isEmpty()) {
-			title = "Untitled";
-			if (show.getAudio() != null) {
-				title += " (" + removeExtension(show.getAudio().getFile().getName()) + ")";
-			}
-		} else {
-			title = removeExtension(new File(title).getName());
-		}
-		controller.updateTitle(title + " - HueStew Studio");
-	}
-	
-	private String removeExtension(String path) {
-		return path.substring(0, path.lastIndexOf('.'));
-	}
-
-	private void removeVirtualLights() {
-		for (Light light : LightBank.getInstance().getLights().keySet()) {
-			if (light instanceof VirtualLight) {
-				LightBank.getInstance().removeLight(light);
-			}
-		}
-	}
-
 	private String getSaveFile() {
-		return HueStewConfig.getInstance().getSaveFile().isEmpty() ? 
-				controller.getFileHandler().getAppFilePath(FileHandler.AUTOSAVE_FILE) : HueStewConfig.getInstance().getSaveFile();
+		return HueStewConfig.getInstance().getSaveFile().isEmpty()
+				? controller.getFileHandler().getAppFilePath(FileHandler.AUTOSAVE_FILE)
+				: HueStewConfig.getInstance().getSaveFile();
 	}
 
 	private String getLoadFile() {
