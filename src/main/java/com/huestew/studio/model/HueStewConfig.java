@@ -2,7 +2,7 @@ package com.huestew.studio.model;
 
 /**
  * The config class used to store information regarding how to set up the studio 
- * as well as the show.
+ * as well as the show. Singleton, accessed globally
  * @author Adam
  *
  */

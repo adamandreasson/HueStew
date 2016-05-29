@@ -22,24 +22,25 @@ public class Player {
 	private Thread playingThread;
 
 	private int pauseTime;
-	
+
 	private ShowController controller;
 
 	/**
 	 * Creates a new player object with a specified show to play.
+	 * 
 	 * @param show
-	 * 				the show to be played.
+	 *            the show to be played.
 	 */
 	public Player(ShowController controller) {
 
 		this.controller = controller;
-		
+
 		try {
 
 			Media media = controller.getShow().getAudio().getFxMedia();
 			mediaPlayer = new MediaPlayer(media);
 			mediaPlayer.setAutoPlay(false);
-			
+
 			mediaPlayer.setOnReady(() -> {
 				controller.getShow().setDuration((int) media.getDuration().toMillis());
 				controller.playerReady();
@@ -88,7 +89,9 @@ public class Player {
 		playingThread.start();
 	}
 
-	/** pauses the show at the current timestamp **/
+	/**
+	 * Pauses the show at the current timestamp
+	 */
 	public void pause() {
 		if (isPlaying()) {
 			pauseTime = getCurrentTime();
@@ -97,14 +100,16 @@ public class Player {
 		}
 	}
 
-	/** stops playing the show and resets the timestamp to 0 **/
+	/**
+	 * Stops playing the show and resets the timestamp to 0
+	 */
 	public void stop() {
 		mediaPlayer.stop();
 	}
 
 	/**
-	 * returns the time at which the player is at, if it's paused the pausetime is returned.
-	 * @return
+	 * @return the time at which the player is at, if it's paused the pausetime
+	 *         is returned.
 	 */
 	public int getCurrentTime() {
 		if (pauseTime > 0)
@@ -112,11 +117,21 @@ public class Player {
 		return (int) mediaPlayer.getCurrentTime().toMillis();
 	}
 
-	/** Whether or not the player is currently playing **/
+	/**
+	 * Whether or not the player is currently playing
+	 * 
+	 * @return Whether or not the player is currently playing
+	 */
 	public boolean isPlaying() {
 		return mediaPlayer.getStatus() == Status.PLAYING;
 	}
 
+	/**
+	 * Move the player to a given time
+	 * 
+	 * @param time
+	 *            The desired new time, in milliseconds
+	 */
 	public void seek(int time) {
 		mediaPlayer.seek(Duration.millis(time));
 
@@ -126,13 +141,16 @@ public class Player {
 		}
 	}
 
+	/**
+	 * Toggle player status (play/pause)
+	 */
 	public void toggle() {
 		if (!isPlaying())
 			play();
 		else
 			pause();
 	}
-	
+
 	public void setVolume(double volume) {
 		mediaPlayer.setVolume(volume);
 	}

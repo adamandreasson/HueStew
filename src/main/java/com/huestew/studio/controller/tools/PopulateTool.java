@@ -31,8 +31,9 @@ public class PopulateTool extends Tool {
 	}
 
 	@Override
-	public void doAction(MouseEvent event, LightTrack lightTrack, KeyFrame keyFrame, List<KeyFrame> selectedKeyFrames, int timestamp, double normalizedY) {
-		if (keyFrame != null){
+	public void doAction(MouseEvent event, LightTrack lightTrack, KeyFrame keyFrame, List<KeyFrame> selectedKeyFrames,
+			int timestamp, double normalizedY) {
+		if (keyFrame != null) {
 			return;
 		}
 
@@ -40,10 +41,11 @@ public class PopulateTool extends Tool {
 			if (canPlace(lightTrack, timestamp)) {
 				SnapshotManager.getInstance().commandIssued();
 
-				lightTrack.addKeyFrame(new KeyFrame(timestamp, new LightState(new Color(1, 1, 1), (int) (255 * normalizedY), 255), lightTrack));
+				lightTrack.addKeyFrame(new KeyFrame(timestamp,
+						new LightState(new Color(1, 1, 1), (int) (255 * normalizedY), 255), lightTrack));
 				selectedKeyFrames.clear();
 			}
-		
+
 		}
 	}
 
@@ -59,15 +61,25 @@ public class PopulateTool extends Tool {
 		else
 			return cursor;
 	}
-	
+
+	/**
+	 * Determine whether a new {@link KeyFrame} can be placed at the timestamp
+	 * 
+	 * @param track
+	 *            The desired track to place the frame on
+	 * @param timestamp
+	 *            The desired timestamp in milliseconds
+	 * @return Can a new {@link KeyFrame} be placed
+	 */
 	private boolean canPlace(LightTrack track, int timestamp) {
 		TreeSet<KeyFrame> keyFrames = track.getKeyFrames();
 		KeyFrame target = new KeyFrame(timestamp);
-		
+
 		KeyFrame left = keyFrames.floor(target);
 		KeyFrame right = keyFrames.ceiling(target);
-		
+
 		return !(left != null && timestamp - left.getTimestamp() < HueStewConfig.getInstance().getMinFrameDistance()
-				|| right != null && right.getTimestamp() - timestamp < HueStewConfig.getInstance().getMinFrameDistance());
+				|| right != null
+						&& right.getTimestamp() - timestamp < HueStewConfig.getInstance().getMinFrameDistance());
 	}
 }
