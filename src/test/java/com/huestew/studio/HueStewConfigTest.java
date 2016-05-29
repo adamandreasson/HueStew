@@ -2,7 +2,6 @@ package com.huestew.studio;
 
 import static org.junit.Assert.*;
 
-import java.io.File;
 import java.util.UUID;
 
 import org.junit.Before;
@@ -16,8 +15,7 @@ public class HueStewConfigTest {
 
 	@Before
 	public void before() {
-		config = new HueStewConfig(System.getProperty("user.home") + File.separator 
-				+ "HueStew", "", System.getProperty("user.home"), 1.0, "");
+		config = HueStewConfig.getInstance();
 		random = UUID.randomUUID().toString();
 	}
 
@@ -50,5 +48,12 @@ public class HueStewConfigTest {
 		double volume = Math.random();
 		config.setVolume(volume);
 		assertTrue(Math.abs(volume - config.getVolume()) < 0.0001);
+	}
+
+	@Test
+	public void setMinFrameDistance() {
+		int distance = (int) (Math.random() * 1000);
+		config.setMinFrameDistance(distance);
+		assertTrue(config.getMinFrameDistance() == distance);
 	}
 }
