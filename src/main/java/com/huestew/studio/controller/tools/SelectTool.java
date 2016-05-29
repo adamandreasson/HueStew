@@ -33,7 +33,7 @@ public class SelectTool extends Tool {
 	/**
 	 * Delete all selected frames and update the track view
 	 */
-	private void deleteSelectedKeyFrames() {
+	public void deleteSelectedKeyFrames() {
 		if (selectedKeyFrames == null || selectedKeyFrames.isEmpty()) {
 			return;
 		}

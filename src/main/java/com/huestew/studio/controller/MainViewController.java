@@ -854,4 +854,10 @@ public class MainViewController extends ViewController {
 		}
 	}
 
+	@FXML
+	private void deletePressed() {
+		toolbox.getSelectTool().deleteSelectedKeyFrames();
+		trackViewController.redraw();
+	}
+
 }

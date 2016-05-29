@@ -175,7 +175,7 @@
                                  </accelerator>
                               </MenuItem>
                               <SeparatorMenuItem mnemonicParsing="false" />
-                              <MenuItem mnemonicParsing="false" text="Delete" />
+                              <MenuItem mnemonicParsing="false" onAction="#deletePressed" text="Delete" />
                            </items>
                         </Menu>
                         <Menu fx:id="viewMenu" disable="true" mnemonicParsing="false" text="View">
