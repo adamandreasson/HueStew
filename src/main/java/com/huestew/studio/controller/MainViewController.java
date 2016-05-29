@@ -328,7 +328,6 @@ public class MainViewController extends ViewController {
 			if (db.hasFiles()) {
 				if (db.getFiles().size() < 2) {
 					File file = db.getFiles().get(0);
-					System.out.println(file.getAbsolutePath());
 					if (FileUtil.isMusicFile(file)) {
 						showController.createShow(file);
 					}

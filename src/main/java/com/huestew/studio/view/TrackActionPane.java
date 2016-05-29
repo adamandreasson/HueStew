@@ -27,7 +27,6 @@ public class TrackActionPane extends VBox {
 		this.track = track;
 
 		Image lightImg = new Image("icon_light.png");
-		Image eyeImg = new Image("icon_eye.png");
 		Image trashImg = new Image("icon_trash.png");
 		
 		trackBtn = new ToggleButton();
@@ -35,14 +34,6 @@ public class TrackActionPane extends VBox {
 		trackBtn.setGraphic(new ImageView(lightImg));
 		trackBtn.setTooltip(new Tooltip("Configure lights"));
 		this.getChildren().add(trackBtn);
-		
-		Button hideBtn = new Button();
-		hideBtn.setGraphic(new ImageView(eyeImg));
-		hideBtn.setTooltip(new Tooltip("Hide track"));
-		hideBtn.setOnAction((e) -> {
-			System.out.println("todohehe");
-		});
-		this.getChildren().add(hideBtn);
 		
 		removeBtn = new Button();
 		removeBtn.setGraphic(new ImageView(trashImg));

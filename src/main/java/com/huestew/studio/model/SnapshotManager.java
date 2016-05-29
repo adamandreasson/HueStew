@@ -34,7 +34,6 @@ public enum SnapshotManager {
 	 * 				the version of the show previous to the command
 	 */
 	public void commandIssued() {
-		System.out.println("SNAPSHOT");
 		undoStack.push(new Show(show));
 		redoStack.clear();
 	}

@@ -96,7 +96,6 @@ public class FileHandler {
 	public void saveJson(String path, JSONObject json) throws IOException {
 
 		// Write to file
-		System.out.println("saving to " + path);
 		try (PrintWriter out = new PrintWriter(path, "utf-8")) {
 			out.println(json.toString(2));
 		}

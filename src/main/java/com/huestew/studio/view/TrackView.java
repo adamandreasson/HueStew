@@ -81,13 +81,9 @@ public class TrackView {
 	public void loadWaves(List<String> filePaths) {
 		this.backgroundWaveImages = new ArrayList<Image>();
 
-		try {
-			for (String path : filePaths)
-				this.backgroundWaveImages.add(new Image(path));
+		for (String path : filePaths)
+			this.backgroundWaveImages.add(new Image(path));
 
-		} catch (IllegalArgumentException e) {
-			System.out.println("wave not generated yet probably?");
-		}
 	}
 
 	public void redraw(boolean isPlaying) {
@@ -448,13 +444,6 @@ public class TrackView {
 
 			double trackMinY = minY - getTrackPositionY(i);
 			double trackMaxY = maxY - getTrackPositionY(i);
-
-			/*
-			 * System.out.println("Track " + i + " position Y: " +
-			 * getTrackPositionY(i)); System.out.println("Track " + i + " min: "
-			 * + trackMinY); System.out.println("Track " + i + " max: " +
-			 * trackMaxY);
-			 */
 
 			for (KeyFrame keyFrame : track.getKeyFrames()) {
 				double localFrameY = getTrackHeight() - getRelativeYFromBrightness(keyFrame.getState().getBrightness());

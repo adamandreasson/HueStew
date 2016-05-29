@@ -97,7 +97,6 @@ public class TrackMenuController extends ViewController {
 
     @FXML
     void mouseDownCover() {
-    	System.out.println("mouse down on cover");
     	close();
     }
 }
