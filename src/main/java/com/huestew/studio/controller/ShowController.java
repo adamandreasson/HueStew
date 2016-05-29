@@ -74,10 +74,20 @@ public class ShowController {
 	 */
 	public void save() throws IOException {
 
+		// Convert show data to json
 		JSONObject json = new ShowConverter().toJson(show, LightBank.getInstance().getLights());
 
-		controller.getFileHandler().saveJson(getSaveFile(), json);
+		// Get path to save file
+		String path = HueStewConfig.getInstance().getSaveFile();
 
+		// If no save path specified, use autosave file
+		if (path.isEmpty())
+			path = controller.getFileHandler().getAppFilePath(FileHandler.AUTOSAVE_FILE);
+
+		// Save json to file
+		controller.getFileHandler().saveJson(path, json);
+
+		// Update window title
 		updateTitle();
 
 	}
@@ -118,8 +128,22 @@ public class ShowController {
 		this.show = new Show();
 		SnapshotManager.getInstance().setShow(show);
 
+		// Decide which path to load from
+		String path = HueStewConfig.getInstance().getSaveFile();
+		if (path.isEmpty()) {
+			// Save path is empty, load from autosave file
+			path = controller.getFileHandler().getAppFilePath(FileHandler.AUTOSAVE_FILE);
+		} else if (!new File(path).exists()) {
+			// File does not exist, remove save path and load from autosave file instead
+			HueStewConfig.getInstance().setSaveFile("");
+			path = controller.getFileHandler().getAppFilePath(FileHandler.AUTOSAVE_FILE);
+		}
+
 		try {
-			JSONObject json = controller.getFileHandler().loadJson(getLoadFile());
+			// Load json from file
+			JSONObject json = controller.getFileHandler().loadJson(path);
+
+			// Convert json to show data
 			new ShowConverter().fromJson(json, show, virtualLightQueue);
 		} catch (FileNotFoundException e) {
 			// Probably first run
@@ -191,16 +215,20 @@ public class ShowController {
 	}
 
 	public File browseForSong() {
+		// Use a file chooser to find music file
 		FileChooser fileChooser = new FileChooser();
+		fileChooser.setTitle("Open music file");
 
+		// Open last known music directory, or home directory if unavailable
 		File initialDir = new File(HueStewConfig.getInstance().getMusicDirectory());
 		if (!initialDir.exists())
 			initialDir = new File(System.getProperty("user.home"));
-
 		fileChooser.setInitialDirectory(initialDir);
-		fileChooser.setTitle("Open music file");
+
+		// Limit to MP3 files
 		fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("MP3", "*.mp3"));
 
+		// Return the file that was selected by the user
 		return fileChooser.showOpenDialog(controller.getStage());
 	}
 
@@ -345,24 +373,5 @@ public class ShowController {
 
 	public Show getShow() {
 		return show;
-	}
-	
-	private String getSaveFile() {
-		return HueStewConfig.getInstance().getSaveFile().isEmpty()
-				? controller.getFileHandler().getAppFilePath(FileHandler.AUTOSAVE_FILE)
-				: HueStewConfig.getInstance().getSaveFile();
-	}
-
-	private String getLoadFile() {
-		String path = HueStewConfig.getInstance().getSaveFile();
-		if (!path.isEmpty()) {
-			if (new File(path).exists()) {
-				return path;
-			} else {
-				HueStewConfig.getInstance().setSaveFile("");
-			}
-		}
-
-		return controller.getFileHandler().getAppFilePath(FileHandler.AUTOSAVE_FILE);
 	}
 }
