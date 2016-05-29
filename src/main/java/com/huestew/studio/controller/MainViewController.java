@@ -137,10 +137,10 @@ public class MainViewController extends ViewController {
 
 	@FXML
 	private AnchorPane rootPane;
-	
+
 	private Stage stage;
 	private List<TrackActionPane> trackActionPanes;
-	
+
 	private FileHandler fileHandler;
 	private PluginHandler pluginHandler;
 
@@ -149,7 +149,7 @@ public class MainViewController extends ViewController {
 	private TrackMenuController trackMenuController;
 	private DrumKitController drumKitController;
 	private ColorPickerController colorPickerController;
-	
+
 	private VirtualRoom virtualRoom;
 	private Toolbox toolbox;
 	private Sequence clipBoard;
@@ -177,7 +177,6 @@ public class MainViewController extends ViewController {
 		virtualRoom.setCanvas(previewCanvas);
 		virtualRoom.redraw();
 
-		
 		initPlugins();
 
 		initPropertyListeners();
@@ -455,7 +454,7 @@ public class MainViewController extends ViewController {
 	 * Set the dimensions of the main view stage.
 	 * 
 	 * @param dimensions
-	 *            - A string of dimensions separated by commas. X, Y, Width,
+	 *            A string of dimensions separated by commas. X, Y, Width,
 	 *            Height.
 	 */
 	private void setWindowDimensions(String dimensions) {
@@ -593,7 +592,9 @@ public class MainViewController extends ViewController {
 	}
 
 	/**
-	 * Update the wave image background. Redirected to {@link TrackViewController}
+	 * Update the wave image background. Redirected to
+	 * {@link TrackViewController}
+	 * 
 	 * @param imagePaths
 	 */
 	public void updateWaveImage(List<String> imagePaths) {
@@ -612,11 +613,10 @@ public class MainViewController extends ViewController {
 		showController.tick();
 	}
 
-	
-	/* 
+	/*
 	 * Getters
 	 */
-	
+
 	public Player getPlayer() {
 		return showController.getPlayer();
 	}
@@ -642,9 +642,9 @@ public class MainViewController extends ViewController {
 	}
 
 	/*
-	 * JavaFX input handlers 
+	 * JavaFX input handlers
 	 */
-	
+
 	public void handleKeyboardEvent(KeyEvent event) {
 		if (event.getEventType() == KeyEvent.KEY_PRESSED) {
 			drumKitController.keyboardEvent(event);

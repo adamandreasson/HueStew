@@ -9,6 +9,9 @@ import java.util.List;
 import javafx.scene.input.KeyCode;
 
 /**
+ * Model representing a collection of drums/sequences. Responsible for
+ * delegating keys to drums
+ * 
  * @author Adam
  *
  */

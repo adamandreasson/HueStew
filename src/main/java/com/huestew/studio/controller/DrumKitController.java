@@ -18,6 +18,9 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 
 /**
+ * Controller that handles all interaction with drums and the drum kit pane in
+ * the main view
+ * 
  * @author Adam
  *
  */
@@ -29,6 +32,14 @@ public class DrumKitController {
 	VBox grid;
 	List<DrumConfigController> drumConfigs;
 
+	/**
+	 * Create a new instance of the controller
+	 * 
+	 * @param drumkitPane
+	 *            The pane for the controller to work with
+	 * @param controller
+	 *            Parent controller
+	 */
 	public DrumKitController(AnchorPane drumkitPane, MainViewController controller) {
 		this.drumKitPane = drumkitPane;
 		this.controller = controller;
@@ -44,6 +55,12 @@ public class DrumKitController {
 		drumKitPane.getChildren().add(grid);
 	}
 
+	/**
+	 * Called when user presses the "add sequence button" in the main view
+	 * 
+	 * @param frames
+	 *            Currently selected frames to create a drum sequence from
+	 */
 	public void addButtonPressed(List<KeyFrame> frames) {
 
 		Sequence sequence = new Sequence(frames);
@@ -52,6 +69,12 @@ public class DrumKitController {
 
 	}
 
+	/**
+	 * Add a new drum and create the interface for it
+	 * 
+	 * @param sequence
+	 *            The sequence for the new drum
+	 */
 	private void addDrum(Sequence sequence) {
 
 		Drum drum = drumKit.addDrum(sequence);
@@ -60,25 +83,46 @@ public class DrumKitController {
 		drumConfigController.setDrumKitController(this);
 		drumConfigController.setWidth(drumKitPane.getWidth());
 		drumConfigController.initDrum(drum, controller.getShow().getLightTracks());
-		
+
 		drumConfigs.add(drumConfigController);
 		grid.getChildren().add(drumConfigController.getParent());
 
 	}
 
+	/**
+	 * Create a copy of an existing drum (duplicate)
+	 * 
+	 * @param drum
+	 *            The drum to copy
+	 */
 	public void createDrumCopy(Drum drum) {
-		
+
 		addDrum(drum.getSequence());
-		
+
 	}
 
+	/**
+	 * Remove a drum and its' interface
+	 * 
+	 * @param drumConfigController
+	 *            The controller for the drum's interface
+	 * @param drum
+	 *            The drum to be removed
+	 */
 	public void removeDrum(DrumConfigController drumConfigController, Drum drum) {
 		drumConfigs.remove(drumConfigController);
 		grid.getChildren().remove(drumConfigController.getParent());
-		
+
 		drumKit.removeDrum(drum);
 	}
 
+	/**
+	 * Is the key pressed a valid drum key? Redirected to {@link DrumKit}
+	 * 
+	 * @param key
+	 *            The key pressed
+	 * @return Whether the key press is linked to a drum
+	 */
 	public boolean isValidDrumKey(KeyCode key) {
 
 		return drumKit.isValidKey(key);
@@ -86,13 +130,14 @@ public class DrumKitController {
 
 	public void keyboardEvent(KeyEvent event) {
 
-		// If the key pressed has a drum assigned, create a snapshot before hitting the drum
-		if(drumKit.isValidKey(event.getCode())){
+		// If the key pressed has a drum assigned, create a snapshot before
+		// hitting the drum
+		if (drumKit.isValidKey(event.getCode())) {
 			SnapshotManager.getInstance().commandIssued();
 		}
 
 		boolean wasDrumBeat = drumKit.beat(event.getCode(), controller.getShow());
-		
+
 		// if the drum was successfully beat, update track view
 		if (wasDrumBeat) {
 			controller.updateTrackView();
@@ -101,7 +146,7 @@ public class DrumKitController {
 
 	public void updateSize() {
 		grid.setMaxWidth(drumKitPane.getWidth());
-		for(DrumConfigController config : drumConfigs){
+		for (DrumConfigController config : drumConfigs) {
 			config.updateSize(drumKitPane.getWidth());
 		}
 	}
