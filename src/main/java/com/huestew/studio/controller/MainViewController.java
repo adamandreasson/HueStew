@@ -173,7 +173,11 @@ public class MainViewController extends ViewController {
 		this.toolbox = new Toolbox();
 		this.trackActionPanes = new ArrayList<>();
 
-		showController.loadShow();
+		try {
+			showController.loadShow();
+		} catch (IOException e) {
+			handleError(e);
+		}
 		virtualRoom.setCanvas(previewCanvas);
 		virtualRoom.redraw();
 
@@ -479,7 +483,7 @@ public class MainViewController extends ViewController {
 	 * 
 	 * @param selectedKeyFrames
 	 */
-	public void openColorPicker(List<KeyFrame> selectedKeyFrames) {
+	public void updateColorPicker(List<KeyFrame> selectedKeyFrames) {
 		colorPickerController.setFrames(selectedKeyFrames);
 	}
 
@@ -601,7 +605,13 @@ public class MainViewController extends ViewController {
 		trackViewController.loadWaves(imagePaths);
 	}
 
-	public void shutdown() {
+	/**
+	 * Shut down the program
+	 * 
+	 * @throws IOException
+	 *             If the program failed to autosave configuration
+	 */
+	public void shutdown() throws IOException {
 		pluginHandler.sendDisable();
 		showController.autoSave();
 	}
@@ -672,7 +682,6 @@ public class MainViewController extends ViewController {
 		showController.getPlayer().seek(0);
 		showController.getPlayer().play();
 		Scrollbar bar = trackViewController.getHorizontalScrollbar();
-		// TODO Scrollbar+setOffset(double)
 		bar.addOffset(-bar.getOffset());
 	}
 
@@ -713,9 +722,16 @@ public class MainViewController extends ViewController {
 		File file = fileChooser.showOpenDialog(stage);
 
 		if (file != null) {
+
 			HueStewConfig.getInstance().setSaveFile(file.getAbsolutePath());
 			HueStewConfig.getInstance().setSaveDirectory(file.getParentFile().getAbsolutePath());
-			showController.loadShow();
+
+			try {
+				showController.loadShow();
+			} catch (IOException e) {
+				handleError(e);
+			}
+
 		}
 	}
 
@@ -726,7 +742,12 @@ public class MainViewController extends ViewController {
 			return;
 		}
 
-		showController.save();
+		try {
+			showController.save();
+		} catch (IOException e) {
+			handleError(e);
+		}
+
 	}
 
 	@FXML
@@ -739,9 +760,16 @@ public class MainViewController extends ViewController {
 		File file = fileChooser.showSaveDialog(stage);
 
 		if (file != null) {
+
 			HueStewConfig.getInstance().setSaveFile(file.getAbsolutePath());
 			HueStewConfig.getInstance().setSaveDirectory(file.getParentFile().getAbsolutePath());
-			showController.save();
+
+			try {
+				showController.save();
+			} catch (IOException e) {
+				handleError(e);
+			}
+
 		}
 	}
 

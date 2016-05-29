@@ -1,5 +1,7 @@
 package com.huestew.studio;
 
+import java.io.IOException;
+
 import com.huestew.studio.controller.MainViewController;
 import com.huestew.studio.controller.ViewController;
 
@@ -17,10 +19,10 @@ public class Main extends Application {
 		MainViewController controller = (MainViewController) ViewController.loadFxml("/main.fxml");
 		primaryStage.setTitle("HueStew Studio");
 		controller.setStage(primaryStage);
-		
+
 		Scene scene = new Scene(controller.getParent(), 1280, 720);
 		scene.getStylesheets().add(getClass().getResource("/style.css").toExternalForm());
-		
+
 		primaryStage.setScene(scene);
 		primaryStage.getIcons().add(new Image("/icon_256x256.png"));
 		primaryStage.show();
@@ -31,8 +33,13 @@ public class Main extends Application {
 
 		// Register closing listener
 		primaryStage.setOnCloseRequest((e) -> {
-			controller.shutdown();
-			controller.getFileHandler().clean();
+			try {
+				controller.shutdown();
+				controller.getFileHandler().clean();
+			} catch (IOException e1) {
+				// Nothing to do here really
+				e1.printStackTrace();
+			}
 			System.exit(0);
 		});
 
