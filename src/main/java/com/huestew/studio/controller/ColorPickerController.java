@@ -40,12 +40,14 @@ public class ColorPickerController {
 		colorWheelCanvas = new Canvas();
 		colorWheelCanvas.setCursor(Cursor.CROSSHAIR);
 
+		// Register mouse event handlers
 		colorWheelCanvas.setOnMouseDragged(event -> pickColor(event.getX(), event.getY()));
 		colorWheelCanvas.setOnMousePressed(event -> {
+			// Take snapshot before changing color
 			SnapshotManager.getInstance().commandIssued();
 			pickColor(event.getX(), event.getY());
 		});
-		
+
 		colorPickerPane.getChildren().add(colorWheelCanvas);
 		updateSize();
 	}
@@ -63,24 +65,32 @@ public class ColorPickerController {
 		if (selectedKeyFrames == null || selectedKeyFrames.isEmpty())
 			return;
 
+		// Calculate color from x coordinate
 		Color c = getColorFromX(x);
 
+		// Calculate saturation from y coordinate
 		int saturation = (int) (getSaturationFromY(y) * 255.0);
 		if (saturation < 0)
 			saturation = 0;
 		if (saturation > 255)
 			saturation = 255;
 
+		// Update light state of all selected key frames
 		for (KeyFrame frame : selectedKeyFrames) {
 			frame.setState(new LightState(new com.huestew.studio.model.Color(c), frame.getState().getBrightness(),
 					saturation));
 		}
+
+		// Redraw color picker
 		redraw();
+
+		// Redraw track view
 		if (trackViewController != null)
 			trackViewController.redraw();
 	}
 
 	public void updateSize() {
+		// Fit color picker to pane and redraw
 		colorWheelCanvas.setWidth(colorPickerPane.getWidth());
 		colorWheelCanvas.setHeight(colorPickerPane.getHeight());
 		redraw();
@@ -89,9 +99,11 @@ public class ColorPickerController {
 	public void redraw() {
 		Platform.runLater(() -> {
 			GraphicsContext gc = colorWheelCanvas.getGraphicsContext2D();
+
+			// Clear canvas
 			gc.clearRect(0, 0, colorWheelCanvas.getWidth(), colorWheelCanvas.getHeight());
-			// gc.drawImage(img, 0, 0, colorWheelCanvas.getWidth(),
-			// colorWheelCanvas.getHeight());
+
+			// Draw color picker gradient
 			gc.setFill(new LinearGradient(0, 0, 1.0, 0, true, CycleMethod.REFLECT, new Stop(0.0, Color.RED),
 					new Stop(1.0 / 6.0, Color.YELLOW), new Stop(2.0 / 6.0, Color.LIME), new Stop(3.0 / 6.0, Color.AQUA),
 					new Stop(4.0 / 6.0, Color.BLUE), new Stop(5.0 / 6.0, Color.MAGENTA), new Stop(1.0, Color.RED)));
@@ -104,6 +116,7 @@ public class ColorPickerController {
 			if (selectedKeyFrames == null)
 				return;
 
+			// Draw selected key frames onto color picker
 			for (KeyFrame frame : selectedKeyFrames) {
 				drawColorPoint(gc, frame);
 				gc.setFill(frame.getState().getColor().toFxColor());
@@ -113,13 +126,14 @@ public class ColorPickerController {
 	}
 
 	private void drawColorPoint(GraphicsContext gc, KeyFrame frame) {
+		// Calculate x and y coordinate from light state
 		Color c = frame.getState().getColor().toFxColor();
 		double saturation = 1.0 - (frame.getState().getSaturation() / 255.0);
 		double degree = c.getHue();
 		double x = 10 + ((degree / 360.0) * getColorBoxWidth());
-
 		double y = 10 + (saturation * (getColorBoxHeight()));
 
+		// Draw key frame
 		gc.setStroke(Color.GRAY);
 		gc.setFill(Color.WHITE);
 		gc.strokePolygon(new double[] { x - KEY_FRAME_SIZE, x, x + KEY_FRAME_SIZE, x },
@@ -137,6 +151,7 @@ public class ColorPickerController {
 	}
 
 	public void setFrames(List<KeyFrame> selectedKeyFrames) {
+		// Update selected key frames and redraw color picker
 		this.selectedKeyFrames = selectedKeyFrames;
 		redraw();
 	}

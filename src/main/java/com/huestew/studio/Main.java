@@ -16,15 +16,25 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 
+		// Load main controller
 		MainViewController controller = (MainViewController) ViewController.loadFxml("/main.fxml");
+
 		primaryStage.setTitle("HueStew Studio");
 		controller.setStage(primaryStage);
 
+		// Create a scene containing the main view
 		Scene scene = new Scene(controller.getParent(), 1280, 720);
+
+		// Add stylesheet to scene
 		scene.getStylesheets().add(getClass().getResource("/style.css").toExternalForm());
 
+		// Set scene to window
 		primaryStage.setScene(scene);
+
+		// Set window icon
 		primaryStage.getIcons().add(new Image("/icon_256x256.png"));
+
+		// Show window
 		primaryStage.show();
 
 		// Register global key listeners
@@ -34,6 +44,7 @@ public class Main extends Application {
 		// Register closing listener
 		primaryStage.setOnCloseRequest((e) -> {
 			try {
+				// Tell main controller to shut down
 				controller.shutdown();
 				controller.getFileHandler().clean();
 			} catch (IOException e1) {
