@@ -3,8 +3,8 @@ package com.huestew.studio.controller.tools;
 import java.util.List;
 import java.util.TreeSet;
 
-import com.huestew.studio.HueStew;
 import com.huestew.studio.model.Color;
+import com.huestew.studio.model.HueStewConfig;
 import com.huestew.studio.model.KeyFrame;
 import com.huestew.studio.model.LightState;
 import com.huestew.studio.model.LightTrack;
@@ -67,7 +67,7 @@ public class PopulateTool extends Tool {
 		KeyFrame left = keyFrames.floor(target);
 		KeyFrame right = keyFrames.ceiling(target);
 		
-		return !(left != null && timestamp - left.getTimestamp() < HueStew.getInstance().getTickDuration()
-				|| right != null && right.getTimestamp() - timestamp < HueStew.getInstance().getTickDuration());
+		return !(left != null && timestamp - left.getTimestamp() < HueStewConfig.getInstance().getMinFrameDistance()
+				|| right != null && right.getTimestamp() - timestamp < HueStewConfig.getInstance().getMinFrameDistance());
 	}
 }

@@ -6,31 +6,18 @@ package com.huestew.studio.model;
  * @author Adam
  *
  */
-public class HueStewConfig {
+public enum HueStewConfig {
+	INSTANCE;
 
 	private String saveDirectory;
 	private String saveFile;
 	private String musicDirectory;
 	private double volume;
 	private String windowDimensions;
+	private int minFrameDistance;
 
-	/**
-	 * Creates a new HueStewConfig object with the specified values.
-	 * @param saveDirectory
-	 * 						the directory used to store the show.
-	 * @param saveFile
-	 * 						the file used to store the show
-	 * @param musicDirectory
-	 * 						the default directory to look for music files
-	 * @param volume
-	 * 						the volume at which the music will be played at. (double between 0 and 1)
-	 */
-	public HueStewConfig(String saveDirectory, String saveFile, String musicDirectory, double volume, String windowDimensions) {
-		this.saveDirectory = saveDirectory;
-		this.saveFile = saveFile;
-		this.musicDirectory = musicDirectory;
-		this.volume = volume;
-		this.windowDimensions = windowDimensions;
+	public static HueStewConfig getInstance() {
+		return INSTANCE;
 	}
 
 	/**
@@ -103,8 +90,26 @@ public class HueStewConfig {
 		this.windowDimensions = windowDimensions;
 	}
 
-	public static HueStewConfig getDefaultConfig() {
-		return new HueStewConfig(System.getProperty("user.home"), "", System.getProperty("user.home"), 1.0, "");
+	/**
+	 * @return the minFrameDistance
+	 */
+	public int getMinFrameDistance() {
+		return minFrameDistance;
+	}
+
+	/**
+	 * @param minFrameDistance the minFrameDistance to set
+	 */
+	public void setMinFrameDistance(int minFrameDistance) {
+		this.minFrameDistance = minFrameDistance;
+	}
+
+	public static void setDefaults() {
+		HueStewConfig.getInstance().setSaveDirectory(System.getProperty("user.home"));
+		HueStewConfig.getInstance().setSaveFile("");
+		HueStewConfig.getInstance().setMusicDirectory(System.getProperty("user.home"));
+		HueStewConfig.getInstance().setVolume(1.0);
+		HueStewConfig.getInstance().setWindowDimensions("");
 	}
 
 }

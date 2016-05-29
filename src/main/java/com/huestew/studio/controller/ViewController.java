@@ -2,8 +2,6 @@ package com.huestew.studio.controller;
 
 import java.io.IOException;
 
-import com.huestew.studio.HueStew;
-
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 
@@ -44,7 +42,7 @@ public abstract class ViewController {
 	 * @return The controller of the view.
 	 */
 	public static ViewController loadFxml(String path) {
-		FXMLLoader loader = new FXMLLoader(HueStew.class.getResource(path));
+		FXMLLoader loader = new FXMLLoader(ViewController.class.getResource(path));
 		Parent view;
 
 		try {

@@ -3,16 +3,19 @@ package com.huestew.studio.controller;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.AccessDeniedException;
 import java.util.ArrayList;
 import java.util.List;
-import com.huestew.studio.HueStew;
 import com.huestew.studio.controller.tools.Toolbox;
+import com.huestew.studio.io.FileHandler;
 import com.huestew.studio.model.HueStewConfig;
 import com.huestew.studio.model.KeyFrame;
 import com.huestew.studio.model.LightTrack;
 import com.huestew.studio.model.Sequence;
 import com.huestew.studio.model.Show;
 import com.huestew.studio.model.SnapshotManager;
+import com.huestew.studio.plugin.PluginHandler;
+import com.huestew.studio.plugin.PluginLoader;
 import com.huestew.studio.util.FileUtil;
 import com.huestew.studio.view.Light;
 import com.huestew.studio.view.Scrollbar;
@@ -134,21 +137,31 @@ public class MainViewController extends ViewController {
 
 	@FXML
 	private AnchorPane rootPane;
-
-	private ShowController showController;
-	private VirtualRoom virtualRoom;
+	
 	private Stage stage;
 	private List<TrackActionPane> trackActionPanes;
+	
+	private FileHandler fileHandler;
+	private PluginHandler pluginHandler;
+
+	private ShowController showController;
 	private TrackViewController trackViewController;
 	private TrackMenuController trackMenuController;
 	private DrumKitController drumKitController;
 	private ColorPickerController colorPickerController;
+	
+	private VirtualRoom virtualRoom;
 	private Toolbox toolbox;
 	private Sequence clipBoard;
 
 	@Override
 	public void init() {
 
+		try {
+			this.fileHandler = new FileHandler();
+		} catch (AccessDeniedException e) {
+			handleError(e);
+		}
 		loadConfig();
 
 		this.showController = new ShowController(this);
@@ -164,6 +177,9 @@ public class MainViewController extends ViewController {
 		virtualRoom.setCanvas(previewCanvas);
 		virtualRoom.redraw();
 
+		
+		initPlugins();
+
 		initPropertyListeners();
 
 		initVisuals();
@@ -178,21 +194,27 @@ public class MainViewController extends ViewController {
 	 */
 	private void loadConfig() {
 
-		HueStewConfig config;
-
 		try {
-			config = new ConfigConverter().fromProperties(HueStew.getInstance().getFileHandler().loadConfig());
+			new ConfigConverter().fromProperties(fileHandler.loadConfig());
 		} catch (FileNotFoundException e) {
 			// First run, use default config
-			config = HueStewConfig.getDefaultConfig();
+			HueStewConfig.setDefaults();
 		} catch (IOException e) {
 			// Display error message and use default config
 			handleError(e);
-			config = HueStewConfig.getDefaultConfig();
+			HueStewConfig.setDefaults();
 		}
 
-		HueStew.getInstance().setConfig(config);
+	}
 
+	/**
+	 * Initialize plugin handler and load plugins
+	 */
+	private void initPlugins() {
+
+		this.pluginHandler = new PluginHandler();
+		File pluginFolder = new File(fileHandler.getAppFilePath("plugins/"));
+		new PluginLoader(pluginFolder, pluginHandler);
 	}
 
 	/**
@@ -222,7 +244,7 @@ public class MainViewController extends ViewController {
 			if (showController.getPlayer() != null) {
 				showController.getPlayer().setVolume(normalizedVolume);
 			}
-			HueStew.getInstance().getConfig().setVolume(normalizedVolume);
+			HueStewConfig.getInstance().setVolume(normalizedVolume);
 		});
 
 	}
@@ -232,7 +254,7 @@ public class MainViewController extends ViewController {
 	 */
 	private void initVisuals() {
 
-		volumeSlider.setValue(HueStew.getInstance().getConfig().getVolume() * 100);
+		volumeSlider.setValue(HueStewConfig.getInstance().getVolume() * 100);
 
 		footerStatus.setText("");
 
@@ -421,7 +443,7 @@ public class MainViewController extends ViewController {
 	public void setStage(Stage stage) {
 		this.stage = stage;
 
-		setWindowDimensions(HueStew.getInstance().getConfig().getWindowDimensions());
+		setWindowDimensions(HueStewConfig.getInstance().getWindowDimensions());
 	}
 
 	public String getWindowDimensions() {
@@ -579,7 +601,7 @@ public class MainViewController extends ViewController {
 	}
 
 	public void shutdown() {
-		HueStew.getInstance().shutdown();
+		pluginHandler.sendDisable();
 		showController.autoSave();
 	}
 
@@ -613,6 +635,10 @@ public class MainViewController extends ViewController {
 
 	public VirtualRoom getVirtualRoom() {
 		return virtualRoom;
+	}
+
+	public FileHandler getFileHandler() {
+		return fileHandler;
 	}
 
 	/*
@@ -675,7 +701,7 @@ public class MainViewController extends ViewController {
 	private void openButtonPressed() {
 		FileChooser fileChooser = new FileChooser();
 
-		File initialDir = new File(HueStew.getInstance().getConfig().getSaveDirectory());
+		File initialDir = new File(HueStewConfig.getInstance().getSaveDirectory());
 		fileChooser.setInitialDirectory(initialDir);
 		fileChooser.setTitle("Open project");
 		fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("JSON", "*.json"));
@@ -683,15 +709,15 @@ public class MainViewController extends ViewController {
 		File file = fileChooser.showOpenDialog(stage);
 
 		if (file != null) {
-			HueStew.getInstance().getConfig().setSaveFile(file.getAbsolutePath());
-			HueStew.getInstance().getConfig().setSaveDirectory(file.getParentFile().getAbsolutePath());
+			HueStewConfig.getInstance().setSaveFile(file.getAbsolutePath());
+			HueStewConfig.getInstance().setSaveDirectory(file.getParentFile().getAbsolutePath());
 			showController.loadShow();
 		}
 	}
 
 	@FXML
 	private void saveButtonPressed() {
-		if (HueStew.getInstance().getConfig().getSaveFile().isEmpty()) {
+		if (HueStewConfig.getInstance().getSaveFile().isEmpty()) {
 			saveAsButtonPressed();
 			return;
 		}
@@ -702,15 +728,15 @@ public class MainViewController extends ViewController {
 	@FXML
 	private void saveAsButtonPressed() {
 		FileChooser fileChooser = new FileChooser();
-		fileChooser.setInitialDirectory(new File(HueStew.getInstance().getConfig().getSaveDirectory()));
+		fileChooser.setInitialDirectory(new File(HueStewConfig.getInstance().getSaveDirectory()));
 		fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("JSON", "*.json"));
 		fileChooser.setTitle("Choose save location");
 
 		File file = fileChooser.showSaveDialog(stage);
 
 		if (file != null) {
-			HueStew.getInstance().getConfig().setSaveFile(file.getAbsolutePath());
-			HueStew.getInstance().getConfig().setSaveDirectory(file.getParentFile().getAbsolutePath());
+			HueStewConfig.getInstance().setSaveFile(file.getAbsolutePath());
+			HueStewConfig.getInstance().setSaveDirectory(file.getParentFile().getAbsolutePath());
 			showController.save();
 		}
 	}

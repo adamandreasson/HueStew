@@ -1,6 +1,7 @@
-package com.huestew.studio.controller;
+package com.huestew.studio;
 
-import com.huestew.studio.HueStew;
+import com.huestew.studio.controller.MainViewController;
+import com.huestew.studio.controller.ViewController;
 
 import javafx.application.Application;
 import javafx.event.EventHandler;
@@ -36,7 +37,7 @@ public class Main extends Application {
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             public void handle(WindowEvent we) {
             	controller.shutdown();
-            	HueStew.getInstance().getFileHandler().clean();
+            	controller.getFileHandler().clean();
             	System.exit(0);
             }
         });

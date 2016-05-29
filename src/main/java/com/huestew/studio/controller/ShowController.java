@@ -10,7 +10,6 @@ import java.util.TreeMap;
 
 import org.json.JSONObject;
 
-import com.huestew.studio.HueStew;
 import com.huestew.studio.io.FileHandler;
 import com.huestew.studio.model.Audio;
 import com.huestew.studio.model.HueStewConfig;
@@ -33,15 +32,11 @@ public class ShowController {
 
 	private MainViewController controller;
 	private Player player;
-	private FileHandler fileHandler;
 	private Show show;
-	private HueStewConfig config;
 	private Map<String, LightTrack> virtualLightQueue;
 	
 	public ShowController(MainViewController controller){
 		this.controller = controller;
-		this.fileHandler = HueStew.getInstance().getFileHandler();
-		this.config = HueStew.getInstance().getConfig();
 		this.virtualLightQueue = new TreeMap<>();
 	}
 
@@ -57,10 +52,10 @@ public class ShowController {
 	public void autoSave() {
 		save();
 		System.out.println("AUTO SAVING");
-		config.setWindowDimensions(controller.getWindowDimensions());
-		Properties prop = new ConfigConverter().toProperties(config);
+		HueStewConfig.getInstance().setWindowDimensions(controller.getWindowDimensions());
+		Properties prop = new ConfigConverter().toProperties();
 		try {
-			fileHandler.saveConfig(prop);
+			controller.getFileHandler().saveConfig(prop);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -72,7 +67,7 @@ public class ShowController {
 		JSONObject json = new ShowConverter().toJson(show, LightBank.getInstance().getLights());
 
 		try {
-			fileHandler.saveJson(getSaveFile(), json);
+			controller.getFileHandler().saveJson(getSaveFile(), json);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -89,8 +84,8 @@ public class ShowController {
 
 		show.setAudio(new Audio(musicFile));
 
-		config.setMusicDirectory(musicFile.getParent());
-		config.setSaveFile("");
+		HueStewConfig.getInstance().setMusicDirectory(musicFile.getParent());
+		HueStewConfig.getInstance().setSaveFile("");
 
 		initShow();
 
@@ -102,7 +97,7 @@ public class ShowController {
 		SnapshotManager.getInstance().setShow(show);
 
 		try {
-			JSONObject json = fileHandler.loadJson(getLoadFile());
+			JSONObject json = controller.getFileHandler().loadJson(getLoadFile());
 			new ShowConverter().fromJson(json, show, virtualLightQueue);
 		} catch (FileNotFoundException e) {
 			// Probably first run
@@ -164,7 +159,7 @@ public class ShowController {
 			player.stop();
 
 		player = new Player(this);
-		player.setVolume(config.getVolume());
+		player.setVolume(HueStewConfig.getInstance().getVolume());
 
 		updateTitle();
 		controller.initShow();
@@ -174,7 +169,7 @@ public class ShowController {
 	public File browseForSong() {
 		FileChooser fileChooser = new FileChooser();
 
-		File initialDir = new File(config.getMusicDirectory());
+		File initialDir = new File(HueStewConfig.getInstance().getMusicDirectory());
 		if (!initialDir.exists())
 			initialDir = new File(System.getProperty("user.home"));
 
@@ -233,14 +228,14 @@ public class ShowController {
 	
 	private void createWave(int width) {
 
-		String tmpSongFile = fileHandler.getTempFilePath("song.wav");
+		String tmpSongFile = controller.getFileHandler().getTempFilePath("song.wav");
 		System.out.println(tmpSongFile);
 
 		// TODO? THIS SHOULD ALL BE ELSEWHERE
 		Thread thread = new Thread(() -> {
 			FileUtil.convertAudioFile(show.getAudio().getFile().getPath(), tmpSongFile);
 
-			String tmpWaveFile = fileHandler.getTempFilePath("wave");
+			String tmpWaveFile = controller.getFileHandler().getTempFilePath("wave");
 			WaveBuilder builder = new WaveBuilder(tmpSongFile, tmpWaveFile, width, 400);
 
 			controller.updateWaveImage(builder.getImagePaths());
@@ -278,7 +273,7 @@ public class ShowController {
 	}
 	
 	private void updateTitle() {
-		String title = config.getSaveFile();
+		String title = HueStewConfig.getInstance().getSaveFile();
 		if (title.isEmpty()) {
 			title = "Untitled";
 			if (show.getAudio() != null) {
@@ -303,20 +298,20 @@ public class ShowController {
 	}
 
 	private String getSaveFile() {
-		return config.getSaveFile().isEmpty() ? 
-				fileHandler.getAppFilePath(FileHandler.AUTOSAVE_FILE) : config.getSaveFile();
+		return HueStewConfig.getInstance().getSaveFile().isEmpty() ? 
+				controller.getFileHandler().getAppFilePath(FileHandler.AUTOSAVE_FILE) : HueStewConfig.getInstance().getSaveFile();
 	}
 
 	private String getLoadFile() {
-		String path = config.getSaveFile();
+		String path = HueStewConfig.getInstance().getSaveFile();
 		if (!path.isEmpty()) {
 			if (new File(path).exists()) {
 				return path;
 			} else {
-				config.setSaveFile("");
+				HueStewConfig.getInstance().setSaveFile("");
 			}
 		}
 
-		return fileHandler.getAppFilePath(FileHandler.AUTOSAVE_FILE);
+		return controller.getFileHandler().getAppFilePath(FileHandler.AUTOSAVE_FILE);
 	}
 }

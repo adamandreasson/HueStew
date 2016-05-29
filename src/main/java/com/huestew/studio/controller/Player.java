@@ -1,7 +1,5 @@
 package com.huestew.studio.controller;
 
-import com.huestew.studio.HueStew;
-
 import javafx.application.Platform;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
@@ -16,6 +14,8 @@ import javafx.util.Duration;
  *
  */
 public class Player {
+
+	private static final int TICK_RATE = 33;
 
 	private MediaPlayer mediaPlayer;
 
@@ -73,7 +73,7 @@ public class Player {
 
 				try {
 					// Sleep for 33 ms (Run at 30 fps)
-					Thread.sleep(HueStew.getInstance().getTickDuration());
+					Thread.sleep(TICK_RATE);
 				} catch (InterruptedException e) {
 					// If the thread is interrupted, stop the loop and kill
 					// it safely

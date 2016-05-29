@@ -13,14 +13,12 @@ public class ConfigConverter {
 	 * 
 	 * @return the imported HueStewConfig
 	 */
-	public HueStewConfig fromProperties(Properties prop) {
-		HueStewConfig config = new HueStewConfig(
-				prop.getProperty("saveDir", System.getProperty("user.home")),
-				prop.getProperty("saveFile", ""),
-				prop.getProperty("musicDir", System.getProperty("user.home")),
-				Double.parseDouble(prop.getProperty("volume", "1.0")),
-				prop.getProperty("window", ""));
-		return config;
+	public void fromProperties(Properties prop) {
+		HueStewConfig.getInstance().setSaveDirectory(prop.getProperty("saveDir", System.getProperty("user.home")));
+		HueStewConfig.getInstance().setSaveFile(prop.getProperty("saveFile", ""));
+		HueStewConfig.getInstance().setMusicDirectory(prop.getProperty("musicDir", System.getProperty("user.home")));
+		HueStewConfig.getInstance().setVolume(Double.parseDouble(prop.getProperty("volume", "1.0")));
+		HueStewConfig.getInstance().setWindowDimensions(prop.getProperty("window", ""));
 	}
 
 	/**
@@ -31,7 +29,8 @@ public class ConfigConverter {
 	 * 
 	 * @return the resulting Properties object
 	 */
-	public Properties toProperties(HueStewConfig config) {
+	public Properties toProperties() {
+		HueStewConfig config = HueStewConfig.getInstance();
 		Properties prop = new Properties();
 		prop.setProperty("saveDir", config.getSaveDirectory());
 		prop.setProperty("saveFile", config.getSaveFile());

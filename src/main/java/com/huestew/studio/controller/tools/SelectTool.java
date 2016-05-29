@@ -2,7 +2,7 @@ package com.huestew.studio.controller.tools;
 
 import java.util.List;
 
-import com.huestew.studio.HueStew;
+import com.huestew.studio.model.HueStewConfig;
 import com.huestew.studio.model.KeyFrame;
 import com.huestew.studio.model.LightState;
 import com.huestew.studio.model.LightTrack;
@@ -117,11 +117,11 @@ public class SelectTool extends Tool {
 
 					KeyFrame nextFrame = keyframe.next();
 					if (nextFrame != null && !selectedKeyFrames.contains(nextFrame))
-						maxTimestamp = nextFrame.getTimestamp() - HueStew.getInstance().getTickDuration();
+						maxTimestamp = nextFrame.getTimestamp() - HueStewConfig.getInstance().getMinFrameDistance();
 
 					KeyFrame prevFrame = keyframe.previous();
 					if (prevFrame != null && !selectedKeyFrames.contains(prevFrame))
-						minTimestamp = prevFrame.getTimestamp() + HueStew.getInstance().getTickDuration();
+						minTimestamp = prevFrame.getTimestamp() + HueStewConfig.getInstance().getMinFrameDistance();
 
 					int newTimestamp = keyframe.getTimestamp() + delta;
 
