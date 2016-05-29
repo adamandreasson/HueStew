@@ -7,6 +7,7 @@ import com.huestew.studio.controller.LightBank;
 import com.huestew.studio.plugin.Plugin;
 
 /**
+ * A very basic plugin for demonstrating the functionality
  * @author Adam
  *
  */

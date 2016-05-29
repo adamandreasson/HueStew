@@ -28,6 +28,9 @@ import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 
 /**
+ * Class for handling all drawing to the track canvas, as well as related
+ * calculations
+ * 
  * @author Adam
  *
  */
@@ -67,6 +70,12 @@ public class TrackView {
 	private Canvas canvas;
 	private Show show;
 
+	/**
+	 * Create a new TrackView using given canvas and show
+	 * 
+	 * @param canvas
+	 * @param show
+	 */
 	public TrackView(Canvas canvas, Show show) {
 		this.canvas = canvas;
 		this.show = show;
@@ -78,6 +87,12 @@ public class TrackView {
 		this.horizontalScrollbar = new Scrollbar(() -> getVisibleTrackWidth(), () -> getTrackWidth());
 	}
 
+	/**
+	 * Load wave images to the track view
+	 * 
+	 * @param filePaths
+	 *            The list of images to add to the view
+	 */
 	public void loadWaves(List<String> filePaths) {
 		this.backgroundWaveImages = new ArrayList<Image>();
 
@@ -86,6 +101,13 @@ public class TrackView {
 
 	}
 
+	/**
+	 * Redraw the track view
+	 * 
+	 * @param isPlaying
+	 *            If the show is playing, calculate if we need to move the view
+	 *            on the screen before redrawing
+	 */
 	public void redraw(boolean isPlaying) {
 
 		// Scroll automatically while playing the show
@@ -113,6 +135,12 @@ public class TrackView {
 		cursorAtLastDraw = show.getCursor();
 	}
 
+	/**
+	 * Draw the time line with numbers and ticks
+	 * 
+	 * @param gc
+	 *            GraphicsContext to draw with
+	 */
 	private void drawTimeline(GraphicsContext gc) {
 		LinearGradient lg = new LinearGradient(0, 0, 0, 1, true, CycleMethod.NO_CYCLE,
 				new Stop(1.0, new Color(0.2, 0.2, 0.2, 1)), new Stop(0.0, new Color(0.3, 0.3, 0.3, 1)));
@@ -150,6 +178,12 @@ public class TrackView {
 		}
 	}
 
+	/**
+	 * Draw the audio wave form in the background
+	 * 
+	 * @param gc
+	 *            GraphicsContext to draw with
+	 */
 	private void drawWave(GraphicsContext gc) {
 		if (backgroundWaveImages == null)
 			return;
@@ -171,6 +205,11 @@ public class TrackView {
 		}
 	}
 
+	/**
+	 * Draw all light tracks
+	 * 
+	 * @param gc
+	 */
 	private void drawLightTracks(GraphicsContext gc) {
 		int i = 0;
 		for (LightTrack track : show.getLightTracks()) {
@@ -186,20 +225,30 @@ public class TrackView {
 		}
 	}
 
+	/**
+	 * Draw a track polygon at given Y coordinate. This is essentially a filled
+	 * area chart under the key frames
+	 * 
+	 * @param gc
+	 *            GraphicsContext to draw with
+	 * @param track
+	 *            The track
+	 * @param startY
+	 *            the initial Y coordinate at which to draw the polygon
+	 */
 	private void drawTrackPolygon(GraphicsContext gc, LightTrack track, double startY) {
 		gc.setFill(new Color(0.0, 0.2, 0.7, 0.5));
 		gc.beginPath();
 		gc.moveTo(getXFromTime(0), startY + getTrackHeight());
 
-		Iterator<KeyFrame> iterator = track.getKeyFrames().iterator();
 		double x = 0.0;
 
-		while (iterator.hasNext()) {
-			KeyFrame frame = iterator.next();
+		for (KeyFrame frame : track.getKeyFrames()) {
 			x = getXFromTime(frame.getTimestamp());
 			double y = startY + getTrackHeight() - getRelativeYFromBrightness(frame.getState().getBrightness());
 			gc.lineTo(x, y);
 		}
+
 		gc.lineTo(x, startY + getTrackHeight());
 		gc.lineTo(0, startY + getTrackHeight());
 
@@ -207,6 +256,17 @@ public class TrackView {
 		gc.closePath();
 	}
 
+	/**
+	 * Draw all key frames to a track
+	 * 
+	 * @param gc
+	 *            GraphicsContext to draw with
+	 * @param track
+	 *            The track
+	 * @param startY
+	 *            the initial Y coordinate at which to draw the polygon
+	 * 
+	 */
 	private void drawKeyFrames(GraphicsContext gc, LightTrack track, double startY) {
 		Iterator<KeyFrame> iterator = track.getKeyFrames().iterator();
 		while (iterator.hasNext()) {
@@ -225,6 +285,20 @@ public class TrackView {
 
 	}
 
+	/**
+	 * Draw a key frame at given coordinate
+	 * 
+	 * @param gc
+	 *            The GraphicsContext to draw with
+	 * @param x
+	 *            X coordinate of the frame
+	 * @param y
+	 *            Y coordinate of the frame
+	 * @param color
+	 *            Color of the frame
+	 * @param selected
+	 *            Whether the frame is selected
+	 */
 	private void drawKeyFrame(GraphicsContext gc, double x, double y, Color color, boolean selected) {
 		double[] xPoints = new double[] { x - KEY_FRAME_SIZE, x, x + KEY_FRAME_SIZE, x };
 		double[] yPoints = new double[] { y, y + KEY_FRAME_SIZE, y, y - KEY_FRAME_SIZE };
@@ -239,6 +313,12 @@ public class TrackView {
 		gc.fillPolygon(xPoints, yPoints, 4);
 	}
 
+	/**
+	 * Draw the cursor (vertical black line)
+	 * 
+	 * @param gc
+	 *            GraphicsContext to draw with
+	 */
 	private void drawCursor(GraphicsContext gc) {
 		double x = getXFromTime(show.getCursor());
 		double y = 20 + KEY_FRAME_SIZE;
@@ -252,6 +332,12 @@ public class TrackView {
 				new double[] { y, y - KEY_FRAME_SIZE, y - KEY_FRAME_SIZE, y }, 3);
 	}
 
+	/**
+	 * Draw the selection rectangle
+	 * 
+	 * @param gc
+	 *            The GraphicsContext to draw with
+	 */
 	private void drawSelection(GraphicsContext gc) {
 		if (selectRectangle != null) {
 			gc.beginPath();
@@ -265,6 +351,12 @@ public class TrackView {
 		}
 	}
 
+	/**
+	 * Draw scroll bars
+	 * 
+	 * @param gc
+	 *            The GraphicsContext to draw with
+	 */
 	private void drawScrollbars(GraphicsContext gc) {
 		gc.setFill(SCROLLBAR_COLOR);
 		gc.fillRoundRect(getVisibleTrackWidth(), getTotalTrackPositionY() + verticalScrollbar.getBarPosition(),
@@ -273,6 +365,13 @@ public class TrackView {
 				horizontalScrollbar.getBarSize(), SCROLLBAR_SIZE, SCROLLBAR_SIZE, SCROLLBAR_SIZE);
 	}
 
+	/**
+	 * Get the {@link LightTrack} at a given y coordinate
+	 * 
+	 * @param y
+	 *            The coordinate to look at
+	 * @return The light track at this coordinate. Null if no track is found
+	 */
 	public LightTrack getTrackFromY(double y) {
 		double adjustedY = y - getTotalTrackPositionY() + verticalScrollbar.getOffset();
 		int trackNumber = (int) Math.floor(adjustedY / (getTrackHeight() + TRACK_SPACER));
@@ -283,6 +382,14 @@ public class TrackView {
 		return null;
 	}
 
+	/**
+	 * Get the key frame given track and x, y coordinates
+	 * 
+	 * @param track
+	 * @param x
+	 * @param y
+	 * @return KeyFrame at given coordinates, null if not found
+	 */
 	public KeyFrame getKeyFrame(LightTrack track, double x, double y) {
 		TreeSet<KeyFrame> keyFrames = track.getKeyFrames();
 		KeyFrame target = new KeyFrame(getTimeFromX(x));
@@ -299,10 +406,8 @@ public class TrackView {
 		}
 	}
 
-	
 	/**
-	 * 
-	 * Checks whether the position x,y is inside the specified keyframe or not.
+	 * Check whether a given position is inside a given key frame marker
 	 * 
 	 * @param keyFrame
 	 * @param x
@@ -427,9 +532,13 @@ public class TrackView {
 		selectRectangle = null;
 	}
 
-	
-	
-	
+	/**
+	 * Make a selection of key frames using the select rectangle
+	 * 
+	 * @param ctrlDown
+	 *            Whether the user is holding ctrl
+	 * @return The amount of tracks within the new selection
+	 */
 	public int selectKeyFrames(boolean ctrlDown) {
 
 		List<KeyFrame> selection = new ArrayList<KeyFrame>();
