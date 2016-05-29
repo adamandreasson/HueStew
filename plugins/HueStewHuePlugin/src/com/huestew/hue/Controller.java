@@ -113,20 +113,22 @@ public class Controller {
 
 		@Override
 		public void onConnectionLost(PHAccessPoint arg0) {
-			// TODO Auto-generated method stub
-
+			System.out.println("Philips Hue connection lost");
 		}
 
 		@Override
 		public void onConnectionResumed(PHBridge arg0) {
-			// TODO Auto-generated method stub
+			System.out.println("Philips Hue connection resumed");
 
 		}
 
 		@Override
-		public void onError(int arg0, String arg1) {
-			// TODO Auto-generated method stub
-
+		public void onError(int errorNum, String arg1) {
+			System.err.println("Philips Hue error:");
+			System.err.println(errorNum + ": " + arg1);
+			if(errorNum == 46){
+				plugin.initView();
+			}
 		}
 
 		@Override
@@ -145,6 +147,8 @@ public class Controller {
 			System.out.println("Missing username or IP");
 			return false;
 		}
+		
+		System.out.println("Connecting with username " + username);
 		PHAccessPoint accessPoint = new PHAccessPoint();
 		accessPoint.setIpAddress(lastIpAddress);
 		accessPoint.setUsername(username);

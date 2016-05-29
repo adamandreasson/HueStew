@@ -14,7 +14,6 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Properties;
 
-import com.huestew.studio.HueStew;
 import com.huestew.studio.plugin.Plugin;
 import com.philips.lighting.hue.sdk.PHHueSDK;
 
@@ -40,6 +39,9 @@ public class HuePlugin implements Plugin {
 	Label statusLabel;
 	private Controller controller;
 	private Properties properties;
+	
+	// TODO this whole thing is not pretty
+	String savePath;
 
 	@Override
 	public void sendLightState() {
@@ -49,6 +51,8 @@ public class HuePlugin implements Plugin {
 	@Override
 	public void onEnable() {
 
+		System.out.println("Philips Hue plugin loaded!");
+		
 		loadLibraries();
 
 		Platform.runLater(new Runnable() {
@@ -59,6 +63,9 @@ public class HuePlugin implements Plugin {
 			}
 		});
 
+		
+		savePath = System.getProperty("user.home") + File.separator + "HueStew" + File.separator + "plugins" + File.separator + "hue.properties";
+		
 	}
 
 	@Override
@@ -105,8 +112,8 @@ public class HuePlugin implements Plugin {
 	}
 
 	private void loadProperties() {
-
-		File propertyFile = new File(HueStew.getInstance().getFileHandler().getAppFilePath("plugins/hue.properties"));
+				
+		File propertyFile = new File(savePath);
 		properties = new Properties();
 		
 		if (propertyFile.exists()) {
@@ -115,8 +122,10 @@ public class HuePlugin implements Plugin {
 
 			try {
 
-				input = new FileInputStream(HueStew.getInstance().getFileHandler().getAppFilePath("plugins/hue.properties"));
+				input = new FileInputStream(savePath);
 				properties.load(input);
+				
+				System.out.println("Loaded Hue properties");
 
 			} catch (IOException ex) {
 				ex.printStackTrace();
@@ -147,7 +156,7 @@ public class HuePlugin implements Plugin {
 
 		try {
 
-			output = new FileOutputStream(HueStew.getInstance().getFileHandler().getAppFilePath("plugins/hue.properties"));
+			output = new FileOutputStream(savePath);
 
 			properties.store(output, null);
 
@@ -179,6 +188,7 @@ public class HuePlugin implements Plugin {
 		
 		if(properties.getProperty("username") != null){
 			
+			System.out.println("connecting to last know access point");
 			boolean success = controller.connectToLastKnownAccessPoint();
 			
 			if(success)
@@ -190,43 +200,47 @@ public class HuePlugin implements Plugin {
 
 	}
 
-	private void initView() {
+	public void initView() {
 
-		Stage stage = new Stage();
-		stage.setTitle("Philips Hue setup");
+		System.out.println("init view");
 		
-		searchBtn = new Button();
-		searchBtn.setText("Find bridges");
-		searchBtn.setPrefWidth(140.0);		
-		
-		searchBtn.setOnAction(new EventHandler<ActionEvent>() {
+		Platform.runLater(() -> {
+			Stage stage = new Stage();
+			stage.setTitle("Philips Hue setup");
+			
+			searchBtn = new Button();
+			searchBtn.setText("Find bridges");
+			searchBtn.setPrefWidth(140.0);		
+			
+			searchBtn.setOnAction(new EventHandler<ActionEvent>() {
 
-			@Override
-			public void handle(ActionEvent event) {
-				controller.findBridges();
-				searchBtn.setDisable(true);
-				updateStatus("Searching for access points...");
-			}
+				@Override
+				public void handle(ActionEvent event) {
+					controller.findBridges();
+					searchBtn.setDisable(true);
+					updateStatus("Searching for access points...");
+				}
+			});
+
+			bridgeChoiceBox = new ChoiceBox<String>();
+			bridgeChoiceBox.setDisable(true);
+			bridgeChoiceBox.setPrefWidth(140.0);
+
+			statusLabel = new Label("Not connected to a bridge");
+			statusLabel.setPrefWidth(140.0);
+			statusLabel.setPrefHeight(50.0);
+			statusLabel.setWrapText(true);
+			
+			VBox root = new VBox();
+			root.setSpacing(20);
+			root.setPadding(new Insets(80, 50, 50, 50));
+			root.getChildren().add(searchBtn);
+			root.getChildren().add(bridgeChoiceBox);
+			root.getChildren().add(statusLabel);
+			stage.setScene(new Scene(root));
+			stage.show();
+			stage.sizeToScene();
 		});
-
-		bridgeChoiceBox = new ChoiceBox<String>();
-		bridgeChoiceBox.setDisable(true);
-		bridgeChoiceBox.setPrefWidth(140.0);
-
-		statusLabel = new Label("Not connected to a bridge");
-		statusLabel.setPrefWidth(140.0);
-		statusLabel.setPrefHeight(50.0);
-		statusLabel.setWrapText(true);
-		
-		VBox root = new VBox();
-		root.setSpacing(20);
-		root.setPadding(new Insets(80, 50, 50, 50));
-		root.getChildren().add(searchBtn);
-		root.getChildren().add(bridgeChoiceBox);
-		root.getChildren().add(statusLabel);
-		stage.setScene(new Scene(root));
-		stage.show();
-		stage.sizeToScene();
 	}
 	
 	public void updateStatus(String message){
