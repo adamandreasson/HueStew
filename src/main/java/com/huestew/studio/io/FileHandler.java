@@ -13,6 +13,12 @@ import java.util.Properties;
 
 import org.json.JSONObject;
 
+/**
+ * Class for dealing with loading and saving files of different types
+ * 
+ * @author Adam
+ *
+ */
 public class FileHandler {
 
 	public static final String CONFIG_FILE = "config.properties";
@@ -50,19 +56,36 @@ public class FileHandler {
 		return appDir + File.separator + file;
 	}
 
+	/**
+	 * Save properties to file
+	 * 
+	 * @param prop
+	 *            The Properties we wish to save to file
+	 * @throws IOException
+	 *             if we weren't able to save to file
+	 */
 	public void saveConfig(Properties prop) throws IOException {
 
-		try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(getAppFilePath(CONFIG_FILE)), "utf-8")) {
+		try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(getAppFilePath(CONFIG_FILE)),
+				"utf-8")) {
 			prop.store(writer, null);
 		}
 
 	}
 
+	/**
+	 * Load config from file
+	 * 
+	 * @return Properties object with settings created from file
+	 * @throws IOException
+	 *             if file read was unsuccessful
+	 */
 	public Properties loadConfig() throws IOException {
 
 		Properties prop = new Properties();
 
-		try (InputStreamReader reader = new InputStreamReader(new FileInputStream(getAppFilePath(CONFIG_FILE)), "utf-8")) {
+		try (InputStreamReader reader = new InputStreamReader(new FileInputStream(getAppFilePath(CONFIG_FILE)),
+				"utf-8")) {
 			prop.load(reader);
 		}
 
@@ -80,6 +103,15 @@ public class FileHandler {
 
 	}
 
+	/**
+	 * Load a JSONObject from a file in path
+	 * 
+	 * @param path
+	 *            The path we wish to load from
+	 * @return A new JSONObject from path
+	 * @throws IOException
+	 *             if file was unable to load or corrupt
+	 */
 	public JSONObject loadJson(String path) throws IOException {
 
 		// Read from file
@@ -103,10 +135,13 @@ public class FileHandler {
 
 	}
 
+	/**
+	 * Delete files in tmp dir
+	 */
 	public void clean() {
-	    for (File filePath : new File(tmpDir).listFiles()) {
+		for (File filePath : new File(tmpDir).listFiles()) {
 			filePath.delete();
-	    }
+		}
 	}
 
 }
