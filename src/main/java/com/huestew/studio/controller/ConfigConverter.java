@@ -11,7 +11,6 @@ public class ConfigConverter {
 	 * @param prop
 	 *            the properties object to import config from
 	 * 
-	 * @return the imported HueStewConfig
 	 */
 	public void fromProperties(Properties prop) {
 		HueStewConfig.getInstance().setSaveDirectory(prop.getProperty("saveDir", System.getProperty("user.home")));

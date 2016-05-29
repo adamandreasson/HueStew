@@ -30,7 +30,7 @@ public class DrumConfigController extends ViewController {
 
 	@FXML
 	private AnchorPane wrapPane;
-	
+
 	@FXML
 	private ChoiceBox<String> trackDropdown;
 
@@ -58,23 +58,31 @@ public class DrumConfigController extends ViewController {
 
 		removeButton.setGraphic(new ImageView(new Image("icon_trash.png")));
 		removeButton.setTooltip(new Tooltip("Remove"));
-		
+
 	}
 
 	@FXML
 	private void onCopyPressed() {
-		System.out.println("coppy");
+		controller.createDrumCopy(drum);
 	}
 
 	@FXML
 	private void onRemovePressed() {
-		System.out.println("remove");
+		controller.removeDrum(this, drum);
 	}
 
 	public void setDrumKitController(DrumKitController controller) {
 		this.controller = controller;
 	}
 
+	/**
+	 * Give the controller a drum and initialize the list of tracks
+	 * 
+	 * @param drum
+	 *            The drum to assign to the controller
+	 * @param tracks
+	 *            List of all tracks to be available in drop down
+	 */
 	public void initDrum(Drum drum, List<LightTrack> tracks) {
 		this.drum = drum;
 
@@ -89,24 +97,39 @@ public class DrumConfigController extends ViewController {
 
 			event.consume();
 		});
-		
-		trackDropdown.getSelectionModel().selectedIndexProperty().addListener((ov, oldValue, newValue) -> {
-			drum.setTrack(tracks.get(newValue.intValue()));
-		});
+
+		trackDropdown.getSelectionModel().selectedIndexProperty()
+				.addListener((ov, oldValue, newValue) -> updateDrumTrack(newValue.intValue()));
 
 		updateTrackDropdown(tracks);
 	}
 
+	/**
+	 * Update list of tracks in the drop down
+	 * 
+	 * @param tracks
+	 *            New list of tracks to be available in the drop down
+	 */
 	public void updateTrackDropdown(List<LightTrack> tracks) {
 		this.tracks = tracks;
 
 		ArrayList<String> trackNames = new ArrayList<String>();
-		
+
 		for (int i = 0; i < tracks.size(); i++) {
 			trackNames.add("Track " + i);
 		}
 
 		trackDropdown.setItems(FXCollections.observableArrayList(trackNames));
+	}
+
+	/**
+	 * Update the drum's track based on the index chosen in drop down
+	 * 
+	 * @param listIndex
+	 *            Index in the drop down
+	 */
+	private void updateDrumTrack(int listIndex) {
+		drum.setTrack(tracks.get(listIndex));
 	}
 
 	public void updateSize(double width) {
