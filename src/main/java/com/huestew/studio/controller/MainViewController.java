@@ -175,9 +175,12 @@ public class MainViewController extends ViewController {
 
 		try {
 			showController.loadShow();
+		} catch (FileNotFoundException e) {
+			// Last known save file was not found, simply don't load anything
 		} catch (IOException e) {
 			handleError(e);
 		}
+
 		virtualRoom.setCanvas(previewCanvas);
 		virtualRoom.redraw();
 
@@ -613,7 +616,14 @@ public class MainViewController extends ViewController {
 	 */
 	public void shutdown() throws IOException {
 		pluginHandler.sendDisable();
-		showController.autoSave();
+		try {
+			showController.autoSave();
+		} catch (IOException e) {
+			// Futile to show error popup since program is shutting down
+			// Print in console instead
+			e.printStackTrace();
+		}
+		
 	}
 
 	/**
@@ -731,7 +741,6 @@ public class MainViewController extends ViewController {
 			} catch (IOException e) {
 				handleError(e);
 			}
-
 		}
 	}
 
@@ -747,7 +756,6 @@ public class MainViewController extends ViewController {
 		} catch (IOException e) {
 			handleError(e);
 		}
-
 	}
 
 	@FXML
@@ -769,7 +777,6 @@ public class MainViewController extends ViewController {
 			} catch (IOException e) {
 				handleError(e);
 			}
-
 		}
 	}
 
