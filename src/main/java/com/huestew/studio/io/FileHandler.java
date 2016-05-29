@@ -30,18 +30,21 @@ public class FileHandler {
 
 	public FileHandler() throws AccessDeniedException {
 
+		// Get root directory of program files
 		appDir = System.getProperty("user.home") + File.separator + "HueStew";
 		File appDirFile = new File(appDir);
 		if (!appDirFile.exists() && !appDirFile.mkdir()) {
 			throw new AccessDeniedException("Could not initialize app directory in " + appDir);
 		}
 
+		// Get directory containing temporary files that are deleted when the application closes
 		tmpDir = appDir + File.separator + "temp";
 		File tmpDirFile = new File(tmpDir);
 		if (!tmpDirFile.exists() && !tmpDirFile.mkdir()) {
 			throw new AccessDeniedException("Could not initialize temp directory in " + tmpDirFile.getAbsolutePath());
 		}
 
+		// Get directory containing plugins
 		File pluginFile = new File(appDirFile, "plugins");
 		if (!pluginFile.exists() && !pluginFile.mkdir()) {
 			throw new AccessDeniedException("Could not initialize plugin directory in " + pluginFile.getAbsolutePath());
