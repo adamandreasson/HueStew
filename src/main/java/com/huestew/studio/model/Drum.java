@@ -86,12 +86,16 @@ public class Drum {
 			return false;
 
 		int cursor = show.getCursor();
-		
+
 		for(KeyFrame frame : sequence.getFrames()){
 			KeyFrame pastedFrame = new KeyFrame(cursor + frame.getTimestamp(), frame.getState(), track);
-			track.addKeyFrame(pastedFrame);
+			try {
+				track.addKeyFrame(pastedFrame);
+			} catch (IllegalArgumentException e) {
+				// Fail silently
+			}
 		}
-		
+
 		return true;
 	}
 
