@@ -37,7 +37,8 @@ public class FileHandler {
 			throw new AccessDeniedException("Could not initialize app directory in " + appDir);
 		}
 
-		// Get directory containing temporary files that are deleted when the application closes
+		// Get directory containing temporary files that are deleted when the
+		// application closes
 		tmpDir = appDir + File.separator + "temp";
 		File tmpDirFile = new File(tmpDir);
 		if (!tmpDirFile.exists() && !tmpDirFile.mkdir()) {
@@ -52,10 +53,24 @@ public class FileHandler {
 
 	}
 
+	/**
+	 * Get file path for a temporary file.
+	 * 
+	 * @param file
+	 *            the temporary file
+	 * @return the path to the temporary file
+	 */
 	public String getTempFilePath(String file) {
 		return tmpDir + File.separator + file;
 	}
 
+	/**
+	 * Get file path for a persistent program file.
+	 * 
+	 * @param file
+	 *            the persistent program file
+	 * @return the path to the persistent file
+	 */
 	public String getAppFilePath(String file) {
 		return appDir + File.separator + file;
 	}
@@ -70,8 +85,7 @@ public class FileHandler {
 	 */
 	public void saveConfig(Properties prop) throws IOException {
 
-		try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(getAppFilePath(CONFIG_FILE)),
-				"utf-8")) {
+		try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(getAppFilePath(CONFIG_FILE)), "utf-8")) {
 			prop.store(writer, null);
 		}
 
@@ -88,8 +102,7 @@ public class FileHandler {
 
 		Properties prop = new Properties();
 
-		try (InputStreamReader reader = new InputStreamReader(new FileInputStream(getAppFilePath(CONFIG_FILE)),
-				"utf-8")) {
+		try (InputStreamReader reader = new InputStreamReader(new FileInputStream(getAppFilePath(CONFIG_FILE)), "utf-8")) {
 			prop.load(reader);
 		}
 
@@ -97,6 +110,16 @@ public class FileHandler {
 
 	}
 
+	/**
+	 * Save JSON object to file.
+	 * 
+	 * @param path
+	 *            the path we wish to save to
+	 * @param json
+	 *            the json object to save
+	 * @throws IOException
+	 *             if file was unable to be saved
+	 */
 	public void saveJson(String path, JSONObject json) throws IOException {
 
 		// Write to file
