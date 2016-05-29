@@ -1,7 +1,7 @@
-package com.huestew.studio;
+package com.huestew.studio.controller;
 
-import com.huestew.studio.controller.MainViewController;
-import com.huestew.studio.controller.ViewController;
+import com.huestew.studio.HueStew;
+
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;

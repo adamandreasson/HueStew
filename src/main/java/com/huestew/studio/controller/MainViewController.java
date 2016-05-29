@@ -1,10 +1,13 @@
 package com.huestew.studio.controller;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import com.huestew.studio.HueStew;
 import com.huestew.studio.controller.tools.Toolbox;
+import com.huestew.studio.model.HueStewConfig;
 import com.huestew.studio.model.KeyFrame;
 import com.huestew.studio.model.LightTrack;
 import com.huestew.studio.model.Sequence;
@@ -146,20 +149,56 @@ public class MainViewController extends ViewController {
 	@Override
 	public void init() {
 
-		this.virtualRoom = new VirtualRoom();
-		this.toolbox = new Toolbox(this);
+		loadConfig();
+
 		this.showController = new ShowController(this);
 		this.colorPickerController = new ColorPickerController(colorPickerPane);
-		
-		Platform.runLater(() -> {
-			showController.loadShow();
+		this.drumKitController = new DrumKitController(drumKitPaneWrap, this);
+		this.trackMenuController = (TrackMenuController) ViewController.loadFxml("/trackmenu.fxml");
 
-			virtualRoom.setCanvas(previewCanvas);
-			virtualRoom.redraw();
-		});
-		
+		this.virtualRoom = new VirtualRoom();
+		this.toolbox = new Toolbox(this);
+		this.trackActionPanes = new ArrayList<>();
 
-		trackActionPanes = new ArrayList<>();
+		showController.loadShow();
+		virtualRoom.setCanvas(previewCanvas);
+		virtualRoom.redraw();
+
+		initPropertyListeners();
+
+		initVisuals();
+
+		initDragDropFiles();
+
+	}
+
+	/**
+	 * Load the user configuration from file (through ConfigConverter) and put
+	 * it in HueStew
+	 */
+	private void loadConfig() {
+
+		HueStewConfig config;
+
+		try {
+			config = new ConfigConverter().fromProperties(HueStew.getInstance().getFileHandler().loadConfig());
+		} catch (FileNotFoundException e) {
+			// First run, use default config
+			config = HueStewConfig.getDefaultConfig();
+		} catch (IOException e) {
+			// Display error message and use default config
+			handleError(e);
+			config = HueStewConfig.getDefaultConfig();
+		}
+
+		HueStew.getInstance().setConfig(config);
+
+	}
+
+	/**
+	 * Initialize all javafx property listeners in the main view
+	 */
+	private void initPropertyListeners() {
 
 		previewCanvasPane.widthProperty().addListener((observableValue, oldSceneWidth, newSceneWidth) -> {
 			previewCanvas.setWidth((double) newSceneWidth);
@@ -171,12 +210,12 @@ public class MainViewController extends ViewController {
 			virtualRoom.redraw();
 		});
 
-		trackActionParentPane.heightProperty().addListener((observableValue, oldHeight, newHeight) -> {
-			updateTrackActionPanePosition();
-		});
+		trackActionParentPane.heightProperty().addListener((a, b, c) -> updateTrackActionPanePosition());
 
 		colorPickerPane.heightProperty().addListener((a, b, c) -> colorPickerController.updateSize());
 		colorPickerPane.widthProperty().addListener((a, b, c) -> colorPickerController.updateSize());
+
+		drumKitPaneWrap.widthProperty().addListener((a, b, c) -> drumKitController.updateSize());
 
 		volumeSlider.valueProperty().addListener((observableValue, oldValue, newValue) -> {
 			double normalizedVolume = newValue.doubleValue() / 100;
@@ -185,6 +224,13 @@ public class MainViewController extends ViewController {
 			}
 			HueStew.getInstance().getConfig().setVolume(normalizedVolume);
 		});
+
+	}
+
+	/**
+	 * Prepare all the visuals with appropriate text and images
+	 */
+	private void initVisuals() {
 
 		volumeSlider.setValue(HueStew.getInstance().getConfig().getVolume() * 100);
 
@@ -225,27 +271,24 @@ public class MainViewController extends ViewController {
 		populateToolButton.addEventHandler(ActionEvent.ACTION, e -> populateToolButton.setSelected(true));
 		selectToolButton.addEventHandler(ActionEvent.ACTION, e -> selectToolButton.setSelected(true));
 
-		trackMenuController = (TrackMenuController) ViewController.loadFxml("/trackmenu.fxml");
 		rootPane.getChildren().add(0, trackMenuController.getParent());
 
-		drumKitController = new DrumKitController(drumKitPaneWrap, this);
-		drumKitPaneWrap.widthProperty().addListener((a, b, c) -> drumKitController.updateSize());
-
-		initDragDropFiles();
-		
 	}
 
+	/**
+	 * Register the rootPane as being susceptible to file drag and drops
+	 */
 	private void initDragDropFiles() {
 
 		rootPane.setOnDragOver(event -> {
-			
+
 			Dragboard db = event.getDragboard();
 			if (db.hasFiles()) {
 				event.acceptTransferModes(TransferMode.COPY);
 			} else {
 				event.consume();
 			}
-			
+
 		});
 
 		rootPane.setOnDragDropped(event -> {
@@ -253,10 +296,10 @@ public class MainViewController extends ViewController {
 			Dragboard db = event.getDragboard();
 			boolean success = false;
 			if (db.hasFiles()) {
-				if (db.getFiles().size() < 2){
+				if (db.getFiles().size() < 2) {
 					File file = db.getFiles().get(0);
 					System.out.println(file.getAbsolutePath());
-					if(FileUtil.isMusicFile(file)){
+					if (FileUtil.isMusicFile(file)) {
 						showController.createShow(file);
 					}
 				}
@@ -264,10 +307,20 @@ public class MainViewController extends ViewController {
 
 			event.setDropCompleted(success);
 			event.consume();
-			
+
 		});
 	}
 
+	private void handleError(Exception e) {
+		// TODO
+		System.out.println("ERROR: " + e.getMessage());
+		e.printStackTrace();
+	}
+
+	/**
+	 * Initialize the track view canvas. This method is called once a show is
+	 * ready
+	 */
 	private void initTrackCanvas() {
 
 		if (trackViewController != null)
@@ -291,6 +344,287 @@ public class MainViewController extends ViewController {
 			trackCanvas.setHeight(newHeight.doubleValue());
 			trackViewController.redraw();
 		});
+	}
+
+	public void initShow() {
+
+		initTrackCanvas();
+		enableControls();
+		updateTracks();
+	}
+
+	/**
+	 * Paste what is in the clipboard to the show.
+	 */
+	private void paste() {
+		if (getShow() == null)
+			return;
+
+		if (clipBoard == null)
+			return;
+
+		SnapshotManager.getInstance().commandIssued();
+
+		int cursor = getShow().getCursor();
+
+		for (KeyFrame frame : clipBoard.getFrames()) {
+			LightTrack track = frame.track();
+			KeyFrame pastedFrame = new KeyFrame(cursor + frame.getTimestamp(), frame.getState(), track);
+			track.addKeyFrame(pastedFrame);
+		}
+
+		trackViewController.redraw();
+	}
+
+	/**
+	 * Update the footer status text. Uses Platform.runLater to avoid
+	 * multithread issues
+	 * 
+	 * @param label
+	 *            New status
+	 */
+	public void updateFooterStatus(String label) {
+		Platform.runLater(() -> footerStatus.setText(label));
+	}
+
+	/**
+	 * Update the window title. Uses Platform.runLater to avoid multithread
+	 * issues
+	 * 
+	 * @param title
+	 *            New title
+	 */
+	public void updateTitle(String title) {
+		Platform.runLater(() -> stage.setTitle(title));
+	}
+
+	public void enableControls() {
+		saveButton.setDisable(false);
+		saveAsButton.setDisable(false);
+		playStartButton.setDisable(false);
+		playButton.setDisable(false);
+		pauseButton.setDisable(false);
+		volumeSlider.setDisable(false);
+		saveMenuItem.setDisable(false);
+		saveAsMenuItem.setDisable(false);
+		editMenu.setDisable(false);
+		viewMenu.setDisable(false);
+		insertMenu.setDisable(false);
+		insertLightTrackButton.setDisable(false);
+		insertVirtualLightButton.setDisable(false);
+	}
+
+	public void setVolume(double volume) {
+		volumeSlider.setValue(volume * 100);
+	}
+
+	public void setStage(Stage stage) {
+		this.stage = stage;
+
+		setWindowDimensions(HueStew.getInstance().getConfig().getWindowDimensions());
+	}
+
+	public String getWindowDimensions() {
+		return stage.isMaximized() + "," + stage.getX() + "," + stage.getY() + "," + stage.getWidth() + ","
+				+ stage.getHeight();
+	}
+
+	/**
+	 * Set the dimensions of the main view stage.
+	 * 
+	 * @param dimensions
+	 *            - A string of dimensions separated by commas. X, Y, Width,
+	 *            Height.
+	 */
+	private void setWindowDimensions(String dimensions) {
+		if (dimensions.isEmpty())
+			return;
+
+		String[] split = dimensions.split(",");
+		boolean maximized = Boolean.parseBoolean(split[0]);
+		if (maximized) {
+			stage.setMaximized(true);
+			return;
+		}
+
+		stage.setX(Double.parseDouble(split[1]));
+		stage.setY(Double.parseDouble(split[2]));
+		stage.setWidth(Double.parseDouble(split[3]));
+		stage.setHeight(Double.parseDouble(split[4]));
+	}
+
+	/**
+	 * Redirects to {@link ColorPickerController}
+	 * 
+	 * @param selectedKeyFrames
+	 */
+	public void openColorPicker(List<KeyFrame> selectedKeyFrames) {
+		colorPickerController.setFrames(selectedKeyFrames);
+	}
+
+	/**
+	 * Method is called when a there is a change in number of tracks. Clear all
+	 * {@link TrackActionPane} and create new ones.
+	 */
+	public void updateTracks() {
+		Platform.runLater(() -> {
+			trackActionParentPane.getChildren().clear();
+			trackActionPanes.clear();
+			ToggleGroup actionGroup = new ToggleGroup();
+			List<LightTrack> tracks = showController.getShow().getLightTracks();
+
+			for (LightTrack track : tracks) {
+				TrackActionPane trackPane = new TrackActionPane(track, actionGroup);
+				if (tracks.size() > 1) {
+					trackPane.setOnRemove((e) -> {
+						showController.getShow().removeLightTrack(track);
+						removeVirtualLights(track);
+						LightBank.getInstance().updateAvailableLights(showController.getShow().getLightTracks());
+						updateTracks();
+
+						SnapshotManager.getInstance().clear();
+					});
+				}
+				trackPane.getTrackBtn().setOnAction((e) -> {
+					trackMenuController.openFor(trackPane.getTrackBtn(), track);
+				});
+
+				AnchorPane.setTopAnchor((Node) trackPane,
+						Math.round(trackViewController.getTrackPositionY(track)) + 0.0);
+				trackActionParentPane.getChildren().add(trackPane);
+				trackActionPanes.add(trackPane);
+			}
+
+			trackViewController.redraw();
+		});
+	}
+
+	/**
+	 * Remove all {@link VirtualLight} from a {@link LightTrack}
+	 * 
+	 * @param track
+	 */
+	private void removeVirtualLights(LightTrack track) {
+		for (Light light : LightBank.getInstance().getLights(track)) {
+			if (light instanceof VirtualLight) {
+				LightBank.getInstance().removeLight(light);
+			}
+		}
+	}
+
+	/**
+	 * Similar to updateTracks(), this method is called when the track canvas
+	 * pane is resized, and recalculates the position of all
+	 * {@link TrackActionPane}
+	 */
+	public void updateTrackActionPanePosition() {
+		Platform.runLater(() -> {
+			for (TrackActionPane pane : trackActionPanes) {
+				AnchorPane.setTopAnchor((Node) pane,
+						Math.round(trackViewController.getTrackPositionY(pane.getTrack())) + 0.0);
+			}
+		});
+	}
+
+	/**
+	 * Can we create a sequence from the selected key frames?
+	 * 
+	 * @param selectedKeyFrames
+	 *            List of key frames in selection
+	 * @param tracksInSelection
+	 *            Number of tracks included in the selection
+	 * @return Whether a sequence can be created
+	 */
+	private boolean sequencePossible(List<KeyFrame> selectedKeyFrames, int tracksInSelection) {
+		return !(selectedKeyFrames == null || selectedKeyFrames.isEmpty() || tracksInSelection > 1
+				|| selectedKeyFrames.size() < 2);
+	}
+
+	/**
+	 * Method is called when selected frames are changed. Decides whether
+	 * creating a new sequence from the selection is possible
+	 * 
+	 * @param selectedKeyFrames
+	 *            List of key frames in selection
+	 * @param tracksInSelection
+	 *            Number of tracks included in the selection
+	 */
+	public void notifySelectionChange(List<KeyFrame> selectedKeyFrames, int tracksInSelection) {
+		setSequencePossible(sequencePossible(selectedKeyFrames, tracksInSelection));
+	}
+
+	/**
+	 * Update visuals based on whether a sequence can be created currently
+	 * 
+	 * @param b
+	 *            Is it possible to create a sequence
+	 */
+	private void setSequencePossible(boolean b) {
+		addSequenceButton.setDisable(!b);
+	}
+
+	/**
+	 * Update the track view canvas. Redirects to {@link TrackViewController}
+	 */
+	public void updateTrackView() {
+		trackViewController.redraw();
+	}
+
+	/**
+	 * Update the wave image background. Redirected to {@link TrackViewController}
+	 * @param imagePaths
+	 */
+	public void updateWaveImage(List<String> imagePaths) {
+		trackViewController.loadWaves(imagePaths);
+	}
+
+	public void shutdown() {
+		HueStew.getInstance().shutdown();
+		showController.autoSave();
+	}
+
+	/**
+	 * Tick. Redirect to {@link ShowController}
+	 */
+	public void tick() {
+		showController.tick();
+	}
+
+	
+	/* 
+	 * Getters
+	 */
+	
+	public Player getPlayer() {
+		return showController.getPlayer();
+	}
+
+	public Show getShow() {
+		return showController.getShow();
+	}
+
+	public Stage getStage() {
+		return stage;
+	}
+
+	public Toolbox getToolbox() {
+		return toolbox;
+	}
+
+	public VirtualRoom getVirtualRoom() {
+		return virtualRoom;
+	}
+
+	/*
+	 * JavaFX input handlers 
+	 */
+	
+	public void handleKeyboardEvent(KeyEvent event) {
+		if (event.getEventType() == KeyEvent.KEY_PRESSED) {
+			drumKitController.keyboardEvent(event);
+		}
+		if (trackViewController != null)
+			trackViewController.keyboardEvent(event);
 	}
 
 	@FXML
@@ -448,219 +782,6 @@ public class MainViewController extends ViewController {
 			SnapshotManager.getInstance().redo();
 			trackViewController.redraw();
 		}
-	}
-
-	private void paste() {
-		if (clipBoard == null)
-			return;
-
-		SnapshotManager.getInstance().commandIssued();
-
-		int cursor = getShow().getCursor();
-
-		for (KeyFrame frame : clipBoard.getFrames()) {
-			LightTrack track = frame.track();
-			KeyFrame pastedFrame = new KeyFrame(cursor + frame.getTimestamp(), frame.getState(), track);
-			track.addKeyFrame(pastedFrame);
-		}
-
-		trackViewController.redraw();
-	}
-
-	public void setVolume(double volume) {
-		volumeSlider.setValue(volume * 100);
-	}
-
-	/**
-	 * Update the footer status text. Uses Platform.runLater to avoid
-	 * multithread issues
-	 * 
-	 * @param label
-	 *            New status
-	 */
-	public void updateFooterStatus(String label) {
-		Platform.runLater(() -> footerStatus.setText(label));
-	}
-
-	/**
-	 * Update the window title. Uses Platform.runLater to avoid multithread
-	 * issues
-	 * 
-	 * @param title
-	 *            New title
-	 */
-	public void updateTitle(String title) {
-		Platform.runLater(() -> stage.setTitle(title));
-	}
-
-	public void enableControls() {
-		saveButton.setDisable(false);
-		saveAsButton.setDisable(false);
-		playStartButton.setDisable(false);
-		playButton.setDisable(false);
-		pauseButton.setDisable(false);
-		volumeSlider.setDisable(false);
-		saveMenuItem.setDisable(false);
-		saveAsMenuItem.setDisable(false);
-		editMenu.setDisable(false);
-		viewMenu.setDisable(false);
-		insertMenu.setDisable(false);
-		insertLightTrackButton.setDisable(false);
-		insertVirtualLightButton.setDisable(false);
-	}
-
-	/**
-	 * @param stage
-	 *            the stage to set
-	 */
-	public void setStage(Stage stage) {
-		this.stage = stage;
-
-		setWindowDimensions(HueStew.getInstance().getConfig().getWindowDimensions());
-	}
-
-	public String getWindowDimensions() {
-		return stage.isMaximized() + "," + stage.getX() + "," + stage.getY() + "," + stage.getWidth() + ","
-				+ stage.getHeight();
-	}
-
-	public void setWindowDimensions(String dimensions) {
-		if (dimensions.isEmpty())
-			return;
-
-		String[] split = dimensions.split(",");
-		boolean maximized = Boolean.parseBoolean(split[0]);
-		if (maximized) {
-			stage.setMaximized(true);
-			return;
-		}
-
-		stage.setX(Double.parseDouble(split[1]));
-		stage.setY(Double.parseDouble(split[2]));
-		stage.setWidth(Double.parseDouble(split[3]));
-		stage.setHeight(Double.parseDouble(split[4]));
-	}
-
-	public void openColorPicker(List<KeyFrame> selectedKeyFrames) {
-		colorPickerController.setFrames(selectedKeyFrames);
-	}
-
-	public void updateTracks() {
-		Platform.runLater(() -> {
-			trackActionParentPane.getChildren().clear();
-			trackActionPanes.clear();
-			ToggleGroup actionGroup = new ToggleGroup();
-			List<LightTrack> tracks = showController.getShow().getLightTracks();
-
-			for (LightTrack track : tracks) {
-				TrackActionPane trackPane = new TrackActionPane(track, actionGroup);
-				if (tracks.size() > 1) {
-					trackPane.setOnRemove((e) -> {
-						showController.getShow().removeLightTrack(track);
-						removeVirtualLights(track);
-						LightBank.getInstance().updateAvailableLights(showController.getShow().getLightTracks());
-						updateTracks();
-
-						SnapshotManager.getInstance().clear();
-					});
-				}
-				trackPane.getTrackBtn().setOnAction((e) -> {
-					trackMenuController.openFor(trackPane.getTrackBtn(), track);
-				});
-
-				AnchorPane.setTopAnchor((Node) trackPane,
-						Math.round(trackViewController.getTrackPositionY(track)) + 0.0);
-				trackActionParentPane.getChildren().add(trackPane);
-				trackActionPanes.add(trackPane);
-			}
-
-			trackViewController.redraw();
-		});
-	}
-
-	private void removeVirtualLights(LightTrack track) {
-		for (Light light : LightBank.getInstance().getLights(track)) {
-			if (light instanceof VirtualLight) {
-				LightBank.getInstance().removeLight(light);
-			}
-		}
-	}
-
-	public void updateTrackActionPanePosition() {
-		Platform.runLater(() -> {
-			for (TrackActionPane pane : trackActionPanes) {
-				AnchorPane.setTopAnchor((Node) pane,
-						Math.round(trackViewController.getTrackPositionY(pane.getTrack())) + 0.0);
-			}
-		});
-	}
-
-	private boolean sequencePossible(List<KeyFrame> selectedKeyFrames, int tracksInSelection) {
-		return !(selectedKeyFrames == null || selectedKeyFrames.isEmpty() || tracksInSelection > 1
-				|| selectedKeyFrames.size() < 2);
-	}
-
-	public void notifySelectionChange(List<KeyFrame> selectedKeyFrames, int tracksInSelection) {
-		setSequencePossible(sequencePossible(selectedKeyFrames, tracksInSelection));
-	}
-
-	public void setSequencePossible(boolean b) {
-		addSequenceButton.setDisable(!b);
-	}
-
-	/**
-	 * @return the toolbox
-	 */
-	public Toolbox getToolbox() {
-		return toolbox;
-	}
-
-	public void updateTrackView() {
-		trackViewController.redraw();
-	}
-
-	public void updateWaveImage(List<String> imagePaths) {
-		trackViewController.loadWaves(imagePaths);
-	}
-
-	public void handleKeyboardEvent(KeyEvent event) {
-		if (event.getEventType() == KeyEvent.KEY_PRESSED) {
-			drumKitController.keyboardEvent(event);
-		}
-		if (trackViewController != null)
-			trackViewController.keyboardEvent(event);
-	}
-
-	public VirtualRoom getVirtualRoom() {
-		return virtualRoom;
-	}
-
-	public void shutdown() {
-		HueStew.getInstance().shutdown();
-		showController.autoSave();
-	}
-
-	public void tick() {
-		showController.tick();
-	}
-
-	public Player getPlayer() {
-		return showController.getPlayer();
-	}
-
-	public Show getShow() {
-		return showController.getShow();
-	}
-
-	public void initShow() {
-
-		initTrackCanvas();
-		enableControls();
-		updateTracks();
-	}
-
-	public Stage getStage() {
-		return stage;
 	}
 
 }

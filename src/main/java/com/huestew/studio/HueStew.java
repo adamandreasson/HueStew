@@ -1,11 +1,8 @@
 package com.huestew.studio;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.nio.file.AccessDeniedException;
 
-import com.huestew.studio.controller.ConfigConverter;
 import com.huestew.studio.io.FileHandler;
 import com.huestew.studio.model.HueStewConfig;
 import com.huestew.studio.plugin.PluginHandler;
@@ -38,17 +35,6 @@ public enum HueStew {
 		new PluginLoader(pluginFolder, pluginHandler);
 		
 		this.tickDuration = 33;
-
-		try {
-			this.config = new ConfigConverter().fromProperties(fileHandler.loadConfig());
-		} catch (FileNotFoundException e) {
-			// First run, use default config
-			this.config = HueStewConfig.getDefaultConfig();
-		} catch (IOException e) {
-			// Display error message and use default config
-			handleError(e);
-			this.config = HueStewConfig.getDefaultConfig();
-		}
 	}
 
 	public static HueStew getInstance() {
@@ -87,6 +73,10 @@ public enum HueStew {
 		return pluginHandler;
 	}
 
+	public void setConfig(HueStewConfig config){
+		this.config = config;
+	}
+	
 	/**
 	 * @return the config
 	 */
