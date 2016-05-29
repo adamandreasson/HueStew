@@ -44,11 +44,6 @@ public class HuePlugin implements Plugin {
 	String savePath;
 
 	@Override
-	public void sendLightState() {
-		System.out.println("Hue plugin sending light state bro");
-	}
-
-	@Override
 	public void onEnable() {
 
 		System.out.println("Philips Hue plugin loaded!");

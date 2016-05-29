@@ -27,8 +27,4 @@ public class TextLights implements Plugin{
 		}
 	}
 
-	@Override
-	public void sendLightState() {
-	}
-
 }
