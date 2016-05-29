@@ -6,7 +6,7 @@ package com.huestew.studio.view;
 import java.beans.PropertyChangeListener;
 
 /**
- * A interface used for sending commands to both physical and virtiual lights
+ * A interface used for sending commands to both physical and virtual lights
  * 
  * @author Adam
  *

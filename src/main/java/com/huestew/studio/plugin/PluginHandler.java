@@ -19,16 +19,17 @@ public class PluginHandler {
 		plugins = new HashSet<Plugin>();
 	}
 	
+	/**
+	 * Add a new plugin
+	 * @param plugin
+	 */
 	public void addPlugin(Plugin plugin){
 		plugins.add(plugin);
 	}
-	
-	public void sendLightState(){
-		for(Plugin plugin : plugins){
-			plugin.sendLightState();
-		}
-	}
 
+	/**
+	 * Rund the onDisable() method in all loaded plugins
+	 */
 	public void sendDisable() {
 		for(Plugin plugin : plugins){
 			plugin.onDisable();

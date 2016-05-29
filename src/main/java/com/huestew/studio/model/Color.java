@@ -7,6 +7,8 @@ package com.huestew.studio.model;
  * A custom class for storing color. Stores the values based on the RGB scale
  * with minimum value 0 and maximum value 1 for each of the colors.
  * 
+ * The hue value is optional, can be used by certain plugins.
+ * 
  * @author Adam
  *
  */

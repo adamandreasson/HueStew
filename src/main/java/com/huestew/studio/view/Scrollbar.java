@@ -2,7 +2,6 @@ package com.huestew.studio.view;
 
 import com.huestew.studio.util.Task;
 
-// TODO move to correct package
 /**
  * A scrollbar class that is capable of calculating size and position of a
  * scrollbar, as well as the resulting offset of the content.

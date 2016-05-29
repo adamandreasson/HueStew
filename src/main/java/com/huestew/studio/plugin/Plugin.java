@@ -11,7 +11,5 @@ public interface Plugin {
 
 	void onEnable();
 
-	void sendLightState();
-
 	void onDisable();
 }

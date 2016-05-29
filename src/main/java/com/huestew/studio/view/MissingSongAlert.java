@@ -2,6 +2,11 @@ package com.huestew.studio.view;
 
 import javafx.scene.control.Alert;
 
+/**
+ * A custom FX alert for when a song file is missing
+ * @author Patrik
+ *
+ */
 public class MissingSongAlert extends Alert {
 	public MissingSongAlert(String songPath) {
 		super(AlertType.ERROR);

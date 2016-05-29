@@ -13,6 +13,8 @@ import java.net.URLClassLoader;
 import java.util.Properties;
 
 /**
+ * Loads plugins from a given path into the {@link PluginHandler}
+ * 
  * @author Adam
  *
  */
@@ -20,9 +22,9 @@ public class PluginLoader {
 
 	public PluginLoader(File rootPath, PluginHandler pluginHandler) {
 
-		if(!rootPath.exists())
+		if (!rootPath.exists())
 			return;
-		
+
 		Thread thread = new Thread(() -> {
 			for (File file : rootPath.listFiles()) {
 
@@ -31,11 +33,11 @@ public class PluginLoader {
 
 				Properties prop = loadPluginProperties(file);
 
-				if(prop != null){
+				if (prop != null) {
 					try {
 						Plugin plugin = load(file, prop);
-						
-						if(plugin != null){
+
+						if (plugin != null) {
 							pluginHandler.addPlugin(plugin);
 						}
 					} catch (MalformedURLException | ClassCastException | ReflectiveOperationException e) {
@@ -45,11 +47,18 @@ public class PluginLoader {
 				}
 			}
 		});
-		
+
 		thread.start();
 
 	}
 
+	/**
+	 * Load the properties file within the plugin
+	 * 
+	 * @param file
+	 *            The plugin file to load from. Jar file!
+	 * @return Properties loaded from within the plugin jar
+	 */
 	private Properties loadPluginProperties(File file) {
 
 		InputStream in = null;
@@ -83,7 +92,18 @@ public class PluginLoader {
 
 	}
 
-	private Plugin load(File file, Properties prop) throws MalformedURLException, ClassCastException, ReflectiveOperationException  {
+	/**
+	 * Load a plugin from a file with given properties
+	 * 
+	 * @param file
+	 *            The file to load the plugin from, .jar file
+	 * @param prop
+	 *            The properties to use when loading. Needed to find the main
+	 *            class in the plugin
+	 * @return A new Plugin instance
+	 */
+	private Plugin load(File file, Properties prop)
+			throws MalformedURLException, ClassCastException, ReflectiveOperationException {
 
 		URL[] url = { file.toURI().toURL() };
 

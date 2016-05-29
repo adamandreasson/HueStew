@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.huestew.studio.model;
 
 /**
@@ -11,10 +8,9 @@ package com.huestew.studio.model;
  */
 public class VirtualBulb {
 
-	/** the coordinates of the virtual bulb in the virtual room. **/
+	// the coordinates of the virtual bulb in the virtual room.
 	private double x = 0;
 	private double y = 0;
-	/** the color of the virtual bulb. **/
 	private LightState state;
 
 	/**

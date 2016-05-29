@@ -6,6 +6,11 @@ import com.xuggle.mediatool.IMediaReader;
 import com.xuggle.mediatool.IMediaWriter;
 import com.xuggle.mediatool.ToolFactory;
 
+/**
+ * Utility class for files
+ * @author Adam
+ *
+ */
 public class FileUtil {
 	/**
 	 * Convert an audio file from one format to another.

@@ -6,6 +6,9 @@ package com.huestew.studio.model;
 import javafx.scene.input.KeyCode;
 
 /**
+ * A drum for the show, has a key, sequence and track. Can be used to rapidly
+ * add new frames to a light track using the keyboard
+ * 
  * @author Adam
  *
  */
@@ -81,13 +84,21 @@ public class Drum {
 		this.name = name;
 	}
 
+	/**
+	 * Beat the drum!
+	 * 
+	 * @param show
+	 *            The show to beat the drum on
+	 * @return Whether the beat was successful. Will return false if the drum
+	 *         does not have a track assigned
+	 */
 	public boolean beat(Show show) {
-		if(track == null)
+		if (track == null)
 			return false;
 
 		int cursor = show.getCursor();
 
-		for(KeyFrame frame : sequence.getFrames()){
+		for (KeyFrame frame : sequence.getFrames()) {
 			KeyFrame pastedFrame = new KeyFrame(cursor + frame.getTimestamp(), frame.getState(), track);
 			try {
 				track.addKeyFrame(pastedFrame);

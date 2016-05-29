@@ -10,7 +10,7 @@ import java.util.List;
  */
 public class Show {
 
-	/** The collection of lighttracks in this show */
+	// The collection of light tracks in this show 
 	private List<LightTrack> lightTracks;
 
 	private int duration;

@@ -13,6 +13,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 
 /**
+ * A Pane which holds the control buttons next to each {@link LightTrack} in the track canvas.
  * @author Adam
  *
  */

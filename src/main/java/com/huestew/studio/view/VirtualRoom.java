@@ -38,7 +38,7 @@ public class VirtualRoom {
 	 * Adds a bulb to the list
 	 * 
 	 * @param bulb
-	 *            the buld which is to be added to the list
+	 *            the bulb which is to be added to the list
 	 */
 	public void addBulb(VirtualBulb bulb) {
 		bulbs.add(bulb);
@@ -95,7 +95,6 @@ public class VirtualRoom {
 	}
 
 	public String getNextBulbName() {
-		// TODO Auto-generated method stub
 		return "Virtual light " + (bulbs.size()+1);
 	}
 

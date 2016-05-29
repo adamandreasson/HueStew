@@ -4,6 +4,11 @@ import java.io.File;
 
 import javafx.scene.media.Media;
 
+/**
+ * Holds an audio file for the show
+ * @author Adam
+ *
+ */
 public class Audio {
 	private File file;
 

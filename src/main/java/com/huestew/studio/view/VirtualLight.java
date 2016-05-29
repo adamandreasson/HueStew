@@ -52,6 +52,18 @@ public class VirtualLight implements Light {
 		return new LightState(color, brightness, saturation);
 	}
 
+	/**
+	 * Blend two numbers, with a factor as weight (0.0 - 1.0)
+	 * 
+	 * @param from
+	 *            The number to start with
+	 * @param to
+	 *            The number to end with
+	 * @param progress
+	 *            The position between the two numbers. 0.0 would be closest to
+	 *            the first number, 1.0 would be closest to the second.
+	 * @return A new number, blend between the two
+	 */
 	private double blend(double from, double to, double progress) {
 		double diff = Math.abs(to - from);
 		if (from < to) {
