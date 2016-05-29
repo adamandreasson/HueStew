@@ -299,6 +299,16 @@ public class TrackView {
 		}
 	}
 
+	
+	/**
+	 * 
+	 * Checks whether the position x,y is inside the specified keyframe or not.
+	 * 
+	 * @param keyFrame
+	 * @param x
+	 * @param y
+	 * @return true if position (x,y) is inside the specified keyFrame, false if not
+	 */
 	private boolean isInside(KeyFrame keyFrame, double x, double y) {
 		double kX = getXFromTime(keyFrame.getTimestamp());
 
@@ -366,6 +376,12 @@ public class TrackView {
 		return zoom;
 	}
 
+	/**
+	 * Adjusts zoom level
+	 * 
+	 * 
+	 * @param factor used to adjust zoom level
+	 */
 	public void adjustZoom(double factor) {
 		double offsetWithoutZoom = horizontalScrollbar.getOffset() / zoom;
 		zoom = Math.max(MINIMUM_ZOOM, Math.min(MAXIMUM_ZOOM, zoom + factor));
@@ -411,6 +427,9 @@ public class TrackView {
 		selectRectangle = null;
 	}
 
+	
+	
+	
 	public int selectKeyFrames(boolean ctrlDown) {
 
 		List<KeyFrame> selection = new ArrayList<KeyFrame>();
@@ -485,6 +504,13 @@ public class TrackView {
 		}
 	}
 
+	/**
+	 * Checks if auto scroll should be performed
+	 * 
+	 * 
+	 * @return
+	 */
+	
 	private boolean shouldAutoScroll() {
 		double x = getXFromTime(show.getCursor());
 		return useDesiredCursor && x > 0 && x < getVisibleTrackWidth();
