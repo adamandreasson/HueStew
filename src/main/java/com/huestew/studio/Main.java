@@ -25,14 +25,8 @@ public class Main extends Application {
 		primaryStage.getIcons().add(new Image("/icon_256x256.png"));
 		primaryStage.show();
 
-		primaryStage.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
-			controller.handleKeyboardEvent(event);
-			controller.getToolbox().getSelectedTool().doAction(event);
-		});
-		primaryStage.addEventFilter(KeyEvent.KEY_RELEASED, event -> {
-			controller.handleKeyboardEvent(event);
-			controller.getToolbox().getSelectedTool().doAction(event);
-		});
+		primaryStage.addEventFilter(KeyEvent.KEY_PRESSED, event -> controller.handleKeyboardEvent(event));
+		primaryStage.addEventFilter(KeyEvent.KEY_RELEASED, event -> controller.handleKeyboardEvent(event));
 
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             public void handle(WindowEvent we) {

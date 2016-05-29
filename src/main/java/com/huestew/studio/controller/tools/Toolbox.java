@@ -1,7 +1,5 @@
 package com.huestew.studio.controller.tools;
 
-import com.huestew.studio.controller.MainViewController;
-
 /**
  * A toolbox containing a set of tools.
  * 
@@ -16,10 +14,8 @@ public class Toolbox {
 
 	private Tool selectedTool;
 	private Tool activeTool;
-	private MainViewController controller;
 
-	public Toolbox(MainViewController controller) {
-		this.controller = controller;
+	public Toolbox() {
 		selectedTool = activeTool = selectTool;
 	}
 
@@ -56,12 +52,4 @@ public class Toolbox {
 		}
 		activeTool = tool;
 	}
-
-	/**
-	 * @return the controller
-	 */
-	public MainViewController getController() {
-		return controller;
-	}
-	
 }

@@ -170,7 +170,7 @@ public class MainViewController extends ViewController {
 		this.trackMenuController = (TrackMenuController) ViewController.loadFxml("/trackmenu.fxml");
 
 		this.virtualRoom = new VirtualRoom();
-		this.toolbox = new Toolbox(this);
+		this.toolbox = new Toolbox();
 		this.trackActionPanes = new ArrayList<>();
 
 		showController.loadShow();
@@ -651,6 +651,10 @@ public class MainViewController extends ViewController {
 		}
 		if (trackViewController != null)
 			trackViewController.keyboardEvent(event);
+
+		// Pass on event to current tool
+		toolbox.getSelectedTool().doAction(event);
+		trackViewController.redraw();
 	}
 
 	@FXML

@@ -46,8 +46,6 @@ public class SelectTool extends Tool {
 
 		selectedKeyFrames.clear();
 
-		toolbox.getController().updateTrackView();
-
 	}
 
 	@Override
