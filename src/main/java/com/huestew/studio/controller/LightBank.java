@@ -79,4 +79,13 @@ public enum LightBank {
 	public void removeLight(Light light) {
 		lights.remove(light);
 	}
+
+	/**
+	 * Set all light tracks to null
+	 */
+	public void resetLights(){
+		for (Entry<Light, LightTrack> entry : lights.entrySet()) {
+			lights.put(entry.getKey(), null);
+		}
+	}
 }

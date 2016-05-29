@@ -185,6 +185,9 @@ public class ShowController {
 
 		// Remove old virtual lights
 		removeVirtualLights();
+		
+		// Reset the light bank
+		LightBank.getInstance().resetLights();
 
 		// Re-assign virtual lights from file
 		for (Entry<String, LightTrack> entry : virtualLightQueue.entrySet()) {
