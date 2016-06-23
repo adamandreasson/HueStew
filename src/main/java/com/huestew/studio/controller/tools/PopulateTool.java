@@ -3,12 +3,13 @@ package com.huestew.studio.controller.tools;
 import java.util.List;
 import java.util.TreeSet;
 
+import com.huestew.studio.command.Command;
+import com.huestew.studio.command.CommandManager;
 import com.huestew.studio.model.Color;
 import com.huestew.studio.model.HueStewConfig;
 import com.huestew.studio.model.KeyFrame;
 import com.huestew.studio.model.LightState;
 import com.huestew.studio.model.LightTrack;
-import com.huestew.studio.model.SnapshotManager;
 
 import javafx.scene.Cursor;
 import javafx.scene.ImageCursor;
@@ -21,9 +22,11 @@ import javafx.scene.input.MouseEvent;
  * A tool for adding new key frames to a light track.
  * 
  * @author Patrik
+ * 
  */
 public class PopulateTool extends Tool {
-
+	
+	private CommandManager commandManager = new CommandManager();
 	private Cursor cursor = new ImageCursor(new Image("/cursor_pencil_add.png"), 4, 0);
 
 	public PopulateTool(Toolbox toolbox) {
@@ -39,16 +42,59 @@ public class PopulateTool extends Tool {
 
 		if (event.getEventType() == MouseEvent.MOUSE_PRESSED && event.getButton() == MouseButton.PRIMARY) {
 			if (canPlace(lightTrack, timestamp)) {
-				SnapshotManager.getInstance().commandIssued();
-
-				lightTrack.addKeyFrame(new KeyFrame(timestamp,
-						new LightState(new Color(1, 1, 1), (int) (255 * normalizedY), 255), lightTrack));
-				selectedKeyFrames.clear();
+				commandManager.executeCmd(new addKeyFrameCommand(lightTrack, keyFrame, 
+						selectedKeyFrames, timestamp, normalizedY));
 			}
-
+				
 		}
 	}
+	
+	/**
+	 * 
+	 * 
+	 *
+	 */
+	private class addKeyFrameCommand implements Command{
+		
+		private LightTrack lightTrack;
+		private KeyFrame keyFrame;
+		private List<KeyFrame> selectedKeyFrames;
+		private int timestamp;
+		private double normalizedY;
+		
+		private addKeyFrameCommand(LightTrack lightTrack, KeyFrame keyFrame, 
+						List<KeyFrame> selectedKeyFrames, int timestamp, double normalizedY){
+			this.lightTrack = lightTrack;
+			this.keyFrame = keyFrame;
+			this.selectedKeyFrames = selectedKeyFrames;
+			this.timestamp = timestamp;
+			this.normalizedY = normalizedY;
+		}
+		
+		@Override
+		public void execute() {
+			lightTrack.addKeyFrame(new KeyFrame(timestamp,
+					new LightState(new Color(1, 1, 1), (int) (255 * normalizedY), 255), lightTrack));
+			selectedKeyFrames.clear();
+			System.out.println("exec");
+		}
 
+		@Override
+		public void undo() {
+			System.out.println("undo");
+			//lightTrack.removeKeyFrame(new KeyFrame(timestamp,
+					//new LightState(new Color(1, 1, 1), (int) (255 * normalizedY), 255), lightTrack));
+			
+		}
+
+		@Override
+		public void redo() {
+			//lightTrack.addKeyFrame(new KeyFrame(timestamp,
+					//new LightState(new Color(1, 1, 1), (int) (255 * normalizedY), 255), lightTrack));
+			
+		}
+	}
+	
 	@Override
 	public void doAction(KeyEvent event) {
 		// TODO Should this do anything?

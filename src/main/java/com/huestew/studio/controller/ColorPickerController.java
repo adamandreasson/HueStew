@@ -6,7 +6,7 @@ package com.huestew.studio.controller;
 import java.util.List;
 import com.huestew.studio.model.KeyFrame;
 import com.huestew.studio.model.LightState;
-import com.huestew.studio.model.SnapshotManager;
+
 
 import javafx.application.Platform;
 import javafx.scene.Cursor;
@@ -44,7 +44,7 @@ public class ColorPickerController {
 		colorWheelCanvas.setOnMouseDragged(event -> pickColor(event.getX(), event.getY()));
 		colorWheelCanvas.setOnMousePressed(event -> {
 			// Take snapshot before changing color
-			SnapshotManager.getInstance().commandIssued();
+			//SnapshotManager.getInstance().commandIssued();
 			pickColor(event.getX(), event.getY());
 		});
 

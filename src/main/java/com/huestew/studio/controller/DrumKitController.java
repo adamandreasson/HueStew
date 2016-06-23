@@ -10,7 +10,7 @@ import com.huestew.studio.model.Drum;
 import com.huestew.studio.model.DrumKit;
 import com.huestew.studio.model.KeyFrame;
 import com.huestew.studio.model.Sequence;
-import com.huestew.studio.model.SnapshotManager;
+
 
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -133,7 +133,7 @@ public class DrumKitController {
 		// If the key pressed has a drum assigned, create a snapshot before
 		// hitting the drum
 		if (drumKit.isValidKey(event.getCode())) {
-			SnapshotManager.getInstance().commandIssued();
+			//SnapshotManager.getInstance().commandIssued();
 		}
 
 		boolean wasDrumBeat = drumKit.beat(event.getCode(), controller.getShow());

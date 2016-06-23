@@ -11,13 +11,14 @@ import java.util.TreeMap;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.huestew.studio.command.CommandManager;
 import com.huestew.studio.io.FileHandler;
 import com.huestew.studio.model.Audio;
 import com.huestew.studio.model.HueStewConfig;
 import com.huestew.studio.model.LightTrack;
 import com.huestew.studio.model.MissingSongException;
 import com.huestew.studio.model.Show;
-import com.huestew.studio.model.SnapshotManager;
+
 import com.huestew.studio.model.VirtualBulb;
 import com.huestew.studio.util.FileUtil;
 import com.huestew.studio.util.WaveBuilder;
@@ -36,6 +37,7 @@ public class ShowController {
 	private Player player;
 	private Show show;
 	private Map<String, LightTrack> virtualLightQueue;
+	private CommandManager commandManager = new CommandManager();
 
 	public ShowController(MainViewController controller) {
 		this.controller = controller;
@@ -102,9 +104,12 @@ public class ShowController {
 	public void createShow(File musicFile) {
 
 		this.show = new Show();
+		
+		commandManager.clearStacks();
 
 		// Init the SnapshotManager with the new show
-		SnapshotManager.getInstance().setShow(show);
+		//SnapshotManager.getInstance().setShow(show);
+		
 
 		// Assign the music file to the show
 		show.setAudio(new Audio(musicFile));
@@ -127,8 +132,9 @@ public class ShowController {
 	public void loadShow() throws IOException, JSONException {
 
 		this.show = new Show();
-		SnapshotManager.getInstance().setShow(show);
-
+		
+		commandManager.clearStacks();
+		
 		// Decide which path to load from
 		String path = HueStewConfig.getInstance().getSaveFile();
 		if (path.isEmpty()) {

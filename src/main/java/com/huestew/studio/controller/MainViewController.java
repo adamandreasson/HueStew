@@ -9,6 +9,8 @@ import java.util.List;
 
 import org.json.JSONException;
 
+import com.huestew.studio.command.Command;
+import com.huestew.studio.command.CommandManager;
 import com.huestew.studio.controller.tools.Toolbox;
 import com.huestew.studio.io.FileHandler;
 import com.huestew.studio.model.HueStewConfig;
@@ -16,7 +18,7 @@ import com.huestew.studio.model.KeyFrame;
 import com.huestew.studio.model.LightTrack;
 import com.huestew.studio.model.Sequence;
 import com.huestew.studio.model.Show;
-import com.huestew.studio.model.SnapshotManager;
+
 import com.huestew.studio.plugin.PluginHandler;
 import com.huestew.studio.plugin.PluginLoader;
 import com.huestew.studio.util.FileUtil;
@@ -157,6 +159,8 @@ public class MainViewController extends ViewController {
 	private VirtualRoom virtualRoom;
 	private Toolbox toolbox;
 	private Sequence clipBoard;
+	
+	private CommandManager commandManager = new CommandManager();
 
 	@Override
 	public void init() {
@@ -167,7 +171,7 @@ public class MainViewController extends ViewController {
 			handleError(e, "Unable to create necessary workspace directories");
 		}
 		loadConfig();
-
+		
 		this.showController = new ShowController(this);
 		this.colorPickerController = new ColorPickerController(colorPickerPane);
 		this.drumKitController = new DrumKitController(drumKitPaneWrap, this);
@@ -389,25 +393,56 @@ public class MainViewController extends ViewController {
 	 * Paste what is in the clipboard to the show.
 	 */
 	private void paste() {
-		if (getShow() == null)
-			return;
+		
+		commandManager.executeCmd(new pasteCommand());
+	}
+	
+	/**
+	 * 
+	 * 
+	 *
+	 */
+	private class pasteCommand implements Command{
+		
+		@Override
+		public void execute() {
+			
+			if (getShow() == null)
+				return;
 
-		if (clipBoard == null)
-			return;
+			if (clipBoard == null)
+				return;
 
-		SnapshotManager.getInstance().commandIssued();
-
-		int cursor = getShow().getCursor();
-
-		for (KeyFrame frame : clipBoard.getFrames()) {
-			LightTrack track = frame.track();
-			KeyFrame pastedFrame = new KeyFrame(cursor + frame.getTimestamp(), frame.getState(), track);
-			track.addKeyFrame(pastedFrame);
+			int cursor = getShow().getCursor();
+			
+			for (KeyFrame frame : clipBoard.getFrames()) {
+				LightTrack track = frame.track();
+				KeyFrame pastedFrame = new KeyFrame(cursor + frame.getTimestamp(), frame.getState(), track);
+				track.addKeyFrame(pastedFrame);
+			}
+			
+			trackViewController.redraw();
+			
 		}
 
-		trackViewController.redraw();
-	}
+		@Override
+		public void undo() {
+			for (KeyFrame frame : clipBoard.getFrames()){
+				frame.remove();
+			}
+			trackViewController.redraw();
+		}
 
+		@Override
+		public void redo() {
+			
+			
+			
+		}
+		
+	}
+	
+	
 	/**
 	 * Update the footer status text. Uses Platform.runLater to avoid
 	 * multithread issues
@@ -514,7 +549,8 @@ public class MainViewController extends ViewController {
 						LightBank.getInstance().updateAvailableLights(showController.getShow().getLightTracks());
 						updateTracks();
 
-						SnapshotManager.getInstance().clear();
+						
+						
 					});
 				}
 				trackPane.getTrackBtn().setOnAction((e) -> {
@@ -811,7 +847,7 @@ public class MainViewController extends ViewController {
 	@FXML
 	private void insertLightTrackPressed() {
 		showController.addTrack();
-		SnapshotManager.getInstance().clear();
+		
 	}
 
 	@FXML
@@ -839,18 +875,15 @@ public class MainViewController extends ViewController {
 
 	@FXML
 	private void undoPressed() {
-		if (SnapshotManager.getInstance().canUndo()) {
-			SnapshotManager.getInstance().undo();
-			trackViewController.redraw();
-		}
+		commandManager.undo();
+		trackViewController.redraw();
 	}
-
+	
 	@FXML
 	private void redoPressed() {
-		if (SnapshotManager.getInstance().canRedo()) {
-			SnapshotManager.getInstance().redo();
-			trackViewController.redraw();
-		}
+		commandManager.redo();
+		trackViewController.redraw();
+		
 	}
 
 	@FXML
