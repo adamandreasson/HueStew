@@ -2,11 +2,13 @@ package com.huestew.studio.controller.tools;
 
 import java.util.List;
 
+import com.huestew.studio.command.Command;
+import com.huestew.studio.command.CommandManager;
 import com.huestew.studio.model.HueStewConfig;
 import com.huestew.studio.model.KeyFrame;
 import com.huestew.studio.model.LightState;
 import com.huestew.studio.model.LightTrack;
-import com.huestew.studio.model.SnapshotManager;
+
 
 import javafx.scene.Cursor;
 import javafx.scene.input.KeyEvent;
@@ -28,6 +30,7 @@ public class SelectTool extends Tool {
 
 	public SelectTool(Toolbox toolbox) {
 		super(toolbox);
+
 	}
 
 	/**
@@ -37,15 +40,33 @@ public class SelectTool extends Tool {
 		if (selectedKeyFrames == null || selectedKeyFrames.isEmpty()) {
 			return;
 		}
+		CommandManager.getInstance().executeCmd(new deleteKeyFramesCommand());
+	}
 
-		SnapshotManager.getInstance().commandIssued();
+	private class deleteKeyFramesCommand implements Command {
 
-		for (KeyFrame frame : selectedKeyFrames) {
-			frame.remove();
+		@Override
+		public void execute() {
+			for (KeyFrame frame : selectedKeyFrames) {
+				frame.remove();
+			}
+
+			selectedKeyFrames.clear();
+			
 		}
 
-		selectedKeyFrames.clear();
+		@Override
+		public void undo() {
+			System.out.println("undo delete");
+			
+		}
 
+		@Override
+		public void redo() {
+			// TODO Auto-generated method stub
+			
+		}
+		
 	}
 
 	@Override
@@ -63,33 +84,12 @@ public class SelectTool extends Tool {
 
 		if (event.getEventType() == MouseEvent.MOUSE_PRESSED) {
 
-			takeSnapshot = true;
-
-			if (keyFramesSelected.isEmpty()) {
-
-				// If there are no selected key frames and we press a keyframe,
-				// select it
-				keyFramesSelected.add(keyFrame);
-
-			} else {
-
-				// If you click a frame that is not in the current selection
-				if (!keyFramesSelected.contains(keyFrame)) {
-
-					// if ctrl is not down, clear the selection
-					if (!ctrlDown)
-						keyFramesSelected.clear();
-
-					// add the clicked frame to selection
-					keyFramesSelected.add(keyFrame);
-				}
-
-			}
+			CommandManager.getInstance().executeCmd(new selectKeyFramesCommand(keyFramesSelected, keyFrame));
 
 		} else if (event.getEventType() == MouseEvent.MOUSE_DRAGGED && !selectedKeyFrames.isEmpty()) {
 
 			if (takeSnapshot) {
-				SnapshotManager.getInstance().commandIssued();
+				//SnapshotManager.getInstance().commandIssued();
 				takeSnapshot = false;
 			}
 
@@ -171,6 +171,56 @@ public class SelectTool extends Tool {
 				}
 
 			}
+		}
+
+	}
+
+	private class selectKeyFramesCommand implements Command {
+
+		private List<KeyFrame> keyFramesSelected;
+		private KeyFrame keyFrame;
+
+		private selectKeyFramesCommand(List<KeyFrame> keyFramesSelected, KeyFrame keyFrame) {
+			this.keyFramesSelected = keyFramesSelected;
+			this.keyFrame = keyFrame;
+
+		}
+
+		@Override
+		public void execute() {
+			if (keyFramesSelected.isEmpty()) {
+
+				// If there are no selected key frames and we press a keyframe,
+				// select it
+				keyFramesSelected.add(keyFrame);
+
+			} else {
+
+				// If you click a frame that is not in the current selection
+				if (!keyFramesSelected.contains(keyFrame)) {
+
+					// if ctrl is not down, clear the selection
+					if (!ctrlDown)
+						keyFramesSelected.clear();
+
+					// add the clicked frame to selection
+					keyFramesSelected.add(keyFrame);
+				}
+
+			}
+
+		}
+
+		@Override
+		public void undo() {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void redo() {
+			// TODO Auto-generated method stub
+
 		}
 
 	}

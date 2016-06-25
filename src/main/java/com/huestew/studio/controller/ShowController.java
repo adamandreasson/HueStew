@@ -37,7 +37,6 @@ public class ShowController {
 	private Player player;
 	private Show show;
 	private Map<String, LightTrack> virtualLightQueue;
-	private CommandManager commandManager = new CommandManager();
 
 	public ShowController(MainViewController controller) {
 		this.controller = controller;
@@ -105,7 +104,7 @@ public class ShowController {
 
 		this.show = new Show();
 		
-		commandManager.clearStacks();
+		CommandManager.getInstance().clearStacks();
 
 		// Init the SnapshotManager with the new show
 		//SnapshotManager.getInstance().setShow(show);
@@ -133,7 +132,7 @@ public class ShowController {
 
 		this.show = new Show();
 		
-		commandManager.clearStacks();
+		CommandManager.getInstance().clearStacks();
 		
 		// Decide which path to load from
 		String path = HueStewConfig.getInstance().getSaveFile();

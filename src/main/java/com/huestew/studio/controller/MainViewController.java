@@ -160,8 +160,6 @@ public class MainViewController extends ViewController {
 	private Toolbox toolbox;
 	private Sequence clipBoard;
 	
-	private CommandManager commandManager = new CommandManager();
-
 	@Override
 	public void init() {
 
@@ -394,7 +392,7 @@ public class MainViewController extends ViewController {
 	 */
 	private void paste() {
 		
-		commandManager.executeCmd(new pasteCommand());
+		CommandManager.getInstance().executeCmd(new pasteCommand());
 	}
 	
 	/**
@@ -420,9 +418,7 @@ public class MainViewController extends ViewController {
 				KeyFrame pastedFrame = new KeyFrame(cursor + frame.getTimestamp(), frame.getState(), track);
 				track.addKeyFrame(pastedFrame);
 			}
-			
 			trackViewController.redraw();
-			
 		}
 
 		@Override
@@ -875,13 +871,13 @@ public class MainViewController extends ViewController {
 
 	@FXML
 	private void undoPressed() {
-		commandManager.undo();
+		CommandManager.getInstance().undo();
 		trackViewController.redraw();
 	}
 	
 	@FXML
 	private void redoPressed() {
-		commandManager.redo();
+		CommandManager.getInstance().redo();
 		trackViewController.redraw();
 		
 	}

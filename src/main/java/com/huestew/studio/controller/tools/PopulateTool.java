@@ -26,7 +26,7 @@ import javafx.scene.input.MouseEvent;
  */
 public class PopulateTool extends Tool {
 	
-	private CommandManager commandManager = new CommandManager();
+	
 	private Cursor cursor = new ImageCursor(new Image("/cursor_pencil_add.png"), 4, 0);
 
 	public PopulateTool(Toolbox toolbox) {
@@ -38,11 +38,12 @@ public class PopulateTool extends Tool {
 			int timestamp, double normalizedY) {
 		if (keyFrame != null) {
 			return;
+			
 		}
 
 		if (event.getEventType() == MouseEvent.MOUSE_PRESSED && event.getButton() == MouseButton.PRIMARY) {
 			if (canPlace(lightTrack, timestamp)) {
-				commandManager.executeCmd(new addKeyFrameCommand(lightTrack, keyFrame, 
+				CommandManager.getInstance().executeCmd(new addKeyFrameCommand(lightTrack, keyFrame, 
 						selectedKeyFrames, timestamp, normalizedY));
 			}
 				
@@ -82,8 +83,8 @@ public class PopulateTool extends Tool {
 		@Override
 		public void undo() {
 			System.out.println("undo");
-			//lightTrack.removeKeyFrame(new KeyFrame(timestamp,
-					//new LightState(new Color(1, 1, 1), (int) (255 * normalizedY), 255), lightTrack));
+			lightTrack.removeKeyFrame(new KeyFrame(timestamp,
+					new LightState(new Color(1, 1, 1), (int) (255 * normalizedY), 255), lightTrack));
 			
 		}
 

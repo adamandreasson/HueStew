@@ -8,21 +8,22 @@ import java.util.Stack;
  *
  */
 
-public class CommandManager {
+public enum CommandManager {
+	INSTANCE;
 
 	private Stack<Command> undoStack = new Stack<Command>();
 
 	private Stack<Command> redoStack = new Stack<Command>();
 
-	public CommandManager() {
-
+	
+	public static CommandManager getInstance() {
+		return INSTANCE;
 	}
-
+	
 	public void executeCmd(Command command) {
 		command.execute();
 		undoStack.push(command);
 		redoStack.clear();
-		
 		System.out.println(undoStack.size());
 	}
 
