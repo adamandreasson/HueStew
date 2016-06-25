@@ -43,7 +43,7 @@ public class PopulateTool extends Tool {
 
 		if (event.getEventType() == MouseEvent.MOUSE_PRESSED && event.getButton() == MouseButton.PRIMARY) {
 			if (canPlace(lightTrack, timestamp)) {
-				CommandManager.getInstance().executeCmd(new addKeyFrameCommand(lightTrack, keyFrame, 
+				CommandManager.getInstance().executeCmd(new addKeyFrameCommand(lightTrack, 
 						selectedKeyFrames, timestamp, normalizedY));
 			}
 				
@@ -58,15 +58,13 @@ public class PopulateTool extends Tool {
 	private class addKeyFrameCommand implements Command{
 		
 		private LightTrack lightTrack;
-		private KeyFrame keyFrame;
 		private List<KeyFrame> selectedKeyFrames;
 		private int timestamp;
 		private double normalizedY;
 		
-		private addKeyFrameCommand(LightTrack lightTrack, KeyFrame keyFrame, 
+		private addKeyFrameCommand(LightTrack lightTrack, 
 						List<KeyFrame> selectedKeyFrames, int timestamp, double normalizedY){
 			this.lightTrack = lightTrack;
-			this.keyFrame = keyFrame;
 			this.selectedKeyFrames = selectedKeyFrames;
 			this.timestamp = timestamp;
 			this.normalizedY = normalizedY;
