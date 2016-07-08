@@ -1,5 +1,6 @@
 package com.huestew.studio.controller.tools;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.huestew.studio.command.Command;
@@ -45,9 +46,13 @@ public class SelectTool extends Tool {
 
 	private class deleteKeyFramesCommand implements Command {
 
+		List<KeyFrame> removedKeyFrames = new ArrayList<KeyFrame>();
 		@Override
 		public void execute() {
+			
+			// A copy of the keyframes to be removed whilst removing
 			for (KeyFrame frame : selectedKeyFrames) {
+				removedKeyFrames.add(new KeyFrame(frame));
 				frame.remove();
 			}
 
@@ -57,14 +62,18 @@ public class SelectTool extends Tool {
 
 		@Override
 		public void undo() {
-			System.out.println("undo delete");
+			LightTrack selected = removedKeyFrames.get(0).track();
+			for (KeyFrame frame : removedKeyFrames) {
+				selected.addKeyFrame(frame);
+			}
 			
 		}
 
 		@Override
 		public void redo() {
-			// TODO Auto-generated method stub
-			
+			for (KeyFrame frame : removedKeyFrames) {
+				frame.remove();
+			}
 		}
 		
 	}
@@ -84,7 +93,7 @@ public class SelectTool extends Tool {
 
 		if (event.getEventType() == MouseEvent.MOUSE_PRESSED) {
 
-			CommandManager.getInstance().executeCmd(new selectKeyFramesCommand(keyFramesSelected, keyFrame));
+			//CommandManager.getInstance().executeCmd(new selectKeyFramesCommand(keyFramesSelected, keyFrame));
 
 		} else if (event.getEventType() == MouseEvent.MOUSE_DRAGGED && !selectedKeyFrames.isEmpty()) {
 
@@ -175,12 +184,12 @@ public class SelectTool extends Tool {
 
 	}
 
-	private class selectKeyFramesCommand implements Command {
+	private class moveKeyFramesCommand implements Command {
 
 		private List<KeyFrame> keyFramesSelected;
 		private KeyFrame keyFrame;
 
-		private selectKeyFramesCommand(List<KeyFrame> keyFramesSelected, KeyFrame keyFrame) {
+		private moveKeyFramesCommand(List<KeyFrame> keyFramesSelected, int delta) {
 			this.keyFramesSelected = keyFramesSelected;
 			this.keyFrame = keyFrame;
 
