@@ -10,7 +10,6 @@ import com.huestew.studio.model.KeyFrame;
 import com.huestew.studio.model.LightState;
 import com.huestew.studio.model.LightTrack;
 
-
 import javafx.scene.Cursor;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -47,9 +46,10 @@ public class SelectTool extends Tool {
 	private class deleteKeyFramesCommand implements Command {
 
 		List<KeyFrame> removedKeyFrames = new ArrayList<KeyFrame>();
+
 		@Override
 		public void execute() {
-			
+
 			// A copy of the keyframes to be removed whilst removing
 			for (KeyFrame frame : selectedKeyFrames) {
 				removedKeyFrames.add(new KeyFrame(frame));
@@ -57,7 +57,7 @@ public class SelectTool extends Tool {
 			}
 
 			selectedKeyFrames.clear();
-			
+
 		}
 
 		@Override
@@ -66,7 +66,7 @@ public class SelectTool extends Tool {
 			for (KeyFrame frame : removedKeyFrames) {
 				selected.addKeyFrame(frame);
 			}
-			
+
 		}
 
 		@Override
@@ -75,7 +75,7 @@ public class SelectTool extends Tool {
 				frame.remove();
 			}
 		}
-		
+
 	}
 
 	@Override
@@ -86,6 +86,10 @@ public class SelectTool extends Tool {
 		// TrackView selection
 		selectedKeyFrames = keyFramesSelected;
 
+		// Variables used later to determine the change of the keyframes.
+		int timeDelta = 0;
+		int brightnessDelta = 0;
+
 		// Stop if the mouse is not on a keyframe
 		if (keyFrame == null) {
 			return;
@@ -93,14 +97,28 @@ public class SelectTool extends Tool {
 
 		if (event.getEventType() == MouseEvent.MOUSE_PRESSED) {
 
-			//CommandManager.getInstance().executeCmd(new selectKeyFramesCommand(keyFramesSelected, keyFrame));
+			if (keyFramesSelected.isEmpty()) {
 
-		} else if (event.getEventType() == MouseEvent.MOUSE_DRAGGED && !selectedKeyFrames.isEmpty()) {
+				// if there are no selected keyframes and we press a keyframe,
+				// select it
+				keyFramesSelected.add(keyFrame);
 
-			if (takeSnapshot) {
-				//SnapshotManager.getInstance().commandIssued();
-				takeSnapshot = false;
+			} else {
+
+				// if you click a keyframe that is not in the current selection
+				if (!keyFramesSelected.contains(keyFrame)) {
+
+					// if ctrl is not down, clear the selection
+					if (!ctrlDown) {
+						keyFramesSelected.clear();
+					}
+
+					// add the clicked keyframe to the selection
+					keyFramesSelected.add(keyFrame);
+
+				}
 			}
+		} else if (event.getEventType() == MouseEvent.MOUSE_DRAGGED && !selectedKeyFrames.isEmpty()) {
 
 			if (!shiftDown) {
 
@@ -139,47 +157,25 @@ public class SelectTool extends Tool {
 
 				}
 
+				// If the move is allowed, set the time delta.
 				if (allowedMove) {
 
-					// Move each selected frame
-					for (KeyFrame keyframe : selectedKeyFrames) {
-
-						// the new timestamp of the frame is calculated by
-						// adding the delta to it's current timestamp
-						int newTimestamp = keyframe.getTimestamp() + delta;
-						keyframe.setTimestamp(newTimestamp);
-
-					}
+					timeDelta = delta;
 
 				}
+
 			}
 
 			if (!ctrlDown) {
 
 				// calculate difference between current brightness and the
 				// proposed brightness as given by the normalized y value
-				int delta = ((int) (normalizedY * 255)) - keyFrame.getState().getBrightness();
-
-				for (KeyFrame frame : selectedKeyFrames) {
-
-					int newBrightness = frame.getState().getBrightness() + delta;
-					LightState newState = new LightState(frame.getState());
-
-					// no fancy checks, just skip the frame if brightness value
-					// is out of bounds
-					try {
-						newState.setBrightness(newBrightness);
-					} catch (IllegalArgumentException e) {
-						continue;
-					}
-
-					// if the new state is valid, we can update the frame's
-					// state
-					frame.setState(newState);
-
-				}
+				brightnessDelta = ((int) (normalizedY * 255)) - keyFrame.getState().getBrightness();
 
 			}
+
+			CommandManager.getInstance().executeCmd(new moveKeyFramesCommand(selectedKeyFrames, 
+					timeDelta, brightnessDelta));
 		}
 
 	}
@@ -187,48 +183,80 @@ public class SelectTool extends Tool {
 	private class moveKeyFramesCommand implements Command {
 
 		private List<KeyFrame> keyFramesSelected;
-		private KeyFrame keyFrame;
+		private int timeDelta;
+		private int brightnessDelta;
 
-		private moveKeyFramesCommand(List<KeyFrame> keyFramesSelected, int delta) {
+		private moveKeyFramesCommand(List<KeyFrame> keyFramesSelected, int timeDelta, int birghtnessDelta) {
 			this.keyFramesSelected = keyFramesSelected;
-			this.keyFrame = keyFrame;
-
+			this.timeDelta = timeDelta;
+			this.brightnessDelta = brightnessDelta;
 		}
 
 		@Override
 		public void execute() {
-			if (keyFramesSelected.isEmpty()) {
-
-				// If there are no selected key frames and we press a keyframe,
-				// select it
-				keyFramesSelected.add(keyFrame);
-
-			} else {
-
-				// If you click a frame that is not in the current selection
-				if (!keyFramesSelected.contains(keyFrame)) {
-
-					// if ctrl is not down, clear the selection
-					if (!ctrlDown)
-						keyFramesSelected.clear();
-
-					// add the clicked frame to selection
-					keyFramesSelected.add(keyFrame);
+			//Change values of the keyframes according to the delta values
+			for (KeyFrame frame : keyFramesSelected) {
+				int newTimestamp = frame.getTimestamp() + timeDelta;
+				frame.setTimestamp(newTimestamp);
+				
+				int newBrightness = frame.getState().getBrightness() + brightnessDelta;
+				LightState newState = new LightState(frame.getState());
+				
+				//No checks, if the value is out of bounds the frame will be skipped
+				try {
+					newState.setBrightness(newBrightness);
+				} catch (IllegalArgumentException e) {
+					continue;
 				}
+				
+				//if the state was valid, the frame will be updated.
+				frame.setState(newState);
+			}
+		}
 
+		@Override
+		public void undo() {
+			//Change values of the keyframes according to the delta values
+			for (KeyFrame frame : keyFramesSelected) {
+				int newTimestamp = frame.getTimestamp() - timeDelta;
+				frame.setTimestamp(newTimestamp);
+				
+				int newBrightness = frame.getState().getBrightness() - brightnessDelta;
+				LightState newState = new LightState(frame.getState());
+				
+				//No checks, if the value is out of bounds the frame will be skipped
+				try {
+					newState.setBrightness(newBrightness);
+				} catch (IllegalArgumentException e) {
+					continue;
+				}
+				
+				//if the state was valid, the frame will be updated.
+				frame.setState(newState);
 			}
 
 		}
 
 		@Override
-		public void undo() {
-			// TODO Auto-generated method stub
-
-		}
-
-		@Override
 		public void redo() {
-			// TODO Auto-generated method stub
+			//Change values of the keyframes according to the delta values
+			for (KeyFrame frame : keyFramesSelected) {
+				int newTimestamp = frame.getTimestamp() + timeDelta;
+				frame.setTimestamp(newTimestamp);
+				
+				int newBrightness = frame.getState().getBrightness() + brightnessDelta;
+				LightState newState = new LightState(frame.getState());
+				
+				//No checks, if the value is out of bounds the frame will be skipped
+				try {
+					newState.setBrightness(newBrightness);
+				} catch (IllegalArgumentException e) {
+					continue;
+				}
+				
+				//if the state was valid, the frame will be updated.
+				frame.setState(newState);
+			}
 
 		}
 
