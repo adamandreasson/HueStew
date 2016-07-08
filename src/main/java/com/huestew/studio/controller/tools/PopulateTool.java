@@ -88,8 +88,8 @@ public class PopulateTool extends Tool {
 
 		@Override
 		public void redo() {
-			//lightTrack.addKeyFrame(new KeyFrame(timestamp,
-					//new LightState(new Color(1, 1, 1), (int) (255 * normalizedY), 255), lightTrack));
+			lightTrack.addKeyFrame(new KeyFrame(timestamp,
+					new LightState(new Color(1, 1, 1), (int) (255 * normalizedY), 255), lightTrack));
 			
 		}
 	}
