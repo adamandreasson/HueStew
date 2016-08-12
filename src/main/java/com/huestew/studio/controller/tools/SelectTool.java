@@ -26,7 +26,6 @@ public class SelectTool extends Tool {
 	private List<KeyFrame> selectedKeyFrames;
 	private boolean ctrlDown = false;
 	private boolean shiftDown = false;
-	private boolean takeSnapshot = false;
 
 	public SelectTool(Toolbox toolbox) {
 		super(toolbox);
@@ -54,6 +53,7 @@ public class SelectTool extends Tool {
 			for (KeyFrame frame : selectedKeyFrames) {
 				removedKeyFrames.add(new KeyFrame(frame));
 				frame.remove();
+				System.out.println("deleteCommand");
 			}
 
 			selectedKeyFrames.clear();
@@ -186,7 +186,7 @@ public class SelectTool extends Tool {
 		private int timeDelta;
 		private int brightnessDelta;
 
-		private moveKeyFramesCommand(List<KeyFrame> keyFramesSelected, int timeDelta, int birghtnessDelta) {
+		private moveKeyFramesCommand(List<KeyFrame> keyFramesSelected, int timeDelta, int brightnessDelta) {
 			this.keyFramesSelected = keyFramesSelected;
 			this.timeDelta = timeDelta;
 			this.brightnessDelta = brightnessDelta;

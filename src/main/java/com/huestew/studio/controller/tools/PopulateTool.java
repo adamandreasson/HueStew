@@ -75,7 +75,7 @@ public class PopulateTool extends Tool {
 			lightTrack.addKeyFrame(new KeyFrame(timestamp,
 					new LightState(new Color(1, 1, 1), (int) (255 * normalizedY), 255), lightTrack));
 			selectedKeyFrames.clear();
-			System.out.println("exec");
+			System.out.println("addKeyFrameCommand");
 		}
 
 		@Override

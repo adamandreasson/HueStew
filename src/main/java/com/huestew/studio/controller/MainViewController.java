@@ -391,7 +391,6 @@ public class MainViewController extends ViewController {
 	 * Paste what is in the clipboard to the show.
 	 */
 	private void paste() {
-		
 		CommandManager.getInstance().executeCmd(new pasteCommand());
 	}
 	
@@ -871,14 +870,24 @@ public class MainViewController extends ViewController {
 
 	@FXML
 	private void undoPressed() {
+		try{
 		CommandManager.getInstance().undo();
 		trackViewController.redraw();
+		}
+		catch (IllegalStateException e){
+			System.out.println("undostack tom");
+		}
 	}
 	
 	@FXML
 	private void redoPressed() {
+		try{
 		CommandManager.getInstance().redo();
 		trackViewController.redraw();
+		}
+		catch (IllegalStateException e){
+			System.out.println("redostack tom");
+		}
 		
 	}
 

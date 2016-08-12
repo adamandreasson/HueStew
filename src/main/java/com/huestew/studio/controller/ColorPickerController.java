@@ -3,10 +3,17 @@
  */
 package com.huestew.studio.controller;
 
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+
+import com.huestew.studio.command.Command;
+import com.huestew.studio.command.CommandManager;
+import com.huestew.studio.command.changeColorCommand;
 import com.huestew.studio.model.KeyFrame;
 import com.huestew.studio.model.LightState;
-
+import com.huestew.studio.model.LightTrack;
 
 import javafx.application.Platform;
 import javafx.scene.Cursor;
@@ -25,6 +32,8 @@ import javafx.scene.paint.Stop;
 public class ColorPickerController {
 
 	private static final int KEY_FRAME_SIZE = 5;
+	private int elements = 0;
+	private HashMap<KeyFrame, Color> mapper = new HashMap<KeyFrame, Color>();
 
 	private AnchorPane colorPickerPane;
 	private List<KeyFrame> selectedKeyFrames;
@@ -43,15 +52,24 @@ public class ColorPickerController {
 		// Register mouse event handlers
 		colorWheelCanvas.setOnMouseDragged(event -> pickColor(event.getX(), event.getY()));
 		colorWheelCanvas.setOnMousePressed(event -> {
-			// Take snapshot before changing color
-			//SnapshotManager.getInstance().commandIssued();
+			
 			pickColor(event.getX(), event.getY());
 		});
-
+		
+		
+		
+        colorWheelCanvas.setOnMouseReleased(event -> {
+        if(selectedKeyFrames != null){
+        mapSelectedKeyFrames();
+        CommandManager.getInstance().executeCmd(new changeColorCommand(event.getX(), event.getY()));
+        System.out.println("changeColorCommand");
+        }});
+		
 		colorPickerPane.getChildren().add(colorWheelCanvas);
 		updateSize();
+		
 	}
-
+	
 	private Color getColorFromX(double x) {
 		double hue = ((x - 10) / getColorBoxWidth()) * 360.0;
 		return Color.hsb(hue, 1, 1);
@@ -59,6 +77,21 @@ public class ColorPickerController {
 
 	private double getSaturationFromY(double y) {
 		return ((getColorBoxHeight() - y) + 10) / getColorBoxHeight();
+	}
+	
+	private void mapSelectedKeyFrames(){
+		mapper.clear();
+		if (selectedKeyFrames == null || selectedKeyFrames.isEmpty())
+			return;
+		
+		Iterator<KeyFrame> iterator = selectedKeyFrames.iterator();
+		while (iterator.hasNext()) {
+			KeyFrame frame = iterator.next();
+			
+			mapper.put(frame, frame.getState().getColor().toFxColor());
+		}
+		System.out.println(mapper);
+		
 	}
 
 	private void pickColor(double x, double y) {
@@ -74,8 +107,8 @@ public class ColorPickerController {
 			saturation = 0;
 		if (saturation > 255)
 			saturation = 255;
-
-		// Update light state of all selected key frames
+		
+		/// Update light state of all selected key frames
 		for (KeyFrame frame : selectedKeyFrames) {
 			frame.setState(new LightState(new com.huestew.studio.model.Color(c), frame.getState().getBrightness(),
 					saturation));
@@ -88,6 +121,62 @@ public class ColorPickerController {
 		if (trackViewController != null)
 			trackViewController.redraw();
 	}
+	
+	public class changeColorCommand implements Command {
+			
+			private double x;
+			private double y;
+	
+		public changeColorCommand(double x, double y) {
+			this.x = x;
+			this.y = y;
+			
+		}
+
+		@Override
+		public void execute() {
+			
+			pickColor(x,y);
+			System.out.println("exec changeColorCommand");
+			mapSelectedKeyFrames();
+		}
+
+		@Override
+		public void undo() {
+
+			
+			// Calculate saturation from y coordinate
+			int saturation = (int) (getSaturationFromY(y) * 255.0);
+			if (saturation < 0)
+				saturation = 0;
+			if (saturation > 255)
+				saturation = 255;
+			
+			/// Update light state of all selected key frames
+			for (KeyFrame frame : selectedKeyFrames) {
+				elements--;
+				frame.setState(new LightState(new com.huestew.studio.model.Color(mapper.get(elements)), frame.getState().getBrightness(),
+						saturation));
+				System.out.println(mapper.get(elements));
+			}
+
+			// Redraw color picker
+			redraw();
+
+			// Redraw track view
+			if (trackViewController != null)
+				trackViewController.redraw();
+			
+			System.out.println("undo changeColorCommand");
+		}
+
+		@Override
+		public void redo() {
+			// TODO Auto-generated method stub
+		}
+	}
+
+	
 
 	public void updateSize() {
 		// Fit color picker to pane and redraw

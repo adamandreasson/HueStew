@@ -10,3 +10,4 @@ libs/huelocalsdk.jar
 libs/huesdkresources.jar
 libs/tablelayout.jar
 *.mp4
+src/main/java/com/huestew/studio/command/changeColorCommand.java

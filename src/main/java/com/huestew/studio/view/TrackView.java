@@ -213,6 +213,7 @@ public class TrackView {
 	private void drawLightTracks(GraphicsContext gc) {
 		int i = 0;
 		for (LightTrack track : show.getLightTracks()) {
+			
 			gc.setFill(TRACK_COLOR);
 			gc.fillRect(0, getTrackPositionY(i), getVisibleTrackWidth(), getTrackHeight());
 
