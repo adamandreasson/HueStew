@@ -3,10 +3,12 @@
  */
 package com.huestew.studio.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import com.huestew.studio.command.Command;
 import com.huestew.studio.command.CommandManager;
@@ -32,7 +34,7 @@ import javafx.scene.paint.Stop;
 public class ColorPickerController {
 
 	private static final int KEY_FRAME_SIZE = 5;
-	
+
 	private HashMap<KeyFrame, Color> mapper = new HashMap<KeyFrame, Color>();
 
 	private AnchorPane colorPickerPane;
@@ -41,7 +43,7 @@ public class ColorPickerController {
 	private TrackViewController trackViewController;
 
 	public ColorPickerController(AnchorPane colorPickerPane) {
-		
+
 		this.colorPickerPane = colorPickerPane;
 
 		colorPickerPane.getChildren().clear();
@@ -51,26 +53,27 @@ public class ColorPickerController {
 
 		// Register mouse event handlers
 		colorWheelCanvas.setOnMouseDragged(event -> {
-			
-			pickColor(event.getX(), event.getY());
-			});
-		
+
+			pickColor(event.getX(), event.getY(), selectedKeyFrames);
+		});
+
 		colorWheelCanvas.setOnMousePressed(event -> {
 			mapSelectedKeyFrames();
-			pickColor(event.getX(), event.getY());
+			pickColor(event.getX(), event.getY(), selectedKeyFrames);
 		});
-		
-        colorWheelCanvas.setOnMouseReleased(event -> {
-        if(selectedKeyFrames != null){
-        CommandManager.getInstance().executeCmd(new changeColorCommand(event.getX(), event.getY(), mapper));
-        System.out.println("changeColorCommand");
-        }});
-		
+
+		colorWheelCanvas.setOnMouseReleased(event -> {
+			if (selectedKeyFrames != null) {
+				CommandManager.getInstance().executeCmd(new changeColorCommand(event.getX(), event.getY(), mapper));
+				System.out.println("changeColorCommand");
+			}
+		});
+
 		colorPickerPane.getChildren().add(colorWheelCanvas);
 		updateSize();
-		
+
 	}
-	
+
 	private Color getColorFromX(double x) {
 		double hue = ((x - 10) / getColorBoxWidth()) * 360.0;
 		return Color.hsb(hue, 1, 1);
@@ -79,24 +82,24 @@ public class ColorPickerController {
 	private double getSaturationFromY(double y) {
 		return ((getColorBoxHeight() - y) + 10) / getColorBoxHeight();
 	}
-	
-	private void mapSelectedKeyFrames(){
+
+	private void mapSelectedKeyFrames() {
 		mapper.clear();
 		if (selectedKeyFrames == null || selectedKeyFrames.isEmpty())
 			return;
-		
+
 		Iterator<KeyFrame> iterator = selectedKeyFrames.iterator();
 		while (iterator.hasNext()) {
 			KeyFrame frame = iterator.next();
-			
+
 			mapper.put(frame, frame.getState().getColor().toFxColor());
 		}
 		System.out.println(mapper);
-		
+
 	}
 
-	private void pickColor(double x, double y) {
-		if (selectedKeyFrames == null || selectedKeyFrames.isEmpty())
+	private void pickColor(double x, double y, List<KeyFrame> keyframes) {
+		if (keyframes == null || keyframes.isEmpty())
 			return;
 
 		// Calculate color from x coordinate
@@ -108,9 +111,9 @@ public class ColorPickerController {
 			saturation = 0;
 		if (saturation > 255)
 			saturation = 255;
-		
+
 		/// Update light state of all selected key frames
-		for (KeyFrame frame : selectedKeyFrames) {
+		for (KeyFrame frame : keyframes) {
 			frame.setState(new LightState(new com.huestew.studio.model.Color(c), frame.getState().getBrightness(),
 					saturation));
 		}
@@ -122,13 +125,13 @@ public class ColorPickerController {
 		if (trackViewController != null)
 			trackViewController.redraw();
 	}
-	
+
 	public class changeColorCommand implements Command {
-			
-			private double x;
-			private double y;
-			private HashMap<KeyFrame, Color> mapperino;
-	
+
+		private double x;
+		private double y;
+		private HashMap<KeyFrame, Color> mapperino;
+
 		public changeColorCommand(double x, double y, HashMap<KeyFrame, Color> mapper) {
 			this.x = x;
 			this.y = y;
@@ -137,24 +140,24 @@ public class ColorPickerController {
 
 		@Override
 		public void execute() {
-			pickColor(x,y);
+			pickColor(x, y, new ArrayList(mapperino.keySet()));
 			System.out.println("exec changeColorCommand");
 		}
 
 		@Override
 		public void undo() {
-			
+
 			// Calculate saturation from y coordinate
 			int saturation = (int) (getSaturationFromY(y) * 255.0);
 			if (saturation < 0)
 				saturation = 0;
 			if (saturation > 255)
 				saturation = 255;
-			
+
 			/// Update light state of all selected key frames
-			for (KeyFrame frame : selectedKeyFrames) {
-				frame.setState(new LightState(new com.huestew.studio.model.Color(mapperino.get(frame)), frame.getState().getBrightness(),
-						saturation));
+			for (Entry<KeyFrame, Color> entry : mapperino.entrySet()) {
+				entry.getKey().setState(new LightState(new com.huestew.studio.model.Color(entry.getValue()),
+						entry.getKey().getState().getBrightness(), saturation));
 			}
 
 			// Redraw color picker
@@ -163,38 +166,15 @@ public class ColorPickerController {
 			// Redraw track view
 			if (trackViewController != null)
 				trackViewController.redraw();
-			
+
 			System.out.println("undo changeColorCommand");
 		}
 
 		@Override
 		public void redo() {
-			
-			// Calculate saturation from y coordinate
-						int saturation = (int) (getSaturationFromY(y) * 255.0);
-						if (saturation < 0)
-							saturation = 0;
-						if (saturation > 255)
-							saturation = 255;
-						
-						/// Update light state of all selected key frames
-						for (KeyFrame frame : selectedKeyFrames) {
-							frame.setState(new LightState(new com.huestew.studio.model.Color(mapperino.get(frame)), frame.getState().getBrightness(),
-									saturation));
-						}
-
-						// Redraw color picker
-						redraw();
-
-						// Redraw track view
-						if (trackViewController != null)
-							trackViewController.redraw();
-						
-						System.out.println("redo changeColorCommand");
+			execute();
 		}
 	}
-
-	
 
 	public void updateSize() {
 		// Fit color picker to pane and redraw
