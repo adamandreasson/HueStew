@@ -26,7 +26,10 @@ public class SelectTool extends Tool {
 	private List<KeyFrame> selectedKeyFrames;
 	private boolean ctrlDown = false;
 	private boolean shiftDown = false;
-
+	private boolean isStartMove = true;
+	private int startTime;
+	private int startBrightness;
+	
 	public SelectTool(Toolbox toolbox) {
 		super(toolbox);
 
@@ -118,8 +121,12 @@ public class SelectTool extends Tool {
 
 				}
 			}
-		} else if (event.getEventType() == MouseEvent.MOUSE_DRAGGED && !selectedKeyFrames.isEmpty()) {
-
+		} else if ((event.getEventType() == MouseEvent.MOUSE_DRAGGED || event.getEventType() == MouseEvent.MOUSE_RELEASED)  && !selectedKeyFrames.isEmpty()) {
+			if (isStartMove) {
+				startTime = timestamp;
+				startBrightness = (int)(normalizedY * 255);
+			}
+			
 			if (!shiftDown) {
 
 				// calculate difference between mouse current timestamp and the
@@ -174,8 +181,19 @@ public class SelectTool extends Tool {
 
 			}
 
-			CommandManager.getInstance().executeCmd(new moveKeyFramesCommand(selectedKeyFrames, 
-					timeDelta, brightnessDelta));
+			moveKeyFramesCommand cmd = new moveKeyFramesCommand(selectedKeyFrames, timeDelta, brightnessDelta);
+			
+			//Frankly this is a mess, in order to not have many small moves, we don't store the small ones and
+			//when the user finnaly let's go of the mouse, the entire moves is stored.
+			if (event.getEventType() == MouseEvent.MOUSE_DRAGGED) {
+				cmd.execute();
+				isStartMove = false;
+			} else {
+				cmd = new moveKeyFramesCommand(selectedKeyFrames, startTime-timestamp, startBrightness-(int)(normalizedY*255));
+				cmd.execute();
+				CommandManager.getInstance().executeCmd(new moveKeyFramesCommand(selectedKeyFrames, timestamp-startTime, (int)(normalizedY*255) - startBrightness));
+				isStartMove = true;
+			}
 		}
 
 	}

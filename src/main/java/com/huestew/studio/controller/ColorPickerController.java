@@ -140,7 +140,7 @@ public class ColorPickerController {
 
 		@Override
 		public void execute() {
-			pickColor(x, y, new ArrayList(mapperino.keySet()));
+			pickColor(x, y, new ArrayList<KeyFrame>(mapperino.keySet()));
 			System.out.println("exec changeColorCommand");
 		}
 
