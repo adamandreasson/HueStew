@@ -155,6 +155,7 @@ public class MainViewController extends ViewController {
 	private TrackMenuController trackMenuController;
 	private DrumKitController drumKitController;
 	private ColorPickerController colorPickerController;
+	private CommandHistoryController commandHistoryController;
 
 	private VirtualRoom virtualRoom;
 	private Toolbox toolbox;
@@ -433,6 +434,11 @@ public class MainViewController extends ViewController {
 			
 			
 			
+		}
+
+		@Override
+		public String getDescription() {
+			return new String("Pasted keyframes");
 		}
 		
 	}

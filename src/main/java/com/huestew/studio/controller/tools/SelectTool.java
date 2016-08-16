@@ -79,6 +79,11 @@ public class SelectTool extends Tool {
 			}
 		}
 
+		@Override
+		public String getDescription() {
+			return new String("Deleted keyframes");
+		}
+
 	}
 
 	@Override
@@ -276,6 +281,11 @@ public class SelectTool extends Tool {
 				frame.setState(newState);
 			}
 
+		}
+
+		@Override
+		public String getDescription() {
+			return new String("Moved keyframes");
 		}
 
 	}

@@ -2,6 +2,8 @@ package com.huestew.studio.command;
 
 import java.util.Stack;
 
+import com.huestew.studio.controller.CommandHistoryController;
+
 /**
  * 
  * @author Daniel
@@ -14,7 +16,8 @@ public enum CommandManager {
 	private Stack<Command> undoStack = new Stack<Command>();
 
 	private Stack<Command> redoStack = new Stack<Command>();
-
+	
+	private CommandHistoryController cmdHistory;
 	
 	public static CommandManager getInstance() {
 		return INSTANCE;
@@ -74,6 +77,10 @@ public enum CommandManager {
 	public void clearStacks(){
 		undoStack.removeAllElements();
 		redoStack.removeAllElements();
+	}
+	
+	public void setCommandHistoryController(CommandHistoryController cmd) {
+		this.cmdHistory = cmd;
 	}
 
 }

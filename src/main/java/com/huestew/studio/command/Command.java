@@ -14,4 +14,5 @@ public interface Command {
 	
 	public void redo();
 
+	public String getDescription(); 
 }

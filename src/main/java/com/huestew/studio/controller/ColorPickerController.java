@@ -174,6 +174,13 @@ public class ColorPickerController {
 		public void redo() {
 			execute();
 		}
+
+		@Override
+		public String getDescription() {
+			return new String("Changed color");
+		}
+		
+		
 	}
 
 	public void updateSize() {
