@@ -82,6 +82,9 @@ public class MainViewController extends ViewController {
 	private AnchorPane drumKitPaneWrap;
 
 	@FXML
+	private AnchorPane commandHistoryPaneWrap;
+	
+	@FXML
 	private ToggleButton populateToolButton;
 
 	@FXML
@@ -175,7 +178,7 @@ public class MainViewController extends ViewController {
 		this.colorPickerController = new ColorPickerController(colorPickerPane);
 		this.drumKitController = new DrumKitController(drumKitPaneWrap, this);
 		this.trackMenuController = (TrackMenuController) ViewController.loadFxml("/trackmenu.fxml");
-
+		this.commandHistoryController = new CommandHistoryController(commandHistoryPaneWrap,this);
 		this.virtualRoom = new VirtualRoom();
 		this.toolbox = new Toolbox();
 		this.trackActionPanes = new ArrayList<>();

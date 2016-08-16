@@ -130,17 +130,17 @@ public class ColorPickerController {
 
 		private double x;
 		private double y;
-		private HashMap<KeyFrame, Color> mapperino;
+		private HashMap<KeyFrame, Color> prevMap;
 
 		public changeColorCommand(double x, double y, HashMap<KeyFrame, Color> mapper) {
 			this.x = x;
 			this.y = y;
-			mapperino = new HashMap<KeyFrame, Color>(mapper);
+			prevMap = new HashMap<KeyFrame, Color>(mapper);
 		}
 
 		@Override
 		public void execute() {
-			pickColor(x, y, new ArrayList<KeyFrame>(mapperino.keySet()));
+			pickColor(x, y, new ArrayList<KeyFrame>(prevMap.keySet()));
 			System.out.println("exec changeColorCommand");
 		}
 
@@ -155,7 +155,7 @@ public class ColorPickerController {
 				saturation = 255;
 
 			/// Update light state of all selected key frames
-			for (Entry<KeyFrame, Color> entry : mapperino.entrySet()) {
+			for (Entry<KeyFrame, Color> entry : prevMap.entrySet()) {
 				entry.getKey().setState(new LightState(new com.huestew.studio.model.Color(entry.getValue()),
 						entry.getKey().getState().getBrightness(), saturation));
 			}
@@ -179,8 +179,7 @@ public class ColorPickerController {
 		public String getDescription() {
 			return new String("Changed color");
 		}
-		
-		
+
 	}
 
 	public void updateSize() {
