@@ -33,9 +33,10 @@
                                  <children>
                                     <SplitPane dividerPositions="0.55" style="-fx-border-color: transparent; -fx-background-color: transparent; -fx-border-width: 0;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                        <items>
-                                          <SplitPane dividerPositions="0.5301587301587302" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #505050; -fx-border-width: 0;">
+                                          <SplitPane dividerPositions="0.5301587301587302, 0.5" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #505050; -fx-border-width: 0;">
                                              <items>
                                                 <AnchorPane fx:id="drumKitPaneWrap" style="-fx-border-width: 0;" styleClass="darkpane" />
+                                                <AnchorPane prefHeight="200.0" prefWidth="200.0" />
                                                 <AnchorPane fx:id="colorPickerPane" minHeight="0.0" minWidth="0.0" styleClass="darkpane" />
                                              </items>
                                           </SplitPane>
