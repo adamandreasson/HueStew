@@ -28,20 +28,29 @@ public class CommandHistoryController {
 	}
 
 	public void commandExecuted(String context) {
-		labelText = context;
-
+		CommandHistoryConfigController configController = (CommandHistoryConfigController) ViewController.loadFxml("/commandhistorytile.fxml");
+		configController.updateLabelText(context);
+		configController.updateSize(commandHistoryPane.getWidth());
+		
+		historyConfigs.add(configController);
+		grid.getChildren().add(0, configController.getParent());
 	}
 
 	/**
 	 * Updates the commandhistory pane when something has been undone.
 	 */
 	public void undid() {
-		labelText = "";
-
+		historyConfigs.remove(historyConfigs.size()-1);
+		grid.getChildren().remove(0);
 	}
 
 	public void redid(String context) {
-		labelText = context;
+		CommandHistoryConfigController configController = (CommandHistoryConfigController) ViewController.loadFxml("/drumtile.fxml");
+		configController.updateLabelText(context);
+		configController.updateSize(commandHistoryPane.getWidth());
+		
+		historyConfigs.add(configController);
+		grid.getChildren().add(0, configController.getParent());
 
 	}
 

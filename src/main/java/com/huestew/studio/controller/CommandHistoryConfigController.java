@@ -28,7 +28,7 @@ public class CommandHistoryConfigController extends ViewController {
 	// TODO
 	public void updateLabelText(String text) {
 
-		lblUserAction.setText(controller.getLabelText());
+		lblUserAction.setText(text);
 	}
 
 	public void updateSize(double width) {

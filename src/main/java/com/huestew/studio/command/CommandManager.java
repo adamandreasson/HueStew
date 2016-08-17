@@ -29,7 +29,7 @@ public enum CommandManager {
 		undoStack.push(command);
 		redoStack.clear();
 		System.out.println(undoStack.size());
-		//cmdHistory.commandExecuted(command.getDescription());
+		cmdHistory.commandExecuted(command.getDescription());
 	}
 
 	public void undo() {
@@ -39,7 +39,7 @@ public enum CommandManager {
 			toUndo.undo();
 			redoStack.push(toUndo);
 			System.out.println("undid");
-			//cmdHistory.undid();
+			cmdHistory.undid();
 
 		} else {
 			throw new IllegalStateException("Cannot undo when undostack is zero");
@@ -52,7 +52,7 @@ public enum CommandManager {
 			Command toRedo = redoStack.pop();
 			toRedo.redo();
 			undoStack.push(toRedo);
-			//cmdHistory.redid(toRedo.getDescription());
+			cmdHistory.redid(toRedo.getDescription());
 		} else {
 			throw new IllegalStateException("Cannot redo when redostack is zero");
 		}
@@ -81,4 +81,7 @@ public enum CommandManager {
 		redoStack.removeAllElements();
 	}
 
+	public void setCommandHistoryController(CommandHistoryController cmdHistory) {
+	this.cmdHistory = cmdHistory;
+	}
 }

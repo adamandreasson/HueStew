@@ -191,6 +191,8 @@ public class MainViewController extends ViewController {
 
 		virtualRoom.setCanvas(previewCanvas);
 		virtualRoom.redraw();
+		
+		CommandManager.getInstance().setCommandHistoryController(commandHistoryController);
 
 		initPlugins();
 
@@ -252,6 +254,7 @@ public class MainViewController extends ViewController {
 		colorPickerPane.widthProperty().addListener((a, b, c) -> colorPickerController.updateSize());
 
 		drumKitPaneWrap.widthProperty().addListener((a, b, c) -> drumKitController.updateSize());
+		commandHistoryPaneWrap.widthProperty().addListener((a, b, c) -> commandHistoryController.updateSize());
 
 		volumeSlider.valueProperty().addListener((observableValue, oldValue, newValue) -> {
 			double normalizedVolume = newValue.doubleValue() / 100;
