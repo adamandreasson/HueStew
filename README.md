@@ -1,6 +1,8 @@
-# TDA367 - Group 20
+# HueStew Studio
 
-The repository for Aranäskvartetten's TDA367 project.
+A light show editing software built with Java. The program features an interactive timeline with wavelength visualization of imported mp3 tracks.
+
+Originally built as part of the TDA367 course in 2016.
 
 ### Tech
 
