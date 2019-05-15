@@ -10,6 +10,8 @@ libs/huelocalsdk.jar
 libs/huesdkresources.jar
 libs/tablelayout.jar
 *.mp4
+/classes/
+plugins/HueStewHuePlugin/out/
 
 \.idea/
 
