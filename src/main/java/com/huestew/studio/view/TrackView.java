@@ -37,7 +37,7 @@ import javafx.scene.text.TextAlignment;
 public class TrackView {
 
 	public static final int PIXELS_PER_SECOND = 100;
-	public static final double MINIMUM_ZOOM = 0.5;
+	public static final double MINIMUM_ZOOM = 0.25;
 	public static final double MAXIMUM_ZOOM = 4;
 	public static final double ZOOM_IN = 0.25;
 	public static final double ZOOM_OUT = -0.25;
@@ -166,12 +166,19 @@ public class TrackView {
 		for (int time = firstTick; time <= lastTick; time++) {
 			if (time % 100 != 0)
 				continue;
+
+			if(this.zoom < 0.5 && time % 200 != 0)
+				continue;
+
 			double x = getXFromTime(time);
 			// If the timestamp is divisible by 10, we will draw a longer tick
 			// and display the time.
 			if (time % 1000 == 0) {
-				gc.setTextAlign(TextAlignment.CENTER);
-				gc.fillText(Util.formatTimestamp(time), x, 31);
+
+				if(this.zoom > 0.5 || time % 2000 == 0){
+					gc.setTextAlign(TextAlignment.CENTER);
+					gc.fillText(Util.formatTimestamp(time), x, 31);
+				}
 			}
 			gc.setStroke(TIMELINE_TICK_COLOR);
 			GraphicsUtil.sharpLine(gc, x, time % 500 == 0 ? 32 : 36, x, 40);
