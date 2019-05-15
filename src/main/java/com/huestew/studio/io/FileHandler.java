@@ -1,5 +1,6 @@
 package com.huestew.studio.io;
 
+import java.awt.*;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -167,6 +168,19 @@ public class FileHandler {
 	public void clean() {
 		for (File filePath : new File(tmpDir).listFiles()) {
 			filePath.delete();
+		}
+	}
+
+
+	/**
+	 * Open folder in the OS explorer
+	 */
+	public void openDirectoryInExplorer(String pathName){
+		try {
+			Desktop.getDesktop().open(new File(pathName));
+		} catch (IOException e) {
+			//TODO
+			e.printStackTrace();
 		}
 	}
 

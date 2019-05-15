@@ -781,6 +781,11 @@ public class MainViewController extends ViewController {
 	}
 
 	@FXML
+	private void pluginsButtonPressed() {
+		fileHandler.openDirectoryInExplorer(fileHandler.getAppFilePath("plugins/"));
+	}
+
+	@FXML
 	private void saveButtonPressed() {
 		if (HueStewConfig.getInstance().getSaveFile().isEmpty()) {
 			saveAsButtonPressed();
